@@ -1,4 +1,4 @@
-# GINCCOpy
+# GINCCO_lib
 
 Lightweight utilities for:
 - Reading a single NetCDF
@@ -7,4 +7,4 @@ Lightweight utilities for:
 - Quick map plots with `pcolormesh` (default `jet`)
 
 ## Install (from GitHub)
-pip install git+https://github.com/yourname/GINCCOpy.git
+pip install git+https://github.com/yourname/GINCCO_lib.git
