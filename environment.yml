@@ -1,0 +1,10 @@
+name: climate_env
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.7
+  - numpy
+  - netcdf4
+  - matplotlib
+  - basemap
