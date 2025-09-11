@@ -7,4 +7,4 @@ Lightweight utilities for:
 - Quick map plots with `pcolormesh` (default `jet`)
 
 ## Install (from GitHub)
-pip install git+https://github.com/yourname/GINCCO_lib.git
+pip install git+https://github.com/duytung/GINCCO_lib.git
