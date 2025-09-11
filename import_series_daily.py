@@ -743,9 +743,8 @@ def import_profile(path, var, tstart, tend, lat_j, lon_i, ji = 'False', ignore_m
         lon_t = fgrid.variables['longitude_%s' % (var[-1])][:]
     except KeyError:
         print('Could not find a grid suffix for %s. Using _t as default.' % (var))
-        depth_t = fgrid.variables['depth_t'][:]
-
-
+        lon_t = fgrid.variables['longitude_t'][:]
+        lat_t = fgrid.variables['latitude_t'][:]
 
 
     # Prepare output array filled with zeros
