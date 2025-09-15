@@ -1,6 +1,6 @@
 # GINCCO_lib
 
-Lightweight utilities for:
+Utilities for:
 - Reading a single NetCDF
 - Opening multiple files along time
 - Simple stats (mean/std/min/max)
