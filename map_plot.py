@@ -35,7 +35,7 @@ def _nice_num(x, round_to_nearest):
             nf = 10.0
     return np.sign(x) * nf * (10**expv)
 
-def _pretty_ticks(dmin, dmax, prefer_counts=(6,7,8,9,10), fallback=(5,11,12)):
+def _pretty_ticks(dmin, dmax, prefer_counts=(5,6), fallback=(4,7)):
     """
     Build "nice" ticks covering [dmin, dmax] with about 5–12 ticks.
     """
@@ -59,7 +59,7 @@ def _pretty_ticks(dmin, dmax, prefer_counts=(6,7,8,9,10), fallback=(5,11,12)):
         gmin = np.floor(dmin / d) * d
         gmax = np.ceil(dmax / d) * d
         ticks = np.arange(gmin, gmax + 0.5 * d, d)
-        if 5 <= len(ticks) <= 12:
+        if 4 <= len(ticks) <= 7:
             return ticks
 
     # Then try fallbacks
@@ -68,7 +68,7 @@ def _pretty_ticks(dmin, dmax, prefer_counts=(6,7,8,9,10), fallback=(5,11,12)):
         gmin = np.floor(dmin / d) * d
         gmax = np.ceil(dmax / d) * d
         ticks = np.arange(gmin, gmax + 0.5 * d, d)
-        if 5 <= len(ticks) <= 12:
+        if 4 <= len(ticks) <= 7:
             return ticks
 
     # Absolute fallback
@@ -79,8 +79,8 @@ def _pretty_ticks(dmin, dmax, prefer_counts=(6,7,8,9,10), fallback=(5,11,12)):
 
 def _pad_10pct(minv, maxv):
     # Interpret “0.9 of min to 1.1 of max”, but handle negatives gracefully:
-    lo = minv * 0.9 if minv >= 0 else minv * 1.1
-    hi = maxv * 1.1 if maxv >= 0 else maxv * 0.9
+    lo = minv * 0.99 if minv >= 0 else minv * 1.01
+    hi = maxv * 1.01 if maxv >= 0 else maxv * 0.99
     # If min == 0 or max == 0, still get some padding
     if minv == 0:
         hi_abs = abs(maxv) if maxv != 0 else 1.0
@@ -178,7 +178,7 @@ def map_draw(lon_min, lon_max, lat_min, lat_max, title, lon_data, lat_data, data
     if finite_vals.size == 0:
         data_min, data_max = 0.0, 1.0
     else:
-        data_min, data_max = float(np.min(finite_vals)), float(np.max(finite_vals))
+        data_min, data_max = float(np.nanpercentile(finite_vals, 5)), float(np.nanpercentile(finite_vals, 95))
 
     vmin_pad, vmax_pad = _pad_10pct(data_min, data_max)
     ticks = _pretty_ticks(vmin_pad, vmax_pad)
@@ -206,37 +206,68 @@ def map_draw(lon_min, lon_max, lat_min, lat_max, title, lon_data, lat_data, data
     plt.savefig('%s/%s_%s.png' % (path_save, name_save, session_id), dpi=250)
     plt.close()
 
+#########################################################
 
+def map_draw_point(lon_min, lon_max, lat_min, lat_max, title, lon_data, lat_data, data_draw, lat_point, lon_point, path_save, name_save):
+    dlon = lon_max - lon_min
+    dlat = lat_max - lat_min
+    dy = np.around(dlat/dlon, 1)
+    if dy >= 2:
+        dy = 1.5
+    elif dy < 0.5:
+        dy = 0.8
 
-'''
+    fig = plt.figure(figsize=(7,7*dy))
+    ax = fig.add_subplot(1,1,1)
+    ax.set_title('%s' % (title))
 
-# Test function (map)
+    map2 = Basemap(projection='merc', llcrnrlon=lon_min, llcrnrlat=lat_min,
+                   urcrnrlon=lon_max, urcrnrlat=lat_max, resolution='l', epsg=4326)
 
-# === Create sample lon/lat grid and data ===
-lon = np.linspace(100, 120, 250)   # 100E–110E
-lat = np.linspace(8, 24, 100)      # 8N–24N
-lon2d, lat2d = np.meshgrid(lon, lat)
+    parallels = nice_ticks_1d(np.nanmin(lat_data), np.nanmax(lat_data))  #horizontal line
+    meridians = nice_ticks_1d(np.nanmin(lon_data), np.nanmax(lon_data))  #vertical line
+    map2.drawparallels(parallels, linewidth=0.5, dashes=[2,8], labels=[1,0,0,0], fontsize=15, zorder=12)
+    map2.drawmeridians(meridians, linewidth=0.5, dashes=[2,8], labels=[0,0,0,1], fontsize=15, zorder=12)
+    map2.drawcoastlines(zorder=10)
 
-# Example data: a simple 2D Gaussian hill
-data = np.exp(-((lon2d-110)**2 + (lat2d-16)**2)/10)
+    # -------- Auto colorbar limits and nice ticks --------
+    finite_vals = np.asarray(data_draw)[np.isfinite(data_draw)]
+    if finite_vals.size == 0:
+        data_min, data_max = 0.0, 1.0
+    else:
+        data_min, data_max = float(np.nanpercentile(finite_vals, 5)), float(np.nanpercentile(finite_vals, 95))
 
-# === Call map_draw ===
-map_draw(
-    lon_min=100, lon_max=120,
-    lat_min=8, lat_max=24,
-    title="Demo Map: Gaussian Hill",
-    lon_data=lon2d,
-    lat_data=lat2d,
-    data_draw=data,
-    path_save="/prod/projects/data/tungnd/figure/",     # current folder
-    name_save="demo"
-)
+    vmin_pad, vmax_pad = _pad_10pct(data_min, data_max)
+    ticks = _pretty_ticks(vmin_pad, vmax_pad)
 
+    # Colormap and normalization
+    color_map = plt.get_cmap('jet')
+    color_map.set_bad(color='white')
+    norm = colors.Normalize(vmin=ticks[0], vmax=ticks[-1])
 
+    # Grid shift for cell corners (as you had)
+    dlon_cell = (lon_data[0,1] - lon_data[0,0]) / 2.0
+    dlat_cell = (lat_data[1,0] - lat_data[0,0]) / 2.0
 
-'''
+    cm = plt.pcolormesh(lon_data - dlon_cell, lat_data - dlat_cell, data_draw,
+                        norm=norm, cmap='jet')
 
+    # plot the point
+    for i in range (0, len(lat_point)):
+        plt.scatter (lon_point[i], lat_point[i], s = 20, zorder = 10, marker = "o", edgecolor = "white", facecolor = 'red')
+        plt.annotate(i+1, (lon_point[i]+0.05, lat_point[i]), 
+            bbox=dict( boxstyle="round,pad=0.3", facecolor="white",edgecolor="None", alpha=0.7,))
 
+    # Colorbar with nice ticks
+    cbar_ax = fig.add_axes([0.15, 0.06, 0.7, 0.02])
+    cb = fig.colorbar(cm, cax=cbar_ax, ticks=ticks, orientation='horizontal')
+    cb.ax.tick_params(labelsize=20)
+
+    # Layout and save
+    fig.subplots_adjust(bottom=0.15, top=0.9, left=0.15, right=0.90, wspace=0.2, hspace=0.3)
+    session_id = random.randint(1E5, 1E6)
+    plt.savefig('%s/%s_%s.png' % (path_save, name_save, session_id), dpi=250)
+    plt.close()
 
 
 

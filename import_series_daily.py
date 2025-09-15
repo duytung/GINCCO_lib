@@ -96,7 +96,7 @@ def build_file_list(path, tstart, tend):
 
 
 
-def import_4D(path, path_name, var, tstart, tend, ignore_missing='False'):
+def import_4D(path, var, tstart, tend, ignore_missing='False'):
     """
     Import a 4D variable from a sequence of daily NetCDF files.
 
@@ -136,16 +136,16 @@ def import_4D(path, path_name, var, tstart, tend, ignore_missing='False'):
     grid = ''.join(glob.glob(path + 'grid.nc'))
     fgrid = Dataset(grid, 'r')
     try:
-        depth_t = fgrid.variables['depth_%s' % (var[-1])][:]
+        mask_t = fgrid.variables['mask_%s' % (var[-1])][:]
     except KeyError:
         print('Could not find a grid suffix for %s. Using _t as default.' % (var))
-        depth_t = fgrid.variables['depth_t'][:]
+        mask_t = fgrid.variables['mask_t'][:]
 
     # Prepare output array filled with zeros
     # Shape: [time, depth_z, depth_y, depth_x]
     print('Processing path: %s at %s' % (path, datetime.now()))
     data_array = np.zeros(
-        (duration.days + 1, np.size(depth_t, 0), np.size(depth_t, 1), np.size(depth_t, 2)),
+        (duration.days + 1, np.size(mask_t, 0), np.size(mask_t, 1), np.size(mask_t, 2)),
         dtype='float64'
     )
 
@@ -161,8 +161,7 @@ def import_4D(path, path_name, var, tstart, tend, ignore_missing='False'):
         # If the file exists, read the variable into the output array
         if fpath:
             file1 = Dataset(fpath, 'r')   # fixed: previously 'ncfile'
-            data_array[i, :, :, :] = np.squeeze(file1.variables[var][:, :, :, :])
-
+            data_array[i, :, :, :] = np.squeeze(file1.variables[var][:, :, :, :]).filled(np.nan)
         # If the file is missing, fill with NaN values
         if not fpath:
             print(('File not found for:', str(tnow)), 'Missing values will be filled with NaN')
@@ -216,16 +215,16 @@ def import_3D(path, var, tstart, tend, ignore_missing='False'):
     grid = ''.join(glob.glob(path + 'grid.nc'))
     fgrid = Dataset(grid, 'r')
     try:
-        depth_t = fgrid.variables['depth_%s' % (var[-1])][:]
+        mask_t = fgrid.variables['mask_%s' % (var[-1])][:]
     except KeyError:
         print('Could not find a grid suffix for %s. Using _t as default.' % (var))
-        depth_t = fgrid.variables['depth_t'][:]
+        mask_t = fgrid.variables['mask_t'][:]
 
     # Prepare output array filled with zeros
     # Shape: [time, depth_y, depth_x]
     print('Processing path: %s at %s' % (path, datetime.now()))
     data_array = np.zeros(
-        (duration.days + 1, np.size(depth_t, 0), np.size(depth_t, 1), np.size(depth_t, 2)),
+        (duration.days + 1, np.size(mask_t, 1), np.size(mask_t, 2)),
         dtype='float64'
     )
 
@@ -241,7 +240,9 @@ def import_3D(path, var, tstart, tend, ignore_missing='False'):
         # If the file exists, read the variable into the output array
         if fpath:
             file1 = Dataset(fpath, 'r')   # fixed: previously 'ncfile'
-            data_array[i, :, :] = np.squeeze(file1.variables[var][:, :, :])
+            data_array[i, :, :] = np.squeeze(file1.variables[var][ :, :, :]).filled(np.nan)
+            
+
 
         # If the file is missing, fill with NaN values
         if not fpath:
@@ -295,15 +296,15 @@ def import_surface(path, var, tstart, tend, ignore_missing='False'):
     grid = ''.join(glob.glob(path + 'grid.nc'))
     fgrid = Dataset(grid, 'r')
     try:
-        depth_t = fgrid.variables['depth_%s' % (var[-1])][:]
+        mask_t = fgrid.variables['mask_%s' % (var[-1])][:]
     except KeyError:
         print('Could not find a grid suffix for %s. Using _t as default.' % (var))
-        depth_t = fgrid.variables['depth_t'][:]
+        mask_t = fgrid.variables['mask_t'][:]
 
     # Prepare output array filled with zeros
     # Shape: [time, depth_z, depth_y, depth_x]
     print('Processing path: %s at %s' % (path, datetime.now()))
-    data_array = np.zeros((duration.days + 1, np.size(depth_t, 1), np.size(depth_t, 2)), dtype='float64')
+    data_array = np.zeros((duration.days + 1, np.size(mask_t, 1), np.size(mask_t, 2)), dtype='float64')
 
     # Loop through all files in the list
     for i, fpath in enumerate(file_list):
@@ -317,7 +318,7 @@ def import_surface(path, var, tstart, tend, ignore_missing='False'):
         # If the file exists, read the variable into the output array
         if fpath:
             file1 = Dataset(fpath, 'r')   # fixed: previously 'ncfile'
-            data_array[i, :, :] = np.squeeze(file1.variables[var][:, -1, :, :])
+            data_array[i, :, :] = np.squeeze(file1.variables[var][:, -1, :, :]).filled(np.nan)
 
         # If the file is missing, fill with NaN values
         if not fpath:
@@ -374,15 +375,15 @@ def import_layer(path, var, tstart, tend, layer, ignore_missing='False'):
     grid = ''.join(glob.glob(path + 'grid.nc'))
     fgrid = Dataset(grid, 'r')
     try:
-        depth_t = fgrid.variables['depth_%s' % (var[-1])][:]
+        mask_t = fgrid.variables['mask_%s' % (var[-1])][:]
     except KeyError:
         print('Could not find a grid suffix for %s. Using _t as default.' % (var))
-        depth_t = fgrid.variables['depth_t'][:]
+        mask_t = fgrid.variables['mask_t'][:]
 
     # Prepare output array filled with zeros
     # Shape: [time, depth_z, depth_y, depth_x]
     print('Processing path: %s at %s' % (path, datetime.now()))
-    data_array = zeros((duration.days + 1, np.size(depth_t, 1), np.size(depth_t, 2)), dtype='float64')
+    data_array = np.zeros((duration.days + 1, np.size(mask_t, 1), np.size(mask_t, 2)), dtype='float64')
 
     # Loop through all files in the list
     for i, fpath in enumerate(file_list):
@@ -396,7 +397,7 @@ def import_layer(path, var, tstart, tend, layer, ignore_missing='False'):
         # If the file exists, read the variable into the output array
         if fpath:
             file1 = Dataset(fpath, 'r')   # fixed: previously 'ncfile'
-            data_array[i, :, :] = np.squeeze(file1.variables[var][:, layer, :, :])
+            data_array[i, :, :] = np.squeeze(file1.variables[var][:, layer, :, :]).filled(np.nan)
 
         # If the file is missing, fill with NaN values
         if not fpath:
@@ -467,22 +468,22 @@ def import_depth(path, var, tstart, tend, depth, ignore_missing='False'):
         
     # Find the indice of the min and max
     # For example, the interest depth = 5, => -5 . the depth of two layer is -3 and -10. 
+    
     toto= np.ma.masked_where(depth_t>depth, depth_t)
     max_array= np.argmax(toto, axis=0) #because it is negative number, so it will return the nearest layer < depth (-10)
     toto= np.ma.masked_where(depth_t<depth, depth_t)
     min_array= np.argmin(toto, axis=0) #because it is negative number, so it will return the nearest layer > depth (-3)
-
     
     # Calculate the multiply factor:
-    multiply_array=np.zeros((size(depth_t,0),np.size(depth_t,1),np.size(depth_t,2)),dtype='float64')
+    multiply_array=np.zeros((np.size(depth_t,0),np.size(depth_t,1),np.size(depth_t,2)),dtype='float64')
     for i in range(0, np.size(depth_t,1)):
         for j in range(0, np.size(depth_t,2)):
             if min_array[i,j] != max_array[i,j]:  #only take into account the point that have min and max indice
                 dis_tance = depth_t[max_array[i,j],i,j]-depth_t[min_array[i,j],i,j] 
-
                 multiply_array[max_array[i,j],i,j] = 1 +  (depth-depth_t[max_array[i,j],i,j])/dis_tance  #1+ -5/7 
                 multiply_array[min_array[i,j],i,j] = 1 -  (depth-depth_t[min_array[i,j],i,j])/dis_tance  #1- 2/7
     
+    print ('Multiply array', multiply_array[:,200,200])
 
     check_depth_array=np.zeros((  np.size(depth_t,1), np.size(depth_t,2)     ),dtype='float64')
     for i in range(0, np.size(depth_t,1)):
@@ -496,7 +497,7 @@ def import_depth(path, var, tstart, tend, depth, ignore_missing='False'):
     # Prepare output array filled with zeros
     # Shape: [time, depth_z, depth_y, depth_x]
     print('Processing path: %s at %s' % (path, datetime.now()))
-    data_array = zeros((duration.days + 1, np.size(depth_t, 1), np.size(depth_t, 2)), dtype='float64')
+    data_array = np.zeros((duration.days + 1, np.size(depth_t, 1), np.size(depth_t, 2)), dtype='float64')
 
     # Loop through all files in the list
     for i, fpath in enumerate(file_list):
@@ -510,9 +511,9 @@ def import_depth(path, var, tstart, tend, depth, ignore_missing='False'):
         # If the file exists, read the variable into the output array
         if fpath:
             file1 = Dataset(fpath, 'r')   # fixed: previously 'ncfile'
-            data_toto = np.squeeze(file1.variables[var][:,:,:,:])
+            data_toto = np.squeeze(file1.variables[var][:,:,:,:]).filled(np.nan)
             data_toto2 = np.nansum(data_toto * multiply_array, axis=0)
-            data_toto2[check_depth_array==0] = nan
+            data_toto2[check_depth_array==0] = np.nan
             data_array[i,:,:] = np.copy(data_toto2)
 
         # If the file is missing, fill with NaN values
@@ -522,6 +523,7 @@ def import_depth(path, var, tstart, tend, depth, ignore_missing='False'):
 
     print('Import completed.')
     return data_array
+
 
 
 
@@ -624,7 +626,8 @@ def import_point(path, var, tstart, tend, lat_j, lon_i, ji = 'False', level = -1
         lon_t = fgrid.variables['longitude_%s' % (var[-1])][:]
     except KeyError:
         print('Could not find a grid suffix for %s. Using _t as default.' % (var))
-        depth_t = fgrid.variables['depth_t'][:]
+        lat_t = fgrid.variables['latitude_t'][:]
+        lon_t = fgrid.variables['longitude_t'][:]
 
 
 
@@ -632,8 +635,8 @@ def import_point(path, var, tstart, tend, lat_j, lon_i, ji = 'False', level = -1
     # Prepare output array filled with zeros
     # Shape: [time, depth_z, depth_y, depth_x]
     print('Processing path: %s at %s' % (path, datetime.now()))
-    data_array = zeros((duration.days + 1), dtype='float64')
-
+    data_array = np.zeros((duration.days + 1), dtype='float64')
+    kount_print=0
     # Loop through all files in the list
     for i, fpath in enumerate(file_list):
         tnow = tstart + timedelta(days=i)
@@ -660,9 +663,11 @@ def import_point(path, var, tstart, tend, lat_j, lon_i, ji = 'False', level = -1
                     data_array[i] = np.squeeze(file1.variables[var][:, j, i])
                 else:
                     j_ind, i_ind = find_nearest_index_haversine(lat_t, lon_t, lat_j, lon_i)
-                    print ('Original location and nearest point location')
-                    print ('Lat', lat_j, lat_t[j_ind, i_ind])
-                    print ('Lon', lon_i, lon_t[j_ind, i_ind])
+                    if kount_print ==0:
+                        print ('Original location and nearest point location')
+                        print ('Lat', lat_j, lat_t[j_ind, i_ind])
+                        print ('Lon', lon_i, lon_t[j_ind, i_ind])
+                        kount_print+=1
                     data_array[i] = np.squeeze(file1.variables[var][:, j_ind, i_ind])
 
             # Case 2: load 3D var
@@ -671,9 +676,10 @@ def import_point(path, var, tstart, tend, lat_j, lon_i, ji = 'False', level = -1
                     data_array[i] = np.squeeze(file1.variables[var][:, level, j, i])
                 else:
                     j_ind, i_ind = find_nearest_index_haversine(lat_t, lon_t, lat_j, lon_i)
-                    print ('Original location and nearest point location')
-                    print ('Lat', lat_j, lat_t[j_ind, i_ind])
-                    print ('Lon', lon_i, lon_t[j_ind, i_ind])
+                    if kount_print ==0:
+                        print ('Lat', lat_j, 'Nearest point', lat_t[j_ind, i_ind])
+                        print ('Lon', lon_i, 'Nearest point', lon_t[j_ind, i_ind])
+                        kount_print +=1
                     data_array[i] = np.squeeze(file1.variables[var][:, level, j_ind, i_ind])
 
         # If the file is missing, fill with NaN values
