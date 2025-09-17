@@ -1,8 +1,7 @@
 import numpy as np
 from netCDF4 import Dataset 
-from import_series_daily import *
-from map_plot import *
-from heatmap_plot import *
+from datetime import *
+import GINCCO_lib as gc
 #--------#--------#--------#--------#--------#--------#
 tstart = datetime(2010,1,1)
 tend = datetime(2010,10,30)
@@ -20,11 +19,10 @@ depth_t = fgrid.variables['depth_t'][:,:,:]
 depth_t[mask_t == 0] = np.nan
 #--------#--------#--------#--------#--------#--------#
 
-#Example 1: 
 lon_p = [106, 107, 108]
 lat_p = [19, 19, 19]
 
-map_draw_point(
+gc.map_draw_point(
     lon_min=105, lon_max=111,
     lat_min=16.5, lat_max=22,
     title="Locations of points and bathymetry (in m)",
@@ -42,14 +40,14 @@ data_draw = np.zeros(( len (lon_p),  (tend-tstart).days +1   , np.size(depth_t,0
 point_index = np.zeros(( len (lon_p), 2), dtype=int)
 
 for i in range(0, len(lon_p)):
-    data_draw[i,:], point_index[i,:] = import_profile(path, 'sal', tstart, tend, lat_p[i], lon_p[i], 
+    data_draw[i,:], point_index[i,:] = gc.import_profile(path, 'sal', tstart, tend, lat_p[i], lon_p[i], 
         ji = 'False', ignore_missing='False') #surface point
 
 
 #now draw 3 heatmap plots
 for i in range(0, len(lon_p)):
     print (data_draw[i,:,:].shape, depth_t[:,point_index[i,0], point_index[i,1]].shape)
-    plot_heatmap(
+    gc.plot_heatmap(
         title="Salinity profile at %sE %sN" %(lon_p[i],lat_p[i]),
         tstart=tstart, 
         tend = tend, 

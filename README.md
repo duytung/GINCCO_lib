@@ -20,4 +20,6 @@ conda install basemap
 
 pip install git+https://github.com/duytung/GINCCO_lib.git
 
-PS: I’m a newbie, please don’t let me freak out :D
+
+## Notes
+Please note that the examples are not included when install using pip. 
