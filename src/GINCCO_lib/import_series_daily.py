@@ -747,17 +747,20 @@ def import_profile(path, var, tstart, tend, lat_j, lon_i, ji = 'False', ignore_m
     try:
         lat_t = fgrid.variables['latitude_%s' % (var[-1])][:]
         lon_t = fgrid.variables['longitude_%s' % (var[-1])][:]
+        depth_t = fgrid.variables['depth_%s' % (var[-1])][:]
     except KeyError:
         print('Could not find a grid suffix for %s. Using _t as default.' % (var))
         lon_t = fgrid.variables['longitude_t'][:]
         lat_t = fgrid.variables['latitude_t'][:]
+        depth_t = fgrid.variables['depth_t'][:]
 
 
     # Prepare output array filled with zeros
     # Shape: [time, depth_z, depth_y, depth_x]
     print('Processing path: %s at %s' % (path, datetime.now()))
-    data_array = zeros((duration.days + 1), dtype='float64')
-
+    data_array = np.zeros((duration.days + 1, np.size(depth_t,0)), dtype='float64')
+    index = np.zeros((2))   # contain index
+    kount_print=0
     # Loop through all files in the list
     for i, fpath in enumerate(file_list):
         tnow = tstart + timedelta(days=i)
@@ -789,10 +792,14 @@ def import_profile(path, var, tstart, tend, lat_j, lon_i, ji = 'False', ignore_m
                     data_array[i] = np.squeeze(file1.variables[var][:, :, j, i])
                 else:
                     j_ind, i_ind = find_nearest_index_haversine(lat_t, lon_t, lat_j, lon_i)
-                    print ('Original location and nearest point location')
-                    print ('Lat', lat_j, lat_t[j_ind, i_ind])
-                    print ('Lon', lon_i, lon_t[j_ind, i_ind])
-                    data_array[i] = np.squeeze(file1.variables[var][:, :, j_ind, i_ind])
+                    index[0] = j_ind
+                    index[1] = i_ind
+                    if kount_print ==0:
+                        print ('Original location and nearest point location')
+                        print ('Lat', lat_j, lat_t[j_ind, i_ind])
+                        print ('Lon', lon_i, lon_t[j_ind, i_ind])
+                        kount_print +=1
+                    data_array[i,:] = np.squeeze(file1.variables[var][:, :, j_ind, i_ind])
 
         # If the file is missing, fill with NaN values
         if not fpath:
@@ -800,7 +807,7 @@ def import_profile(path, var, tstart, tend, lat_j, lon_i, ji = 'False', ignore_m
             data_array[i] = nan
 
     print('Import completed.')
-    return data_array
+    return data_array, index
 
 
 

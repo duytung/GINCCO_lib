@@ -1,6 +1,5 @@
 import numpy as np
 from map_plot import *
-from animation import * 
 from import_series_daily import *
 from netCDF4 import Dataset 
 from time_series_plot import *
@@ -62,7 +61,3 @@ plot_point(
 
 print ('#--------#--------#--------#--------#--------#--------#')
 
-
-
-
-'''

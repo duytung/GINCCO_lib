@@ -1,0 +1,21 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "yourpkg"
+version = "0.1.0"
+description = "Utilities for netcdf IO, stats, and visualization"
+readme = "README.md"
+requires-python = ">=3.7"
+license = {text = "MIT"}
+authors = [{name = "Tung Nguyen-Duy"}]
+dependencies = [
+  "numpy>=1.15",
+  "scipy>=1.1",
+  "netCDF4>=1.4",
+  "matplotlib>=2.2.2",
+  "basemap>=1.2"
+]
+[tool.hatch.build.targets.wheel]
+packages = ["src/GINCCO_lib"]
