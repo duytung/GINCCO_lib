@@ -1,7 +1,7 @@
 import numpy as np
 import GINCCO_lib as gc
 from netCDF4 import Dataset 
-
+from datetime import *
 #Create multiple map and save it as video
 tstart = datetime(2010,1,1)
 tend = datetime(2010,1,10)
