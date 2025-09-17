@@ -1,5 +1,6 @@
 import numpy as np
 import GINCCO_lib as gc
+print(dir(gc))
 from netCDF4 import Dataset 
 from datetime import *
 #Create multiple map and save it as video
