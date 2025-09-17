@@ -1,6 +1,5 @@
 import numpy as np
-from map_plot import *
-from import_series_daily import *
+import GINCCO_lib as gc
 from netCDF4 import Dataset 
 
 #Create multiple map and save it as video
@@ -19,11 +18,11 @@ lon_t = fgrid.variables['longitude_t'][:]
 #--------#--------#--------#--------#--------#--------#
 
 #Example 1: 
-sal_full = import_4D(path, 'sal', tstart, tend, ignore_missing='False')
+sal_full = gc.import_4D(path, 'sal', tstart, tend, ignore_missing='False')
 print (np.nanmin(sal_full), np.nanmax(sal_full))
 
 
-map_draw(
+gc.map_draw(
     lon_min=105, lon_max=111,
     lat_min=16.5, lat_max=22,
     title="Bottom salinity (example 1)",
@@ -38,10 +37,10 @@ print ('#--------#--------#--------#--------#--------#--------#')
 
 
 #Example 2: 
-ssh = import_3D(path, 'ssh_ib', tstart, tend, ignore_missing='False')
+ssh = gc.import_3D(path, 'ssh_ib', tstart, tend, ignore_missing='False')
 print (ssh.shape)
 print (np.nanmin(ssh), np.nanmax(ssh))
-map_draw(
+gc.map_draw(
     lon_min=105, lon_max=111,
     lat_min=16.5, lat_max=22,
     title="ssh (example 2)",
@@ -54,10 +53,10 @@ map_draw(
 
 print ('#--------#--------#--------#--------#--------#--------#')
 #Example 3: 
-sal_surface = import_surface(path, 'sal', tstart, tend, ignore_missing='False')
+sal_surface = gc.import_surface(path, 'sal', tstart, tend, ignore_missing='False')
 print (np.nanmin(sal_surface), np.nanmax(sal_surface))
 
-map_draw(
+gc.map_draw(
     lon_min=105, lon_max=111,
     lat_min=16.5, lat_max=22,
     title="surface salinity (example 3)",
@@ -70,8 +69,8 @@ map_draw(
 
 print ('#--------#--------#--------#--------#--------#--------#')
 #Example 4: 
-sal_layer = import_layer(path, 'sal', tstart, tend, 10, ignore_missing='False')
-map_draw(
+sal_layer = gc.import_layer(path, 'sal', tstart, tend, 10, ignore_missing='False')
+gc.map_draw(
     lon_min=105, lon_max=111,
     lat_min=16.5, lat_max=22,
     title="salinity at layer 10 (example 4)",
@@ -85,8 +84,8 @@ map_draw(
 print ('#--------#--------#--------#--------#--------#--------#')
 #Example 5: 
 
-sal_depth = import_depth(path, 'sal', tstart, tend, 40, ignore_missing='False')
-map_draw(
+sal_depth = gc.import_depth(path, 'sal', tstart, tend, 40, ignore_missing='False')
+gc.map_draw(
     lon_min=105, lon_max=111,
     lat_min=16.5, lat_max=22,
     title="salinity at 40m (example 5)",
