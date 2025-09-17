@@ -8,3 +8,5 @@ Utilities for:
 
 ## Install (from GitHub)
 pip install git+https://github.com/duytung/GINCCO_lib.git
+
+PS: I’m a newbie, please don’t let me freak out :D
