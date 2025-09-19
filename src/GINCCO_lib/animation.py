@@ -1,10 +1,4 @@
-import os
-import glob
-import imageio.v3 as iio
-from PIL import Image
 
-
-#Need to install some library: 
 #pip install imageio[ffmpeg] imageio[pyav] pillow
 
 import os
