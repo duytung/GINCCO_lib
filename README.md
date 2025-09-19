@@ -21,6 +21,7 @@ conda install basemap
 pip install git+https://github.com/duytung/GINCCO_lib.git
 
 If you would like to make video from the list of output, please install following library: 
+
 pip install imageio[ffmpeg] imageio[pyav] pillow
 
 ## Notes

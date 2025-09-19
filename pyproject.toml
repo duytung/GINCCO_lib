@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "Utilities for netcdf IO, stats, and visualization"
 readme = "README.md"
 requires-python = ">=3.7"
-license = {text = "MIT"}
+license = {text = "GNUv3"}
 authors = [{name = "Tung Nguyen-Duy"}]
 dependencies = [
   "numpy>=1.15",
