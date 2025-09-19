@@ -16,6 +16,9 @@ from .time_series_plot import plot_point
 from .heatmap_plot import plot_heatmap
 
 
+#video function
+from .image_to_video import pngs_to_video
+
 # define what is exposed when users do `from yourpkg import *`
 __all__ = [
     # import functions
@@ -34,6 +37,9 @@ __all__ = [
     "map_draw_point",
     "plot_point",
     "plot_heatmap",
+
+    #video function
+    "pngs_to_video",
 ]
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
