@@ -457,11 +457,18 @@ def import_depth(path, var, tstart, tend, depth, ignore_missing='False'):
     fgrid = Dataset(grid, 'r')
     try:
         depth_t = fgrid.variables['depth_%s' % (var[-1])][:]
-        mask_t = fgrid.variables['mask_%s' % (var[-1])][:]
+        mask_ = fgrid.variables['mask_%s' % (var[-1])][:]
     except KeyError:
         print('Could not find a grid suffix for %s. Using _t as default.' % (var))
         depth_t = fgrid.variables['depth_t'][:]
-        mask_t = fgrid.variables['mask_t'][:]
+        mask_ = fgrid.variables['mask_t'][:]
+
+    if mask_.ndim == 3:
+        mask_t = mask_[0, :, :]
+    elif mask_.ndim == 2:
+        mask_t = np.copy(mask_)
+
+
 
     print (depth_t.shape, mask_t.shape)
 
