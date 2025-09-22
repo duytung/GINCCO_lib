@@ -493,7 +493,7 @@ def import_depth(path, var, tstart, tend, depth, ignore_missing='False'):
                 multiply_array[max_array[i,j],i,j] = 1 +  (depth-depth_t[max_array[i,j],i,j])/dis_tance  #1+ -5/7 
                 multiply_array[min_array[i,j],i,j] = 1 -  (depth-depth_t[min_array[i,j],i,j])/dis_tance  #1- 2/7
     
-    print ('Multiply array', multiply_array[:,200,200])
+    #print ('Multiply array', multiply_array[:,200,200])
 
     check_depth_array=np.zeros((  np.size(depth_t,1), np.size(depth_t,2)     ),dtype='float64')
     for i in range(0, np.size(depth_t,1)):
@@ -522,8 +522,12 @@ def import_depth(path, var, tstart, tend, depth, ignore_missing='False'):
         if fpath:
             file1 = Dataset(fpath, 'r')   # fixed: previously 'ncfile'
             data_toto = np.squeeze(file1.variables[var][:,:,:,:]).filled(np.nan)
-            data_toto2 = np.nansum(data_toto * multiply_array, axis=0)
 
+            print ('before calculate depth', data_toto[0,-1,:])
+            print (data_toto[0,:,-1])
+            data_toto2 = np.nansum(data_toto * multiply_array, axis=0)
+            print ('after calculate depth', data_toto[-1,:])
+            print (data_toto[:,-1])
             data_toto2[check_depth_array==0] = np.nan
             data_toto2[mask_t==0] = np.nan # mask land - sea value
             data_array[i,:,:] = np.copy(data_toto2)
