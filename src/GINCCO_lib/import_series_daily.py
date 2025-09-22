@@ -463,6 +463,7 @@ def import_depth(path, var, tstart, tend, depth, ignore_missing='False'):
         depth_t = fgrid.variables['depth_t'][:]
         mask_t = fgrid.variables['mask_t'][0,:,:]
 
+
     # Prepare multiply array
     if depth > 0:
         depth = depth * -1
