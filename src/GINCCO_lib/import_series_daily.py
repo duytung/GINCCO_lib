@@ -457,9 +457,11 @@ def import_depth(path, var, tstart, tend, depth, ignore_missing='False'):
     fgrid = Dataset(grid, 'r')
     try:
         depth_t = fgrid.variables['depth_%s' % (var[-1])][:]
+        depth_t = fgrid.variables['mask_%s' % (var[-1])][:]
     except KeyError:
         print('Could not find a grid suffix for %s. Using _t as default.' % (var))
         depth_t = fgrid.variables['depth_t'][:]
+        mask_t = fgrid.variables['mask_t'][:]
 
 
     # Prepare multiply array
@@ -513,7 +515,9 @@ def import_depth(path, var, tstart, tend, depth, ignore_missing='False'):
             file1 = Dataset(fpath, 'r')   # fixed: previously 'ncfile'
             data_toto = np.squeeze(file1.variables[var][:,:,:,:]).filled(np.nan)
             data_toto2 = np.nansum(data_toto * multiply_array, axis=0)
+
             data_toto2[check_depth_array==0] = np.nan
+            data_toto2[mask_t==0] = np.nan # mask land - sea value
             data_array[i,:,:] = np.copy(data_toto2)
 
         # If the file is missing, fill with NaN values
