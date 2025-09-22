@@ -525,9 +525,13 @@ def import_depth(path, var, tstart, tend, depth, ignore_missing='False'):
 
             print ('before calculate depth', data_toto[0,-1,:])
             print (data_toto[0,:,-1])
+            
             data_toto2 = np.nansum(data_toto * multiply_array, axis=0)
-            print ('after calculate depth', data_toto[-1,:])
-            print (data_toto[:,-1])
+            
+            print ('after calculate depth', data_toto2[-1,:])
+            print (data_toto2[:,-1])
+            
+
             data_toto2[check_depth_array==0] = np.nan
             data_toto2[mask_t==0] = np.nan # mask land - sea value
             data_array[i,:,:] = np.copy(data_toto2)
