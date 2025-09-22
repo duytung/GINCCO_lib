@@ -27,6 +27,7 @@ for i in range(0, 100):
 	    path_save="/prod/projects/data/tungnd/figure/",     # current folder
 	    name_save="demo_123456_%02.0f" %(i)
 	)
+
 print ('Create video...')
 # === Load png saved file and covnert it into a video ===
 pngs_to_video("/prod/projects/data/tungnd/figure/demo_123456_*.png", 
@@ -40,4 +41,4 @@ for path in Path("/prod/projects/data/tungnd/figure").glob("demo_123456_*.png"):
         print(f"Deleted: {path}")
     except Exception as e:
         print(f"Error deleting {path}: {e}")
-        
+

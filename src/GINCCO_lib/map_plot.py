@@ -151,7 +151,7 @@ def nice_ticks_1d(dmin, dmax, max_ticks=5):
 
 #########################################################
 
-def map_draw(lon_min, lon_max, lat_min, lat_max, title, lon_data, lat_data, data_draw, path_save, name_save):
+def map_draw(lon_min, lon_max, lat_min, lat_max, title, lon_data, lat_data, data_draw, path_save, name_save, data_min=None, data_max=None):
     dlon = lon_max - lon_min
     dlat = lat_max - lat_min
     dy = np.around(dlat/dlon, 1)
@@ -176,9 +176,15 @@ def map_draw(lon_min, lon_max, lat_min, lat_max, title, lon_data, lat_data, data
     # -------- Auto colorbar limits and nice ticks --------
     finite_vals = np.asarray(data_draw)[np.isfinite(data_draw)]
     if finite_vals.size == 0:
-        data_min, data_max = 0.0, 1.0
+        if data_min is None:
+            data_min = 0.0
+        if data_max is None:
+            data_max = 1.0
     else:
-        data_min, data_max = float(np.nanpercentile(finite_vals, 5)), float(np.nanpercentile(finite_vals, 95))
+        if data_min is None:
+            data_min = float(np.nanpercentile(finite_vals, 5))
+        if data_max is None:
+            data_max = float(np.nanpercentile(finite_vals, 95))
 
     vmin_pad, vmax_pad = _pad_10pct(data_min, data_max)
     ticks = _pretty_ticks(vmin_pad, vmax_pad)

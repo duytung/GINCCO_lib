@@ -457,10 +457,20 @@ def import_depth(path, var, tstart, tend, depth, ignore_missing='False'):
     fgrid = Dataset(grid, 'r')
     try:
         depth_t = fgrid.variables['depth_%s' % (var[-1])][:]
+        mask_ = fgrid.variables['mask_%s' % (var[-1])][:]
     except KeyError:
         print('Could not find a grid suffix for %s. Using _t as default.' % (var))
         depth_t = fgrid.variables['depth_t'][:]
+        mask_ = fgrid.variables['mask_t'][:]
 
+    if mask_.ndim == 3:
+        mask_t = mask_[0, :, :]
+    elif mask_.ndim == 2:
+        mask_t = np.copy(mask_)
+
+
+
+    print (depth_t.shape, mask_t.shape)
 
     # Prepare multiply array
     if depth > 0:
@@ -483,7 +493,7 @@ def import_depth(path, var, tstart, tend, depth, ignore_missing='False'):
                 multiply_array[max_array[i,j],i,j] = 1 +  (depth-depth_t[max_array[i,j],i,j])/dis_tance  #1+ -5/7 
                 multiply_array[min_array[i,j],i,j] = 1 -  (depth-depth_t[min_array[i,j],i,j])/dis_tance  #1- 2/7
     
-    print ('Multiply array', multiply_array[:,200,200])
+    #print ('Multiply array', multiply_array[:,200,200])
 
     check_depth_array=np.zeros((  np.size(depth_t,1), np.size(depth_t,2)     ),dtype='float64')
     for i in range(0, np.size(depth_t,1)):
@@ -512,8 +522,11 @@ def import_depth(path, var, tstart, tend, depth, ignore_missing='False'):
         if fpath:
             file1 = Dataset(fpath, 'r')   # fixed: previously 'ncfile'
             data_toto = np.squeeze(file1.variables[var][:,:,:,:]).filled(np.nan)
-            data_toto2 = np.nansum(data_toto * multiply_array, axis=0)
+            
+            data_toto2 = np.nansum(data_toto * multiply_array, axis=0) #BE CAREFUL. NANSUM WILL RETURN 0 IF ALL NAN IN CALCULATION            
+            data_toto2[np.isnan(data_toto[0,:,:])] = np.nan #filter all original nanvalue to be nan
             data_toto2[check_depth_array==0] = np.nan
+            data_toto2[mask_t==0] = np.nan # mask land - sea value
             data_array[i,:,:] = np.copy(data_toto2)
 
         # If the file is missing, fill with NaN values
