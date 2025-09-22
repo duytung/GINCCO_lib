@@ -522,16 +522,9 @@ def import_depth(path, var, tstart, tend, depth, ignore_missing='False'):
         if fpath:
             file1 = Dataset(fpath, 'r')   # fixed: previously 'ncfile'
             data_toto = np.squeeze(file1.variables[var][:,:,:,:]).filled(np.nan)
-
-            print ('before calculate depth', data_toto[0,-1,:])
-            print (data_toto[0,:,-1])
             
-            data_toto2 = np.nansum(data_toto * multiply_array, axis=0)
-            
-            print ('after calculate depth', data_toto2[-1,:])
-            print (data_toto2[:,-1])
-            
-
+            data_toto2 = np.nansum(data_toto * multiply_array, axis=0) #BE CAREFUL. NANSUM WILL RETURN 0 IF ALL NAN IN CALCULATION            
+            data_toto2[np.isnan(data_toto[0,:,:])] = np.nan #filter all original nanvalue to be nan
             data_toto2[check_depth_array==0] = np.nan
             data_toto2[mask_t==0] = np.nan # mask land - sea value
             data_array[i,:,:] = np.copy(data_toto2)

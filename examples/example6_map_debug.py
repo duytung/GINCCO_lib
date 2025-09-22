@@ -25,9 +25,16 @@ file1 = Dataset(fpath, 'r')   # fixed: previously 'ncfile'
 data_toto = np.squeeze(file1.variables['sal'][:,:,:,:]).filled(np.nan)
 
 print (data_toto.shape)
-print (data_toto[0,-1,:])
 
-print (data_toto[0,:,-1])
+for i in range(0, 20):
+	print (i, data_toto[i,-1,0:20])
+
+
+
+print (np.nansum(data_toto[:,:,-1], axis = 0))
+print (np.nansum(data_toto[:,-1,:], axis = 0))
+
+
 
 #data_toto2 = np.nansum(data_toto * multiply_array, axis=0)
 
