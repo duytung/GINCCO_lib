@@ -457,12 +457,13 @@ def import_depth(path, var, tstart, tend, depth, ignore_missing='False'):
     fgrid = Dataset(grid, 'r')
     try:
         depth_t = fgrid.variables['depth_%s' % (var[-1])][:]
-        mask_t = fgrid.variables['mask_%s' % (var[-1])][0,:,:]
+        mask_t = fgrid.variables['mask_%s' % (var[-1])][:]
     except KeyError:
         print('Could not find a grid suffix for %s. Using _t as default.' % (var))
         depth_t = fgrid.variables['depth_t'][:]
-        mask_t = fgrid.variables['mask_t'][0,:,:]
+        mask_t = fgrid.variables['mask_t'][:]
 
+    print (depth_t.shape, mask_t.shape)
 
     # Prepare multiply array
     if depth > 0:
