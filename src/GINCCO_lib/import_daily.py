@@ -460,7 +460,7 @@ def import_section(path, file_name, var, lon_min, lon_max, lat_min, lat_max, M, 
         lat_sec = np.linspace(lat_min, lat_max, M)      # lat section
         lon_sec = np.linspace(lon_min, lon_max, M)      # lon_section
 
-    depth_sec, apply_interp = section_extract(lat_array, lon_array, depth, lat_sec, lon_sec, method="bilinear")
+    depth_sec, apply_interp = section_extract(lat_sec, lon_sec, depth, lat_sec, lon_sec, method="bilinear")
 
     #interpolate data
     data_interpolation = apply_interp(data) # shape: (nz, M)

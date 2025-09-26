@@ -37,7 +37,7 @@ gc.map_draw_point(
 
 
 #import a section
-depth_out, data_out = import_section(path = path, 
+depth_out, data_out = gc.import_section(path = path, 
                                     file_name = file_name, 
                                     var = 'sal', 
                                     lon_min = lon_p[0], lon_max = lon_p[1], 
@@ -54,7 +54,7 @@ depth_out, data_out = import_section(path = path,
 
 
 
-plot_section(
+gc.plot_section(
     title = 'Salinity section',
     data_draw = data_out,  
     depth_array = depth_out,       # np.ndarray, shape (depth, M)
