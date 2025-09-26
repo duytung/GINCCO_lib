@@ -191,9 +191,9 @@ def plot_section(
     X_axis, Z_axis = np.meshgrid(X_axis, Z_axis)
 
 
-    print (X_axis.shape, Z_axis.shape, (data_draw.T).shape)
+    print (X_axis.shape, Z_axis.shape, (data_draw).shape)
 
-    mesh = ax.pcolormesh(X_axis, Z_axis, data_draw.T, cmap=cmap, norm=norm, shading="auto")
+    mesh = ax.pcolormesh(X_axis, Z_axis, data_draw, cmap=cmap, norm=norm, shading="auto")
 
     ax.set_title(title)
     ax.set_xlabel("Time")
