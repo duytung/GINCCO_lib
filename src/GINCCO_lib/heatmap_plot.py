@@ -214,7 +214,7 @@ def plot_section(
     ax.set_xticks(xtick)
     ax.set_xticklabels(xtick_label)
     ax.invert_yaxis()
-    ax.set_ylim(depth[0], 0)
+    #ax.set_ylim(depth_array[0,0], 0)
 
 
     # Colorbar with nice ticks
