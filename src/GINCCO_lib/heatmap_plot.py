@@ -185,7 +185,8 @@ def plot_section(
 
     # Plot
     fig, ax = plt.subplots(figsize=(9, 4), constrained_layout=True)
-    X_axis = np.linspace (0, M-1, M)
+    X_axis = np.linspace (0, np.size(depth_array, 1) -1, np.size(depth_array, 1))
+    print (X_axis)
     Z_axis = depth_array[:,0]
     X_axis, Z_axis = np.meshgrid(X_axis, Z_axis)
 
