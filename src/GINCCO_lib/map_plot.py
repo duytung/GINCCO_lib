@@ -208,7 +208,7 @@ def map_draw(lon_min, lon_max, lat_min, lat_max, title, lon_data, lat_data, data
 
     # Layout and save
     fig.subplots_adjust(bottom=0.15, top=0.9, left=0.15, right=0.90, wspace=0.2, hspace=0.3)
-    session_id = random.randint(1E5, 1E6)
+    session_id = random.randint(10000, 99999)
     plt.savefig('%s/%s_%s.png' % (path_save, name_save, session_id), dpi=250)
     plt.close()
 
@@ -271,7 +271,7 @@ def map_draw_point(lon_min, lon_max, lat_min, lat_max, title, lon_data, lat_data
 
     # Layout and save
     fig.subplots_adjust(bottom=0.15, top=0.9, left=0.15, right=0.90, wspace=0.2, hspace=0.3)
-    session_id = random.randint(1E5, 1E6)
+    session_id = random.randint(10000, 99999)
     plt.savefig('%s/%s_%s.png' % (path_save, name_save, session_id), dpi=250)
     plt.close()
 

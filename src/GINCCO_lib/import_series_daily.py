@@ -136,16 +136,16 @@ def import_4D(path, var, tstart, tend, ignore_missing='False'):
     grid = ''.join(glob.glob(path + 'grid.nc'))
     fgrid = Dataset(grid, 'r')
     try:
-        mask_t = fgrid.variables['mask_%s' % (var[-1])][:]
+        depth_t = fgrid.variables['depth_%s' % (var[-1])][:]
     except KeyError:
         print('Could not find a grid suffix for %s. Using _t as default.' % (var))
-        mask_t = fgrid.variables['mask_t'][:]
+        depth_t = fgrid.variables['depth_t'][:]
 
     # Prepare output array filled with zeros
     # Shape: [time, depth_z, depth_y, depth_x]
     print('Processing path: %s at %s' % (path, datetime.now()))
     data_array = np.zeros(
-        (duration.days + 1, np.size(mask_t, 0), np.size(mask_t, 1), np.size(mask_t, 2)),
+        (duration.days + 1, np.size(depth_t, 0), np.size(depth_t, 1), np.size(depth_t, 2)),
         dtype='float64'
     )
 
@@ -215,16 +215,16 @@ def import_3D(path, var, tstart, tend, ignore_missing='False'):
     grid = ''.join(glob.glob(path + 'grid.nc'))
     fgrid = Dataset(grid, 'r')
     try:
-        mask_t = fgrid.variables['mask_%s' % (var[-1])][:]
+        depth_t = fgrid.variables['depth_%s' % (var[-1])][:]
     except KeyError:
         print('Could not find a grid suffix for %s. Using _t as default.' % (var))
-        mask_t = fgrid.variables['mask_t'][:]
+        depth_t = fgrid.variables['depth_t'][:]
 
     # Prepare output array filled with zeros
     # Shape: [time, depth_y, depth_x]
     print('Processing path: %s at %s' % (path, datetime.now()))
     data_array = np.zeros(
-        (duration.days + 1, np.size(mask_t, 1), np.size(mask_t, 2)),
+        (duration.days + 1, np.size(depth_t, 1), np.size(depth_t, 2)),
         dtype='float64'
     )
 
@@ -296,15 +296,15 @@ def import_surface(path, var, tstart, tend, ignore_missing='False'):
     grid = ''.join(glob.glob(path + 'grid.nc'))
     fgrid = Dataset(grid, 'r')
     try:
-        mask_t = fgrid.variables['mask_%s' % (var[-1])][:]
+        depth_t = fgrid.variables['depth_%s' % (var[-1])][:]
     except KeyError:
         print('Could not find a grid suffix for %s. Using _t as default.' % (var))
-        mask_t = fgrid.variables['mask_t'][:]
+        depth_t = fgrid.variables['depth_t'][:]
 
     # Prepare output array filled with zeros
     # Shape: [time, depth_z, depth_y, depth_x]
     print('Processing path: %s at %s' % (path, datetime.now()))
-    data_array = np.zeros((duration.days + 1, np.size(mask_t, 1), np.size(mask_t, 2)), dtype='float64')
+    data_array = np.zeros((duration.days + 1, np.size(depth_t, 1), np.size(depth_t, 2)), dtype='float64')
 
     # Loop through all files in the list
     for i, fpath in enumerate(file_list):
@@ -375,15 +375,15 @@ def import_layer(path, var, tstart, tend, layer, ignore_missing='False'):
     grid = ''.join(glob.glob(path + 'grid.nc'))
     fgrid = Dataset(grid, 'r')
     try:
-        mask_t = fgrid.variables['mask_%s' % (var[-1])][:]
+        depth_t = fgrid.variables['depth_%s' % (var[-1])][:]
     except KeyError:
         print('Could not find a grid suffix for %s. Using _t as default.' % (var))
-        mask_t = fgrid.variables['mask_t'][:]
+        depth_t = fgrid.variables['depth_t'][:]
 
     # Prepare output array filled with zeros
     # Shape: [time, depth_z, depth_y, depth_x]
     print('Processing path: %s at %s' % (path, datetime.now()))
-    data_array = np.zeros((duration.days + 1, np.size(mask_t, 1), np.size(mask_t, 2)), dtype='float64')
+    data_array = np.zeros((duration.days + 1, np.size(depth_t, 1), np.size(depth_t, 2)), dtype='float64')
 
     # Loop through all files in the list
     for i, fpath in enumerate(file_list):
@@ -493,8 +493,6 @@ def import_depth(path, var, tstart, tend, depth, ignore_missing='False'):
                 multiply_array[max_array[i,j],i,j] = 1 +  (depth-depth_t[max_array[i,j],i,j])/dis_tance  #1+ -5/7 
                 multiply_array[min_array[i,j],i,j] = 1 -  (depth-depth_t[min_array[i,j],i,j])/dis_tance  #1- 2/7
     
-    #print ('Multiply array', multiply_array[:,200,200])
-
     check_depth_array=np.zeros((  np.size(depth_t,1), np.size(depth_t,2)     ),dtype='float64')
     for i in range(0, np.size(depth_t,1)):
         for j in range(0, np.size(depth_t,2)):

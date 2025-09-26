@@ -3,6 +3,7 @@ from datetime import datetime
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
+import random
 
 def plot_point(
     title,
@@ -60,7 +61,8 @@ def plot_point(
 
     fig.tight_layout()
     os.makedirs(path_save, exist_ok=True)
-    out_path = os.path.join(path_save, f"{name_save}.png")
+    session_id = random.randint(10000, 99999)
+    out_path = os.path.join(path_save, f"{name_save}_{session_id}.png")
     fig.savefig(out_path, dpi=300)
     plt.close(fig)
     return out_path
