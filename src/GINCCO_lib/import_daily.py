@@ -24,7 +24,7 @@ Features:
 import numpy as np
 
 def section_extract(lat_array, lon_array, depth_array, lat, lon,
-                    method="idw", power=2, max_iter=20, tol=1e-10, eps=1e-12):
+                    method="idw", power=2, max_iter=20, tol=1e-10, eps=1e-10):
     """
     Build a vertical section along given (lat, lon) points on a curvilinear grid,
     and return both the interpolated depth_array section and a callable to apply the
@@ -125,11 +125,6 @@ def section_extract(lat_array, lon_array, depth_array, lat, lon,
         iy, ix = divmod(k, nx)
         return iy, ix
 
-    def clamp_cell(iy, ix):
-        """Clamp indices so that the 2x2 cell [iy:iy+2, ix:ix+2] is valid inside the domain."""
-        iy = int(np.clip(iy, 0, ny - 2))
-        ix = int(np.clip(ix, 0, nx - 2))
-        return iy, ix
 
     # -----------------------------------------
     # 2) Prepare storage for geometry per point
@@ -154,9 +149,31 @@ def section_extract(lat_array, lon_array, depth_array, lat, lon,
     # -----------------------------------------
     for m in range(M):
         # 3a) Find a valid cell around the query point
-        iy0, ix0 = nearest_node_indices(lat[m], lon[m])
-        iy0, ix0 = clamp_cell(iy0, ix0)
+        # note the problem about the cell story here. 
+        iy, ix = nearest_node_indices(lat[m], lon[m])
 
+
+
+        # Suppose nearest node is (iy0, ix0)
+        if lon[m] > lon_g[iy, ix]:
+            #Point at the right of nearest point
+            ix0 = ix               # use [ix0, ix0+1]
+        else:
+            #Point at the left of nearest point
+            ix0 = ix - 1           # use [ix0-1, ix0]
+
+        if lat[m] > lat_g[iy0, ix0]:
+            #Point higher than the nearest point
+            iy0 = iy   # use [iy0, iy0+1]
+        else:
+            #Point lower than the nearest point
+            iy0 = iy - 1           # use [iy0-1, iy0]
+
+        # Clamp inside valid range
+        iy_start = np.clip(iy_start, 0, ny-2)
+        ix_start = np.clip(ix_start, 0, nx-2)
+
+        # Corners of the enclosing cell
         corners = np.array([
             [iy0,     ix0    ],  # c00
             [iy0,     ix0 + 1],  # c10
@@ -386,6 +403,7 @@ def data_interp(depth_sec, data_sec, depth_interval=1.0):
 def import_section(path, file_name, var, lon_min, lon_max, lat_min, lat_max, M, depth_interval):
     """
     Import a vertical section from a file. Support all kind of section: along lat, along lon, and diagonal line. 
+    This is the control for the whole function
 
     Parameters
     ----------

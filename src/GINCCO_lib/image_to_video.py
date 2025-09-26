@@ -18,10 +18,22 @@ def _ensure_even_hw(arr):
     return arr
 
 def pngs_to_video(inputs, output_path, fps=24, resize_to=None):
+
     """
     Pure-Python PNG -> video with imageio's PyAV plugin.
     Enforces RGB uint8, contiguous memory, and even dimensions.
     """
+
+    try:
+        import imageio.v3 as iio
+        from PIL import Image
+
+    except ImportError as e:
+        raise ImportError(
+            "This function requires additional library "
+            "Please install it with `pip install imageio[ffmpeg] imageio[pyav] pillow`."
+        ) from e
+
     # Collect files
     if isinstance(inputs, str):
         files = glob.glob(inputs) if not os.path.isdir(inputs) else glob.glob(os.path.join(inputs, "*.png"))

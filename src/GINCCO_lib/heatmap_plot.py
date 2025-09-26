@@ -126,3 +126,113 @@ def plot_heatmap(
     fig.savefig(out_path, dpi=200)
     plt.close(fig)
     return out_path
+
+
+
+
+#---------#---------#---------#---------#---------#---------#
+
+
+
+def plot_section(
+    title,
+    data_draw,         # np.ndarray, shape (depth, M)
+    depth_array,       # np.ndarray, shape (depth, M)
+    lon_min, lon_max, 
+    lat_min, lat_max, 
+    path_save=".",
+    name_save="figure",
+    n_colors=100 ,      # number of discrete color bins
+    n_ticks = 5
+):
+    """
+    Time–depth heatmap with pcolormesh.
+    - Colormap: jet, BoundaryNorm with n_colors bins.
+    - Color range: 5th to 95th percentile.
+    - Colorbar: horizontal with 4–7 nice ticks.
+    - X ticks: daily / monthly / yearly depending on span.
+    - Output filename: name_save + "_" + random number + ".png"
+    """
+    if data_draw.ndim != 2:
+        raise ValueError("data_draw must be 2D (n_time, depth).")
+    n_depth, n_M = data_draw.shape
+
+    if depth_array.ndim != 2 or depth_array.shape[1] != n_M or depth_array.shape[0] != n_depth :
+        raise ValueError("depth must be 2D with shape equal to data_draw")
+
+    if n_colors < 2:
+        raise ValueError("n_colors must be >= 2.")
+
+ 
+    # Color limits
+    vmin = np.nanpercentile(data_draw, 5)
+    vmax = np.nanpercentile(data_draw, 95)
+    if not np.isfinite(vmin) or not np.isfinite(vmax) or vmin >= vmax:
+        vmin = np.nanmin(data_draw)
+        vmax = np.nanmax(data_draw)
+        if not np.isfinite(vmin) or not np.isfinite(vmax) or vmin == vmax:
+            vmin, vmax = -0.5, 0.5
+
+    # Colormap
+    boundaries = np.linspace(vmin, vmax, n_colors + 1)
+    cmap = plt.get_cmap("jet", n_colors)
+    norm = BoundaryNorm(boundaries, ncolors=cmap.N, clip=True)
+
+    # Nice ticks
+    ticks = _nice_ticks(vmin, vmax)
+
+
+
+    # Plot
+    fig, ax = plt.subplots(figsize=(9, 4), constrained_layout=True)
+    X_axis = np.linspace (0, M-1, M)
+    Z_axis = depth_array[:,0]
+    X_axis, Z_axis = np.meshgrid(X_axis, Z_axis)
+
+    mesh = ax.pcolormesh(X_axis, Z_axis, data_draw.T, cmap=cmap, norm=norm, shading="auto")
+
+    ax.set_title(title)
+    ax.set_xlabel("Time")
+    ax.set_ylabel("Depth")
+    ax.invert_yaxis()
+
+    # X axis ticks
+    interval = M/n_ticks
+    lat_list = np.linspace (lat_min,lat_max, M)
+    lon_list = np.linspace (lon_min,lon_max, M)
+    xtick = []
+    xtick_label = []
+    for i in range(0, M):
+        if i%interval == 0:
+            xtick.append(i)
+            xtick_label.append('%.2fN\n%.2fE' %(lat_list[i],lon_list[i]))
+
+    ax.set_xticks(xtick)
+    ax.set_xticklabels(xtick_label)
+    ax.invert_yaxis()
+    ax.set_ylim(depth[0], 0)
+
+
+    # Colorbar with nice ticks
+    cbar_ax = fig.add_axes([0.15, 0.07, 0.7, 0.02])
+    cb = fig.colorbar(mesh, cax=cbar_ax, ticks=ticks, orientation='horizontal')
+    #cb.ax.tick_params(labelsize=20)
+    cbar_ax.set_label("Value")
+
+    fig.subplots_adjust(bottom=0.25, top=0.9, left=0.1, right=0.95, wspace=0.2, hspace=0.3)
+
+    # Save with random number
+    os.makedirs(path_save, exist_ok=True)
+    rand_num = random.randint(10000, 99999)
+    out_path = os.path.join(path_save, f"{name_save}_{rand_num}.png")
+    fig.savefig(out_path, dpi=200)
+    plt.close(fig)
+    return out_path
+
+
+
+
+
+
+
+
