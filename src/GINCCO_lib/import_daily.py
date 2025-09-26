@@ -171,8 +171,8 @@ def section_extract(lat_array, lon_array, depth_array, lat, lon,
             iy0 = iy - 1           # use [iy0-1, iy0]
 
         # Clamp inside valid range
-        iy_start = np.clip(iy_start, 0, ny-2)
-        ix_start = np.clip(ix_start, 0, nx-2)
+        iy0 = np.clip(iy0, 0, ny-2)
+        ix0 = np.clip(ix0, 0, nx-2)
 
         # Corners of the enclosing cell
         corners = np.array([
