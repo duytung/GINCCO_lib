@@ -48,16 +48,17 @@ def section_extract(lat_array, lon_array, depth_array, lat, lon,
 
     Parameters
     ----------
-    lat : (M,) array_like
-        Latitudes of section points in order along the section.
-    lon : (M,) array_like
-        Longitudes of section points in order along the section.
-    depth_array : (nz, ny, nx) array_like
-        depth_array values for each model layer on the grid.
     lat_array : (ny, nx) array_like
         Grid node latitudes.
     lon_array : (ny, nx) array_like
         Grid node longitudes.
+    depth_array : (nz, ny, nx) array_like
+        depth_array values for each model layer on the grid.
+    lat : (M,) array_like
+        Latitudes of section points in order along the section.
+    lon : (M,) array_like
+        Longitudes of section points in order along the section.
+
     method : {"idw", "bilinear"}, optional
         Interpolation method for the horizontal step:
           - "idw": inverse-distance weighting using the 4 surrounding corners.
@@ -460,7 +461,7 @@ def import_section(path, file_name, var, lon_min, lon_max, lat_min, lat_max, M, 
         lat_sec = np.linspace(lat_min, lat_max, M)      # lat section
         lon_sec = np.linspace(lon_min, lon_max, M)      # lon_section
 
-    depth_sec, apply_interp = section_extract(lat_sec, lon_sec, depth, lat_sec, lon_sec, method="bilinear")
+    depth_sec, apply_interp = section_extract(lat_t, lon_t, depth_t, lat_sec, lon_sec, method="bilinear")
 
     #interpolate data
     data_interpolation = apply_interp(data) # shape: (nz, M)
