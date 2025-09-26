@@ -7,4 +7,4 @@ git commit -m "update"
 git push origin developing_version
 
 # Step 2: reinstall package from GitHub branch (force reinstall, no need to uninstall first)
-pip install --force-reinstall --no-deps "git+https://github.com/duytung/GINCCO_lib.git@eveloping_version"
+pip install --force-reinstall --no-deps "git+https://github.com/duytung/GINCCO_lib.git@developing_version"
