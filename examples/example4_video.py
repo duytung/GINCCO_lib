@@ -1,58 +1,69 @@
+# =========================
+# IMPORTS
+# =========================
 import numpy as np
 import GINCCO_lib as gc
-from netCDF4 import Dataset 
+from netCDF4 import Dataset
 from datetime import *
 from pathlib import Path
 import random
 
-#Create multiple map and save it as video
-tstart = datetime(2010,7,1)
-tend = datetime(2010,8,31)
+# =========================
+# CONFIGURATION
+# =========================
+tstart = datetime(2010, 7, 1)
+tend   = datetime(2010, 8, 31)
 
-path = '/work/users/tungnd/GOT271/GOT_REF5/OFFLINE/'
-session_id = random.randint(1E5, 1E6)
+path       = '/work/users/tungnd/GOT271/GOT_REF5/OFFLINE/'
+session_id = random.randint(10000, 99999)   # unique ID for file naming
 
-#--------#--------#--------#--------#--------#--------#
-#import grid 
+# =========================
+# LOAD GRID
+# =========================
 fgrid = Dataset(path + 'grid.nc', 'r')
 lat_t = fgrid.variables['latitude_t'][:]
 lon_t = fgrid.variables['longitude_t'][:]
 
-#--------#--------#--------#--------#--------#--------#
+# ============================================================
+# EXAMPLE: Create multiple maps and combine them into a video
+# ============================================================
 
-#Example 1 
+# Step 1: Import surface salinity
 sal_surface = gc.import_surface(path, 'sal', tstart, tend, ignore_missing='False')
-print (np.nanmin(sal_surface), np.nanmax(sal_surface))
+print(np.nanmin(sal_surface), np.nanmax(sal_surface))
+
+# Define plotting range based on percentiles
 data_min = np.nanpercentile(sal_surface, 5)
 data_max = np.nanpercentile(sal_surface, 95)
-for i in range(0, 60):
-    tnow = tstart+ timedelta(days = i)
+
+# Step 2: Generate daily maps (60 days)
+for i in range(60):
+    tnow = tstart + timedelta(days=i)
     gc.map_draw(
         lon_min=105, lon_max=111,
         lat_min=16.5, lat_max=22,
-        title="surface salinity at %s" %(tnow.strftime('%Y-%b-%d')),
+        title="Surface salinity at %s" % (tnow.strftime('%Y-%b-%d')),
         lon_data=lon_t,
         lat_data=lat_t,
-        data_draw=sal_surface[i,:,:], 
-        path_save="/prod/projects/data/tungnd/figure/",     # current folder
-        name_save="demo_%s_%03.0f" %(session_id, i),
-        data_min = data_min, 
-        data_max = data_max,
+        data_draw=sal_surface[i, :, :],
+        path_save="/prod/projects/data/tungnd/figure/",
+        name_save="demo_%s_%03.0f" % (session_id, i),
+        data_min=data_min,
+        data_max=data_max,
     )
 
-print ('Create video...')
-# === Load png saved file and covnert it into a video ===
-gc.pngs_to_video("/prod/projects/data/tungnd/figure/demo_%s_*.png" %(session_id), 
-                    "/prod/projects/data/tungnd/figure/clip_%s.mp4" %(session_id), fps=5)
+# Step 3: Convert saved PNGs into a video
+print('Creating video...')
+gc.pngs_to_video(
+    "/prod/projects/data/tungnd/figure/demo_%s_*.png" % session_id,
+    "/prod/projects/data/tungnd/figure/clip_%s.mp4" % session_id,
+    fps=5
+)
 
-
-# === Delete temporary file ===
-for path in Path("/prod/projects/data/tungnd/figure").glob("demo_%s_*.png" %(session_id)):
+# Step 4: Delete temporary PNG files
+for path in Path("/prod/projects/data/tungnd/figure").glob("demo_%s_*.png" % session_id):
     try:
         path.unlink()
         print(f"Deleted: {path}")
     except Exception as e:
         print(f"Error deleting {path}: {e}")
-
-
-

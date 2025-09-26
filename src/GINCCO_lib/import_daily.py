@@ -24,7 +24,7 @@ Features:
 import numpy as np
 
 def section_extract(lat_array, lon_array, depth_array, lat, lon,
-                    method="idw", power=2, max_iter=20, tol=1e-10, eps=1e-12):
+                    method="idw", power=2, max_iter=20, tol=1e-10, eps=1e-10):
     """
     Build a vertical section along given (lat, lon) points on a curvilinear grid,
     and return both the interpolated depth_array section and a callable to apply the
@@ -48,16 +48,17 @@ def section_extract(lat_array, lon_array, depth_array, lat, lon,
 
     Parameters
     ----------
-    lat : (M,) array_like
-        Latitudes of section points in order along the section.
-    lon : (M,) array_like
-        Longitudes of section points in order along the section.
-    depth_array : (nz, ny, nx) array_like
-        depth_array values for each model layer on the grid.
     lat_array : (ny, nx) array_like
         Grid node latitudes.
     lon_array : (ny, nx) array_like
         Grid node longitudes.
+    depth_array : (nz, ny, nx) array_like
+        depth_array values for each model layer on the grid.
+    lat : (M,) array_like
+        Latitudes of section points in order along the section.
+    lon : (M,) array_like
+        Longitudes of section points in order along the section.
+
     method : {"idw", "bilinear"}, optional
         Interpolation method for the horizontal step:
           - "idw": inverse-distance weighting using the 4 surrounding corners.
@@ -125,11 +126,6 @@ def section_extract(lat_array, lon_array, depth_array, lat, lon,
         iy, ix = divmod(k, nx)
         return iy, ix
 
-    def clamp_cell(iy, ix):
-        """Clamp indices so that the 2x2 cell [iy:iy+2, ix:ix+2] is valid inside the domain."""
-        iy = int(np.clip(iy, 0, ny - 2))
-        ix = int(np.clip(ix, 0, nx - 2))
-        return iy, ix
 
     # -----------------------------------------
     # 2) Prepare storage for geometry per point
@@ -154,9 +150,31 @@ def section_extract(lat_array, lon_array, depth_array, lat, lon,
     # -----------------------------------------
     for m in range(M):
         # 3a) Find a valid cell around the query point
-        iy0, ix0 = nearest_node_indices(lat[m], lon[m])
-        iy0, ix0 = clamp_cell(iy0, ix0)
+        # note the problem about the cell story here. 
+        iy, ix = nearest_node_indices(lat[m], lon[m])
 
+
+
+        # Suppose nearest node is (iy0, ix0)
+        if lon[m] > lon_g[iy, ix]:
+            #Point at the right of nearest point
+            ix0 = ix               # use [ix0, ix0+1]
+        else:
+            #Point at the left of nearest point
+            ix0 = ix - 1           # use [ix0-1, ix0]
+
+        if lat[m] > lat_g[iy, ix]:
+            #Point higher than the nearest point
+            iy0 = iy   # use [iy0, iy0+1]
+        else:
+            #Point lower than the nearest point
+            iy0 = iy - 1           # use [iy0-1, iy0]
+
+        # Clamp inside valid range
+        iy0 = np.clip(iy0, 0, ny-2)
+        ix0 = np.clip(ix0, 0, nx-2)
+
+        # Corners of the enclosing cell
         corners = np.array([
             [iy0,     ix0    ],  # c00
             [iy0,     ix0 + 1],  # c10
@@ -386,6 +404,7 @@ def data_interp(depth_sec, data_sec, depth_interval=1.0):
 def import_section(path, file_name, var, lon_min, lon_max, lat_min, lat_max, M, depth_interval):
     """
     Import a vertical section from a file. Support all kind of section: along lat, along lon, and diagonal line. 
+    This is the control for the whole function
 
     Parameters
     ----------
@@ -395,10 +414,10 @@ def import_section(path, file_name, var, lon_min, lon_max, lat_min, lat_max, M, 
         Name of the file
     var : str
         Name of the variable
-    lon_min, lon_max, lat_min, lat_max : int    
+    lon_min, lon_max, lat_min, lat_max : float    
         limit of the line: if lon_min = lon_max, it will understand it as a line along the longitude, and vice versa. 
     M: int
-        the number of point in the section in X direction
+        the number of point in the section following its direction from A to B
     depth_interval: float
         the interval of Z. 
 
@@ -420,11 +439,11 @@ def import_section(path, file_name, var, lon_min, lon_max, lat_min, lat_max, M, 
     except KeyError:
         print('Could not find a grid suffix for %s. Using _t as default.' % (var))
         lat_t = fgrid.variables['latitude_t'][:]
-        lon_t = fgrid.variables['latitude_t'][:]
+        lon_t = fgrid.variables['longitude_t'][:]
         depth_t = fgrid.variables['depth_t'][:]
     
     nc_file = Dataset(path + file_name, 'r')
-    data = nc_file.variables[var][:]
+    data = np.squeeze(nc_file.variables[var][:])
 
 
     # Setup the section
@@ -442,7 +461,7 @@ def import_section(path, file_name, var, lon_min, lon_max, lat_min, lat_max, M, 
         lat_sec = np.linspace(lat_min, lat_max, M)      # lat section
         lon_sec = np.linspace(lon_min, lon_max, M)      # lon_section
 
-    depth_sec, apply_interp = section_extract(lat_array, lon_array, depth, lat_sec, lon_sec, method="bilinear")
+    depth_sec, apply_interp = section_extract(lat_t, lon_t, depth_t, lat_sec, lon_sec, method="bilinear")
 
     #interpolate data
     data_interpolation = apply_interp(data) # shape: (nz, M)

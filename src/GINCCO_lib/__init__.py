@@ -13,7 +13,7 @@ from .import_daily import import_section
 # plot functions
 from .map_plot import map_draw, map_draw_point
 from .time_series_plot import plot_point
-from .heatmap_plot import plot_heatmap
+from .heatmap_plot import plot_heatmap, plot_section
 
 
 #video function
@@ -37,6 +37,7 @@ __all__ = [
     "map_draw_point",
     "plot_point",
     "plot_heatmap",
+    "plot_section",
 
     #video function
     "pngs_to_video",
