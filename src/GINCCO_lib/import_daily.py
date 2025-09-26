@@ -414,10 +414,10 @@ def import_section(path, file_name, var, lon_min, lon_max, lat_min, lat_max, M, 
         Name of the file
     var : str
         Name of the variable
-    lon_min, lon_max, lat_min, lat_max : int    
+    lon_min, lon_max, lat_min, lat_max : float    
         limit of the line: if lon_min = lon_max, it will understand it as a line along the longitude, and vice versa. 
     M: int
-        the number of point in the section in X direction
+        the number of point in the section following its direction from A to B
     depth_interval: float
         the interval of Z. 
 
@@ -439,11 +439,11 @@ def import_section(path, file_name, var, lon_min, lon_max, lat_min, lat_max, M, 
     except KeyError:
         print('Could not find a grid suffix for %s. Using _t as default.' % (var))
         lat_t = fgrid.variables['latitude_t'][:]
-        lon_t = fgrid.variables['latitude_t'][:]
+        lon_t = fgrid.variables['longitude_t'][:]
         depth_t = fgrid.variables['depth_t'][:]
     
     nc_file = Dataset(path + file_name, 'r')
-    data = nc_file.variables[var][:]
+    data = np.squeeze(nc_file.variables[var][:])
 
 
     # Setup the section
