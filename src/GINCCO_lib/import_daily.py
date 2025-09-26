@@ -163,7 +163,7 @@ def section_extract(lat_array, lon_array, depth_array, lat, lon,
             #Point at the left of nearest point
             ix0 = ix - 1           # use [ix0-1, ix0]
 
-        if lat[m] > lat_g[iy0, ix0]:
+        if lat[m] > lat_g[iy, ix]:
             #Point higher than the nearest point
             iy0 = iy   # use [iy0, iy0+1]
         else:
