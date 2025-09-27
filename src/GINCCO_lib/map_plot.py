@@ -276,6 +276,112 @@ def map_draw_point(lon_min, lon_max, lat_min, lat_max, title, lon_data, lat_data
     plt.close()
 
 
+#########################################################
 
+
+def map_draw_uv(
+    lon_min, lon_max, lat_min, lat_max, title,
+    lon_data, lat_data, data_u, data_v,
+    path_save, name_save,
+    quiver_max_n=10,   # ~max arrows per axis (auto step so arrows <= quiver_max_n x quiver_max_n)
+    quiver_scale=None  # None lets Matplotlib choose; or set e.g. 50, 100 for different scaling
+):
+    # --- Figure geometry like your original ---
+    dlon = lon_max - lon_min
+    dlat = lat_max - lat_min
+    dy = np.around(dlat/dlon, 1)
+    if dy >= 2:
+        dy = 1.5
+    elif dy < 0.5:
+        dy = 0.8
+
+    fig = plt.figure(figsize=(7, 7*dy))
+    ax = fig.add_subplot(1,1,1)
+    ax.set_title(f"{title}")
+
+    map2 = Basemap(
+        projection='merc',
+        llcrnrlon=lon_min, llcrnrlat=lat_min,
+        urcrnrlon=lon_max, urcrnrlat=lat_max,
+        resolution='l', epsg=4326
+    )
+
+    # Grid lines and coast
+    parallels = nice_ticks_1d(np.nanmin(lat_data), np.nanmax(lat_data))
+    meridians = nice_ticks_1d(np.nanmin(lon_data), np.nanmax(lon_data))
+    map2.drawparallels(parallels, linewidth=0.5, dashes=[2,8], labels=[1,0,0,0], fontsize=15, zorder=12)
+    map2.drawmeridians(meridians, linewidth=0.5, dashes=[2,8], labels=[0,0,0,1], fontsize=15, zorder=12)
+    map2.drawcoastlines(zorder=10)
+
+    # --- Speed for color ---
+    speed = np.hypot(data_u, data_v)
+
+    finite_vals = np.asarray(speed)[np.isfinite(speed)]
+    if finite_vals.size == 0:
+        data_min, data_max = 0.0, 1.0
+    else:
+        data_min = float(np.nanpercentile(finite_vals, 5))
+        data_max = float(np.nanpercentile(finite_vals, 95))
+
+    vmin_pad, vmax_pad = _pad_10pct(data_min, data_max)
+    ticks = _pretty_ticks(vmin_pad, vmax_pad)
+
+    # Colormap
+    cmap = plt.get_cmap('jet')
+    cmap.set_bad(color='white')
+    norm = colors.Normalize(vmin=ticks[0], vmax=ticks[-1])
+
+    # --- Cell corner shift for pcolormesh ---
+    # Assumes lon_data, lat_data are 2D center coords on a rectilinear grid
+    dlon_cell = (lon_data[0,1] - lon_data[0,0]) / 2.0
+    dlat_cell = (lat_data[1,0] - lat_data[0,0]) / 2.0
+    lon_c = lon_data - dlon_cell
+    lat_c = lat_data - dlat_cell
+
+    # Draw colored speed field
+    cm = map2.pcolormesh(lon_c, lat_c, speed, latlon=True, cmap=cmap, norm=norm)
+
+    # --- Quiver arrows for direction ---
+
+    lon_small_1d = np.linspace(np.nanmin(lon_data), np.nanmax(lon_data), quiver_max_n)
+    lat_small_1d = np.linspace(np.nanmin(lat_data), np.nanmax(lat_data), quiver_max_n)
+    lon_small, lat_small = np.meshgrid(lon_small_1d, lat_small_1d)
+
+    # --- Lấy giá trị gần nhất từ data_u, data_v ---
+    u_q = np.empty_like(lon_small)
+    v_q = np.empty_like(lat_small)
+
+    for j in range(lat_small.shape[0]):
+        for i in range(lon_small.shape[1]):
+            # tính khoảng cách (theo độ) tới toàn bộ grid gốc
+            dist2 = (lon_data - lon_small[j, i])**2 + (lat_data - lat_small[j, i])**2
+            idx = np.unravel_index(np.nanargmin(dist2), dist2.shape)
+            u_q[j, i] = data_u[idx]
+            v_q[j, i] = data_v[idx]
+
+
+
+
+
+    # Draw quiver in geographic coords
+    map2.quiver(
+        lon_q, lat_q, u_q, v_q,
+        latlon=True, zorder=11,
+        scale=quiver_scale,  # None lets mpl auto scale
+        width=0.0012, headwidth=3.0, headlength=4.5, headaxislength=4.0
+    )
+
+
+    # --- Colorbar ---
+    cbar_ax = fig.add_axes([0.15, 0.06, 0.7, 0.02])
+    cb = fig.colorbar(cm, cax=cbar_ax, ticks=ticks, orientation='horizontal')
+    cb.ax.tick_params(labelsize=20)
+    cb.set_label("Speed", fontsize=12)
+
+    # --- Save ---
+    fig.subplots_adjust(bottom=0.15, top=0.9, left=0.15, right=0.90, wspace=0.2, hspace=0.3)
+    session_id = random.randint(10000, 99999)
+    plt.savefig(f"{path_save}/{name_save}_{session_id}.png", dpi=250)
+    plt.close()
 
 
