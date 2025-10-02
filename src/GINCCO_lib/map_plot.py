@@ -369,8 +369,8 @@ def map_draw_uv(
         lon_small, lat_small, u_q, v_q,
         latlon=True, zorder=10,
         scale=quiver_scale,
-        width=0.06,            # to hơn một chút để làm viền
-        headwidth=1., headlength=2, headaxislength=4.0,
+        width=0.008,            # to hơn một chút để làm viền
+        headwidth=3., headlength=4, headaxislength=3.5,
         color="white"
     )
 
@@ -379,8 +379,8 @@ def map_draw_uv(
         lon_small, lat_small, u_q, v_q,
         latlon=True, zorder=11,
         scale=quiver_scale,
-        width=0.003,            # nhỏ hơn, nằm trong lớp trắng
-        headwidth=1, headlength=2, headaxislength=4.0,
+        width=0.004,            # nhỏ hơn, nằm trong lớp trắng
+        headwidth=3, headlength=4, headaxislength=3.5,
         color="black"
     )
 
