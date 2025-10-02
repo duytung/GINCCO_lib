@@ -360,9 +360,6 @@ def map_draw_uv(
             v_q[j, i] = data_v[idx]
 
 
-
-
-
     # Draw quiver in geographic coords
     map2.quiver(
         lon_q, lat_q, u_q, v_q,

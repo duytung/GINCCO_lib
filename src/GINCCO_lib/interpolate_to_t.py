@@ -1,6 +1,6 @@
 import numpy as np
 
-def stagger_to_t(A, *, stagger: str, mask_t: np.ndarray):
+def interpolate_to_t(A, *, stagger: str, mask_t: np.ndarray):
     """
     Interpolate a staggered field (U or V) onto the T grid.
 
