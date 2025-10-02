@@ -379,16 +379,6 @@ def map_draw_uv(
     # Draw quiver in geographic coords
     map2.quiver(
         lon_small, lat_small, u_q, v_q,
-        latlon=True, zorder=10,
-        scale=quiver_scale,
-        width=0.008,            # to hơn một chút để làm viền
-        headwidth=3., headlength=4, headaxislength=3.5,
-        color="white"
-    )
-
-    # lớp trên (ruột đen, nhỏ hơn)
-    map2.quiver(
-        lon_small, lat_small, u_q, v_q,
         latlon=True, zorder=11,
         scale=quiver_scale,
         width=0.004,            # nhỏ hơn, nằm trong lớp trắng

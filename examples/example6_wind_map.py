@@ -51,8 +51,8 @@ gc.map_draw_uv(
     mask_ocean = mask_t,
     path_save="/prod/projects/data/tungnd/figure/",
     name_save="wind_map_example6",
-    quiver_max_n=10,   # ~max arrows per axis (auto step so arrows <= quiver_max_n x quiver_max_n)
-    quiver_scale=1  # higher is shorter arrow. lower is longer arrow
+    quiver_max_n=20,   # ~max arrows per axis (auto step so arrows <= quiver_max_n x quiver_max_n)
+    quiver_scale=2  # higher is shorter arrow. lower is longer arrow
 )
 
 
