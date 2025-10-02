@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib import colors
 from mpl_toolkits.basemap import Basemap
 import random
- 
+import matplotlib.colors as mcolors
 
 
 #########################################################
@@ -279,6 +279,18 @@ def map_draw_point(lon_min, lon_max, lat_min, lat_max, title, lon_data, lat_data
 #########################################################
 
 
+
+def truncate_colormap(cmap, minval=0.0, maxval=1.0, n=256):
+    if isinstance(cmap, str):
+        cmap = plt.get_cmap(cmap)
+    new_cmap = mcolors.LinearSegmentedColormap.from_list(
+        f"trunc({cmap.name},{minval:.2f},{maxval:.2f})",
+        cmap(np.linspace(minval, maxval, n))
+    )
+    return new_cmap
+
+
+
 def map_draw_uv(
     lon_min, lon_max, lat_min, lat_max, title,
     lon_data, lat_data, data_u, data_v,
@@ -328,7 +340,7 @@ def map_draw_uv(
     ticks = _pretty_ticks(vmin_pad, vmax_pad)
 
     # Colormap
-    cmap = plt.get_cmap('jet')
+    cmap = truncate_colormap("YlOrBr", 0.0, 0.6)
     cmap.set_bad(color='white')
     norm = colors.Normalize(vmin=ticks[0], vmax=ticks[-1])
 
