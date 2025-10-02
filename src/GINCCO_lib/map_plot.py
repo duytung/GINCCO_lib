@@ -282,6 +282,7 @@ def map_draw_point(lon_min, lon_max, lat_min, lat_max, title, lon_data, lat_data
 def map_draw_uv(
     lon_min, lon_max, lat_min, lat_max, title,
     lon_data, lat_data, data_u, data_v,
+    mask_ocean,
     path_save, name_save,
     quiver_max_n=10,   # ~max arrows per axis (auto step so arrows <= quiver_max_n x quiver_max_n)
     quiver_scale=None  # None lets Matplotlib choose; or set e.g. 50, 100 for different scaling
@@ -348,21 +349,24 @@ def map_draw_uv(
     lon_small, lat_small = np.meshgrid(lon_small_1d, lat_small_1d)
 
     # --- Lấy giá trị gần nhất từ data_u, data_v ---
-    u_q = np.empty_like(lon_small)
-    v_q = np.empty_like(lat_small)
+    u_q = np.full_like(lon_small, np.nan, dtype=float)
+    v_q = np.full_like(lon_small, np.nan, dtype=float)
 
     for j in range(lat_small.shape[0]):
         for i in range(lon_small.shape[1]):
             # tính khoảng cách (theo độ) tới toàn bộ grid gốc
             dist2 = (lon_data - lon_small[j, i])**2 + (lat_data - lat_small[j, i])**2
             idx = np.unravel_index(np.nanargmin(dist2), dist2.shape)
-            u_q[j, i] = data_u[idx]
-            v_q[j, i] = data_v[idx]
+            if mask_ocean[idx] ==1:
+                u_q[j, i] = data_u[idx]
+                v_q[j, i] = data_v[idx]
+                lon_small[j,i] = lon_data[idx]
+                lat_small[j,i] = lat_data[idx]
 
 
     # Draw quiver in geographic coords
     map2.quiver(
-        lon_q, lat_q, u_q, v_q,
+        lon_small, lat_small, u_q, v_q,
         latlon=True, zorder=11,
         scale=quiver_scale,  # None lets mpl auto scale
         width=0.0012, headwidth=3.0, headlength=4.5, headaxislength=4.0

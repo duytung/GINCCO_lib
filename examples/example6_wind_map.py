@@ -53,6 +53,7 @@ gc.map_draw_uv(
     lon_data=lon_t,
     lat_data=lat_t,
     data_u= U1, data_v= V1,
+    mask_ocean = mask_t,
     path_save="/prod/projects/data/tungnd/figure/",
     name_save="demo_05",
     quiver_max_n=10,   # ~max arrows per axis (auto step so arrows <= quiver_max_n x quiver_max_n)
