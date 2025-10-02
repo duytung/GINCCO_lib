@@ -34,7 +34,7 @@ v_surface = gc.import_surface(path, 'v', tstart, tend, ignore_missing='False')
 #Step 2: convert to t
 
 u_t, uncer_u = gc.interpolate_to_t(u_surface, stagger = 'u', mask_t = mask_t)
-v_t, uncer_v = gc.interpolate_to_t(u_surface, stagger = 'v', mask_t = mask_t)
+v_t, uncer_v = gc.interpolate_to_t(v_surface, stagger = 'v', mask_t = mask_t)
 
 
 #Step 3: Choose a day and rotate it

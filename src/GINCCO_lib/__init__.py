@@ -16,7 +16,7 @@ from .interpolate_to_t import interpolate_to_t
 
 
 # plot-related functions
-from .map_plot import map_draw, map_draw_point
+from .map_plot import map_draw, map_draw_point, map_draw_uv
 from .time_series_plot import plot_point
 from .heatmap_plot import plot_heatmap, plot_section
 
@@ -45,9 +45,12 @@ __all__ = [
     # plot functions
     "map_draw",
     "map_draw_point",
+    "map_draw_uv",
+    
     "plot_point",
     "plot_heatmap",
     "plot_section",
+
 
     #video function
     "pngs_to_video",
