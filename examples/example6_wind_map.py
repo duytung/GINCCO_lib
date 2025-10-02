@@ -31,31 +31,38 @@ cos_t  = fgrid.variables['gridrotcos_t'][:,:]
 u_surface = gc.import_surface(path, 'u', tstart, tend, ignore_missing='False')
 v_surface = gc.import_surface(path, 'v', tstart, tend, ignore_missing='False')
 
-#Step 2: convert to t
 
+print (u_surface[0,200,:])
+print (v_surface[0,:,200])
+
+#Step 2: convert to t
 u_t, uncer_u = gc.interpolate_to_t(u_surface, stagger = 'u', mask_t = mask_t)
 v_t, uncer_v = gc.interpolate_to_t(v_surface, stagger = 'v', mask_t = mask_t)
 
+print (u_t[0,200,:])
+print (v_t[0,:,200])
 
 #Step 3: Choose a day and rotate it
-U1 =  u_t[0] * cos_t + v_t[0] * sin_t
-V1 = -u_t[0] * sin_t + v_t[0] * cos_t
+U1 =  u_t[1,:,:] * cos_t + v_t[1,:,:] * sin_t
+V1 = -u_t[1,:,:] * sin_t + v_t[1,:,:] * cos_t
 
 
+print (U1[100,:])
+print (V1[:,100])
 
 
-
+exit()
 #Step 4: Draw
 gc.map_draw_uv(
     lon_min=105, lon_max=111,
     lat_min=16.5, lat_max=22,
-    title="salinity at 40m (example 5)",
+    title="Surface current (example 6)",
     lon_data=lon_t,
     lat_data=lat_t,
     data_u= U1, data_v= V1,
     mask_ocean = mask_t,
     path_save="/prod/projects/data/tungnd/figure/",
-    name_save="demo_05",
+    name_save="wind_map_example6",
     quiver_max_n=10,   # ~max arrows per axis (auto step so arrows <= quiver_max_n x quiver_max_n)
     quiver_scale=None  # None lets Matplotlib choose; or set e.g. 50, 100 for different scaling 
 )

@@ -12,8 +12,8 @@ def interpolate_to_t(A, *, stagger: str, mask_t: np.ndarray):
         - If stagger='v': shape (..., ny_t-1, nx_t)
     stagger : {'u', 'v'}
         Type of staggering.
-    mask_t : ndarray of bool
-        True where T should be masked (land/invalid). Shape must broadcast to A on T grid.
+    mask_t : ndarray of 0 and 1
+        0: land point. Will be considered as nan value
 
     Returns
     -------
@@ -109,7 +109,7 @@ def interpolate_to_t(A, *, stagger: str, mask_t: np.ndarray):
     if mask_t.shape != T.shape[-2:]:
         # Allow broadcasting for leading dims only; last two must match
         pass
-    T = np.where(mask_t, np.nan, T)
-    single = np.where(mask_t, 0, single).astype(np.uint8)
+    T = np.where(mask_t == 0, np.nan, T)
+    single = np.where(mask_t == 0, 0, single).astype(np.uint8)
 
     return T, single
