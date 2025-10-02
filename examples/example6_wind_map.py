@@ -52,7 +52,7 @@ gc.map_draw_uv(
     path_save="/prod/projects/data/tungnd/figure/",
     name_save="wind_map_example6",
     quiver_max_n=10,   # ~max arrows per axis (auto step so arrows <= quiver_max_n x quiver_max_n)
-    quiver_scale=0.1  # None lets Matplotlib choose; or set e.g. 50, 100 for different scaling 
+    quiver_scale=10  # higher is shorter arrow. lower is longer arrow
 )
 
 
