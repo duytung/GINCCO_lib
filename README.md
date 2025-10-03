@@ -27,3 +27,6 @@ pip install git+https://github.com/duytung/GINCCO_lib.git
 
 # Optional: make video from outputs
 pip install imageio[ffmpeg] imageio[pyav] pillow
+
+# To update the library
+pip install --force-reinstall --no-deps "git+https://github.com/duytung/GINCCO_lib.git"
