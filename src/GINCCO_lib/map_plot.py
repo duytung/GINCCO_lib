@@ -186,7 +186,15 @@ def map_draw(lon_min, lon_max, lat_min, lat_max, title, lon_data, lat_data, data
         if data_max is None:
             data_max = float(np.nanpercentile(finite_vals, 95))
 
+
     vmin_pad, vmax_pad = _pad_10pct(data_min, data_max)
+
+    # Overwrite in case provided value as input ! Oct 14
+    if data_min is not None:
+        vmin_pad = data_min
+    if data_max is not None:
+        vmax_pad = data_max
+
     ticks = _pretty_ticks(vmin_pad, vmax_pad)
 
     # Colormap and normalization
