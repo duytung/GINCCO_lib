@@ -10,7 +10,7 @@ import GINCCO_lib as gc
 # CONFIGURATION
 # =========================
 tstart = datetime(2010, 1, 1)
-tend   = datetime(2010, 12, 31)
+tend   = datetime(2012, 12, 31)
 
 path = '/work/users/tungnd/GOT271/GOT_REF5/OFFLINE/'
 

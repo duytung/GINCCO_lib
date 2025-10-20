@@ -5,6 +5,26 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import random
 
+def choose_locator(tstart, tend):
+    duration_days = (tend - tstart).days
+
+    if duration_days <= 100:  # short range
+        locator = mdates.AutoDateLocator(minticks=5, maxticks=10)
+        fmt = mdates.DateFormatter("%Y-%m-%d")
+    elif duration_days <= 3650:  # up to ~10 years
+        months = max(1, duration_days / 30.44)
+        interval = max(1, round(months / 8))
+        locator = mdates.MonthLocator(bymonthday=1, interval=interval)
+        fmt = mdates.DateFormatter("%Y-%m-%d")
+    else:  # very long range
+        years = max(1, duration_days / 365)
+        interval = max(1, round(years / 8))
+        locator = mdates.YearLocator(base=interval)
+        fmt = mdates.DateFormatter("%Y")
+    return locator, fmt
+
+
+
 def plot_point(
     title,
     tstart,            # datetime.datetime
@@ -37,16 +57,6 @@ def plot_point(
     # Duration in days
     duration_days = (tend - tstart).days + 1
 
-    # Choose tick frequency
-    if duration_days <= 100:
-        fmt = mdates.DateFormatter("%Y-%m-%d")
-        locator = mdates.AutoDateLocator(minticks=4, maxticks=7)
-    elif duration_days <= 500:
-        fmt = mdates.DateFormatter("%Y-%m-%d")
-        locator = mdates.MonthLocator(bymonthday=1, interval=max(1, duration_days//180))
-    else:
-        fmt = mdates.DateFormatter("%Y-%m-%d")
-        locator = mdates.YearLocator(base=max(1, duration_days//1500))
 
     # Plot
     fig, ax = plt.subplots(figsize=(9, 3))
@@ -71,8 +81,10 @@ def plot_point(
     ax.legend(ncol=1, fontsize=9, frameon=True)
 
     # Apply formatter
-    ax.xaxis.set_major_formatter(fmt)
+    locator, fmt = choose_locator(tstart, tend)
     ax.xaxis.set_major_locator(locator)
+    ax.xaxis.set_major_formatter(fmt)
+
     plt.setp(ax.get_xticklabels(), rotation=0, ha="center")
 
     fig.tight_layout()
