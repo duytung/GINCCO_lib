@@ -73,6 +73,9 @@ def geostrophic_current(ssh, lat, lon, sin_t, cos_t):
     U1 =  u * cos_t + v * sin_t
     V1 = -u * sin_t + v * cos_t
 
+    U1[np.isnan(ssh)]= np.nan
+    V1[np.isnan(ssh)]= np.nan
+
     return U1, V1
 
 

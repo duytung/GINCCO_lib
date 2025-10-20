@@ -44,8 +44,8 @@ for i in range(0,11):
 #Step 2: Choose a day and calculate
 U1, V1 = gc.geostrophic_current(data_draw, lat_t, lon_t, sin_t, cos_t)
 
-print (U1[0:10,0:10].fill, V1[0:10,0:10] )
-
+U1[mask_t==0] = np.nan
+V1[mask_t==0] = np.nan
 
 for i in range(0,11):
     print (i*10,  np.nanpercentile(U1, i*10),np.nanpercentile(V1, i*10))
@@ -54,7 +54,6 @@ for i in range(0,11):
 
 print (V1[200:210, 200:210])
 
-exit()
 
 #Step 4: Draw
 gc.map_draw_uv(
@@ -68,7 +67,7 @@ gc.map_draw_uv(
     path_save="/prod/projects/data/tungnd/figure/",
     name_save="geotrophic_current_example7",
     quiver_max_n=20,   # ~max arrows per axis (auto step so arrows <= quiver_max_n x quiver_max_n)
-    quiver_scale=2  # higher is shorter arrow. lower is longer arrow
+    quiver_scale=6  # higher is shorter arrow. lower is longer arrow
 )
 
 
