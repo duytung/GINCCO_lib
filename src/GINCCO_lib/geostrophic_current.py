@@ -21,6 +21,7 @@ def geostrophic_current(ssh, lat, dx, dy, sin_t, cos_t):
         Eastward (u) and northward (v) geostrophic velocities.
     """
     g = 9.81
+    omega = 7.292115e-5
 
     # Compute Coriolis parameter (same shape as grid)
     f = 2 * omega * np.sin(np.deg2rad(lat))
