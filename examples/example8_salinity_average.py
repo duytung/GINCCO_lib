@@ -20,9 +20,11 @@ path = '/work/users/tungnd/GOT271/GOT_REF5/OFFLINE/'
 fgrid   = Dataset(path + 'grid.nc', 'r')
 lat_t   = fgrid.variables['latitude_t'][:]
 lon_t   = fgrid.variables['longitude_t'][:]
+depth_t   = fgrid.variables['depth_t'][0,:,:]
 dxy_t   = fgrid.variables['dxdy_t'][:]
 mask_t  = fgrid.variables['mask_t'][0, :, :]
 
+depth_t[mask_t==0] = np.nan
 
 # ============================================================
 # EXAMPLE 1: Plot temporal variation of surface salinity
@@ -57,7 +59,7 @@ gc.map_draw_box(
 sal_surface = gc.import_surface(path, 'sal', tstart, tend, ignore_missing='False')
 
 # Step 4: Calculate salinity mean
-sal_mean = spatial_average(sal_surface,
+sal_mean = gc.spatial_average(sal_surface,
     dxy_t,
     mask_ocean=mask_t,
     lon_t=lon_t,
