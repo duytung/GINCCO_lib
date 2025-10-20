@@ -354,7 +354,7 @@ def map_draw_box(lon_min, lon_max, lat_min, lat_max, title, lon_data, lat_data, 
             lon_center, lat_center, label[i],
             ha='center', va='center', fontsize=9,
             color='black', fontweight='bold',
-            bbox=dict(facecolor='lightgray', edgecolor='none', alpha=0.8, boxstyle='round,pad=0.3'),
+            bbox=dict(facecolor='white', edgecolor='none', alpha=0.8, boxstyle='round,pad=0.3'),
             zorder=22
         )
 

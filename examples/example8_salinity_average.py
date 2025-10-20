@@ -60,8 +60,10 @@ gc.map_draw_box(
 sal_surface = gc.import_surface(path, 'sal', tstart, tend, ignore_missing='False')
 
 # Step 4: Calculate salinity mean
+sal_mean = np.zeros((len(lon_min_box), (tend-tstart).days +1    ))
+
 for i in range(0, len(lat_min_box)):
-    sal_mean = gc.spatial_average(sal_surface,
+    sal_mean[i,:] = gc.spatial_average(sal_surface,
         dxy_t,
         mask_ocean=mask_t,
         lon_t=lon_t,
