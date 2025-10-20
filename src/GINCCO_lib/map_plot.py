@@ -287,7 +287,7 @@ def map_draw_point(lon_min, lon_max, lat_min, lat_max, title, lon_data, lat_data
 
 
 def map_draw_box(lon_min, lon_max, lat_min, lat_max, title, lon_data, lat_data, data_draw, 
-    lon_min_box, lon_max_box, lat_min_box, lat_max_box, path_save, name_save):
+    lon_min_box, lon_max_box, lat_min_box, lat_max_box, label, path_save, name_save):
     
     dlon = lon_max - lon_min
     dlat = lat_max - lat_min
@@ -332,16 +332,30 @@ def map_draw_box(lon_min, lon_max, lat_min, lat_max, title, lon_data, lat_data, 
     cm = plt.pcolormesh(lon_data - dlon_cell, lat_data - dlat_cell, data_draw,
                         norm=norm, cmap='jet')
 
-    #Plot the box: 
-    map2.plot([lon_min_box, lon_max_box, lon_max_box, lon_min_box, lon_min_box],
-        [lat_min_box, lat_min_box, lat_max_box, lat_max_box, lat_min_box],
-        color='white', linewidth=3)
 
-    #Plot the box: 
-    map2.plot([lon_min_box, lon_max_box, lon_max_box, lon_min_box, lon_min_box],
-        [lat_min_box, lat_min_box, lat_max_box, lat_max_box, lat_min_box],
-        color='red', linewidth=1.5)
 
+    for i in range(0, len(lon_min_box)):
+        #Plot the box: 
+        map2.plot([lon_min_box[i], lon_max_box[i], lon_max_box[i], lon_min_box[i], lon_min_box[i]],
+            [lat_min_box[i], lat_min_box[i], lat_max_box[i], lat_max_box[i], lat_min_box[i]],
+            color='white', linewidth=3, zorder = 20)
+
+        #Plot the box: 
+        map2.plot([lon_min_box[i], lon_max_box[i], lon_max_box[i], lon_min_box[i], lon_min_box[i]],
+            [lat_min_box[i], lat_min_box[i], lat_max_box[i], lat_max_box[i], lat_min_box[i]],
+            color='red', linewidth=1.5, zorder = 21)
+
+        # Compute box center
+        lon_center = (lon_min_box[i] + lon_max_box[i]) / 2
+        lat_center = (lat_min_box[i] + lat_max_box[i]) / 2
+
+        # Add text label at center
+        map2.text(
+            lon_center, lat_center, label,
+            ha='center', va='center', fontsize=9,
+            color='black', fontweight='bold',
+            zorder=22
+        )
 
     # Colorbar with nice ticks
     cbar_ax = fig.add_axes([0.15, 0.06, 0.7, 0.02])
