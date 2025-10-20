@@ -1,6 +1,6 @@
 import numpy as np
 
-def geos_from_ssh_with_dxdy(ssh, lat, dx, dy, sin_t, cos_t):
+def geostrophic_current(ssh, lat, dx, dy, sin_t, cos_t):
     """
     Compute geostrophic currents when dx, dy (in meters) are already known.
 
