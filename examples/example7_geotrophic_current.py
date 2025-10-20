@@ -36,18 +36,28 @@ ssh = gc.import_3D(path, 'ssh_ib', tstart, tend, ignore_missing='False')
 data_draw = ssh[0]
 data_draw[mask_t==0] = np.nan
 
-print (data_draw[0:10,0:10])
+
+gc.map_draw(
+    lon_min=105, lon_max=111,
+    lat_min=16.5, lat_max=22,
+    title="ssh",
+    lon_data=lon_t,
+    lat_data=lat_t,
+    data_draw=data_draw,
+    path_save="/prod/projects/data/tungnd/figure/",
+    name_save="ssh"
+)
 
 
 for i in range(0,11):
     print (i*10,  np.nanpercentile(data_draw, i*10))    
 
 
+
+
+
 #Step 2: Choose a day and calculate
 U1, V1 = gc.geostrophic_current(data_draw, lat_t, dx_t, dy_t, sin_t, cos_t)
-
-#U1[mask_t==0] = np.nan
-#V1[mask_t==0] = np.nan
 
 for i in range(0,11):
     print (i*10,  np.nanpercentile(U1, i*10),np.nanpercentile(V1, i*10))
