@@ -42,10 +42,10 @@ def plot_point(
         fmt = mdates.DateFormatter("%Y-%m-%d")
         locator = mdates.AutoDateLocator(minticks=4, maxticks=7)
     elif duration_days <= 500:
-        fmt = mdates.DateFormatter("%Y-%m")
+        fmt = mdates.DateFormatter("%Y-%m-%d")
         locator = mdates.MonthLocator(bymonthday=1, interval=max(1, duration_days//180))
     else:
-        fmt = mdates.DateFormatter("%Y")
+        fmt = mdates.DateFormatter("%Y-%m-%d")
         locator = mdates.YearLocator(base=max(1, duration_days//1500))
 
     # Plot
