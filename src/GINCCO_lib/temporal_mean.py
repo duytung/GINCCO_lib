@@ -1,136 +1,109 @@
 import numpy as np
+from datetime import datetime
 
-def monthly_mean(data: np.ndarray, tstart, tend, time_axis: int = 0):
+def _to_np_day(d: datetime) -> np.datetime64:
+    """Convert Python datetime to numpy datetime64 at day resolution."""
+    return np.datetime64(d.date(), 'D')
+
+def monthly_mean(data: np.ndarray, tstart: datetime, tend: datetime, time_axis: int = 0):
     """
-    Compute monthly means for daily continuous data between tstart and tend.
+    Compute monthly means for daily, contiguous data in [tstart, tend] (inclusive).
 
     Parameters
     ----------
     data : np.ndarray
-        Input array. One axis represents time (daily data).
-    tstart : datetime.datetime
-        Start date (inclusive).
-    tend : datetime.datetime
-        End date (inclusive).
-    time_axis : int, optional
-        Axis representing time (default=0).
+        Input array. One axis is time (daily).
+    tstart, tend : datetime.datetime
+        Inclusive range of the data.
+    time_axis : int
+        Axis that represents time in `data`.
 
     Returns
     -------
-    monthly_data : np.ndarray
-        Array of monthly means with the same shape as input but time replaced by number of months.
+    monthly : np.ndarray
+        Monthly means with time axis replaced by number of months.
     month_labels : np.ndarray of datetime64[M]
-        Labels for each month.
+        Month labels for each output slice.
     """
-    # Move time axis to the front
+    # Normalize time axis to front
     x = np.moveaxis(data, time_axis, 0)
 
-    # Convert to datetime64 for easier computation
-    start_d = np.datetime64(tstart.date())
-    end_d = np.datetime64(tend.date())
+    start_d = _to_np_day(tstart)
+    end_d   = _to_np_day(tend)
 
-    # Number of days expected
-    n_days = int((end_d - start_d).astype('timedelta64[D]')) + 1
+    # Expected number of days (inclusive)
+    n_days = int((end_d - start_d) / np.timedelta64(1, 'D')) + 1
     if x.shape[0] != n_days:
-        raise ValueError(f"Expected {n_days} days but got {x.shape[0]} along the time axis.")
+        raise ValueError(f"Expected {n_days} days from {tstart.date()} to {tend.date()}, got {x.shape[0]}.")
 
-    # Create daily timestamps
+    # Daily timestamps
     time_vec = start_d + np.arange(n_days).astype('timedelta64[D]')
 
-    # Monthly grouping
+    # Month labels
     y1, m1 = tstart.year, tstart.month
     y2, m2 = tend.year, tend.month
     n_months = (y2 - y1) * 12 + (m2 - m1) + 1
-    month_starts = np.datetime64(f"{y1:04d}-{m1:02d}", 'M') + np.arange(n_months).astype('timedelta64[M]')
+    month0 = np.datetime64(f"{y1:04d}-{m1:02d}", 'M')
+    month_labels = month0 + np.arange(n_months).astype('timedelta64[M]')
 
-    # Convert daily timestamps to months
+    # Map each day to its month
     time_months = time_vec.astype('datetime64[M]')
 
-    # Output array
-    out_shape = (n_months,) + x.shape[1:]
-    monthly = np.empty(out_shape, dtype=float)
-
-    for i, m in enumerate(month_starts):
+    # Aggregate
+    out = np.empty((n_months,) + x.shape[1:], dtype=float)
+    for i, m in enumerate(month_labels):
         sel = (time_months == m)
-        monthly[i] = np.nanmean(x[sel, ...], axis=0)
+        out[i] = np.nanmean(x[sel, ...], axis=0)
 
-    # Move time axis back
-    monthly = np.moveaxis(monthly, 0, time_axis)
-    return monthly, month_starts
-
-
+    # Restore original axis layout
+    monthly = np.moveaxis(out, 0, time_axis)
+    return monthly, month_labels
 
 
-
-
-#######-----------#########----------#######-----------#########
-
-
-
-import numpy as np
-
-def annual_mean(data: np.ndarray, tstart, tend, time_axis: int = 0):
+def annual_mean(data: np.ndarray, tstart: datetime, tend: datetime, time_axis: int = 0):
     """
-    Compute annual means for daily continuous data between tstart and tend (inclusive).
+    Compute annual means for daily, contiguous data in [tstart, tend] (inclusive).
+
+    Partial first or last years are averaged over the available days.
 
     Parameters
     ----------
     data : np.ndarray
-        Input array. One axis is time (daily, contiguous).
-    tstart : datetime.datetime
-        Start date (inclusive).
-    tend : datetime.datetime
-        End date (inclusive).
-    time_axis : int, optional
-        Axis representing time in `data` (default 0).
+        Input array. One axis is time (daily).
+    tstart, tend : datetime.datetime
+        Inclusive range of the data.
+    time_axis : int
+        Axis that represents time in `data`.
 
     Returns
     -------
-    yearly_data : np.ndarray
-        Array of annual means with the same shape as `data` but with the time
-        dimension replaced by the number of years in [tstart, tend].
+    yearly : np.ndarray
+        Annual means with time axis replaced by number of years.
     year_labels : np.ndarray of datetime64[Y]
-        Year labels corresponding to each output slice.
+        Year labels for each output slice.
     """
-    # Move time axis to the front for easy processing
     x = np.moveaxis(data, time_axis, 0)
 
-    # Convert to numpy datetime64[D] for arithmetic and build daily timestamps
-    start_d = np.datetime64(tstart.date())
-    end_d = np.datetime64(tend.date())
-    n_days = int((end_d - start_d).astype('timedelta64[D]')) + 1
+    start_d = _to_np_day(tstart)
+    end_d   = _to_np_day(tend)
 
+    n_days = int((end_d - start_d) / np.timedelta64(1, 'D')) + 1
     if x.shape[0] != n_days:
-        raise ValueError(
-            f"Expected {n_days} daily samples between {tstart.date()} and {tend.date()}, "
-            f"but got {x.shape[0]} along the time axis."
-        )
+        raise ValueError(f"Expected {n_days} days from {tstart.date()} to {tend.date()}, got {x.shape[0]}.")
 
     time_vec = start_d + np.arange(n_days).astype('timedelta64[D]')
 
-    # Determine year buckets
     y1, y2 = tstart.year, tend.year
     n_years = (y2 - y1) + 1
-    year_labels = np.datetime64(f"{y1:04d}", 'Y') + np.arange(n_years).astype('timedelta64[Y]')
+    year0 = np.datetime64(f"{y1:04d}", 'Y')
+    year_labels = year0 + np.arange(n_years).astype('timedelta64[Y]')
 
-    # Map each day to its year
     time_years = time_vec.astype('datetime64[Y]')
 
-    # Allocate output and compute annual means
-    out_shape = (n_years,) + x.shape[1:]
-    yearly = np.empty(out_shape, dtype=float)
-
+    out = np.empty((n_years,) + x.shape[1:], dtype=float)
     for i, y in enumerate(year_labels):
         sel = (time_years == y)
-        # It is possible the first or last year is partial; that is fine.
-        yearly[i] = np.nanmean(x[sel, ...], axis=0)
+        out[i] = np.nanmean(x[sel, ...], axis=0)
 
-    # Restore original axis order
-    yearly = np.moveaxis(yearly, 0, time_axis)
+    yearly = np.moveaxis(out, 0, time_axis)
     return yearly, year_labels
-
-
-
-
-
-
