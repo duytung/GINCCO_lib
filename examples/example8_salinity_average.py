@@ -43,7 +43,10 @@ gc.map_draw_box(
     lon_data=lon_t,
     lat_data=lat_t,
     data_draw=depth_t[:, :],
-    lon_min_box, lon_max_box, lat_min_box, lat_max_box,
+    lon_min_box = lon_min_box, 
+    lon_max_box = lon_max_box, 
+    lat_min_box = lat_min_box, 
+    lat_max_box = lat_max_box,
     path_save="/prod/projects/data/tungnd/figure/",
     name_save="map_box"
 )
