@@ -25,7 +25,13 @@ def plot_point(
     """
 
     # Build daily time axis
-    n_time = data_point.shape[1]
+    if data_point.ndim == 2:
+        n_time = data_point.shape[1]
+    elif data_point.ndim == 1:
+        n_time = data_point.shape[0]
+    else:
+        raise ValueError("data_point must be 1D or 2D")
+    
     times = [tstart + (tend - tstart) * i/(n_time-1) for i in range(n_time)]
 
     # Duration in days
@@ -44,9 +50,19 @@ def plot_point(
 
     # Plot
     fig, ax = plt.subplots(figsize=(9, 3))
-    for i in range(data_point.shape[0]):
-        label = point_labels[i] if (point_labels and i < len(point_labels)) else f"Point {i+1}"
-        ax.plot(times, data_point[i, :], lw=1.5, label=label)
+    if data_point.ndim == 1:
+        label = point_labels[0] if point_labels else "Point 1"
+        ax.plot(times, data_point, lw=1.5, label=label)
+
+    elif data_point.ndim == 2:
+        for i in range(data_point.shape[0]):
+            label = point_labels[i] if (point_labels and i < len(point_labels)) else f"Point {i+1}"
+            ax.plot(times, data_point[i, :], lw=1.5, label=label)
+
+    else:
+        raise ValueError("data_point must be 1D or 2D")
+
+
 
     ax.set_title(title)
     ax.set_xlim(times[0], times[-1])

@@ -13,10 +13,13 @@ from .import_daily import import_section
 
 # post-processing function
 from .interpolate_to_t import interpolate_to_t
+from .geostrophic_current import geostrophic_current
+from .spatial_average import spatial_average
+
 
 
 # plot-related functions
-from .map_plot import map_draw, map_draw_point, map_draw_uv
+from .map_plot import map_draw, map_draw_point, map_draw_uv, map_draw_box
 from .time_series_plot import plot_point
 from .heatmap_plot import plot_heatmap, plot_section
 

@@ -165,7 +165,7 @@ def map_draw(lon_min, lon_max, lat_min, lat_max, title, lon_data, lat_data, data
     ax.set_title('%s' % (title))
 
     map2 = Basemap(projection='merc', llcrnrlon=lon_min, llcrnrlat=lat_min,
-                   urcrnrlon=lon_max, urcrnrlat=lat_max, resolution='l', epsg=4326)
+                   urcrnrlon=lon_max, urcrnrlat=lat_max, resolution='i', epsg=4326)
 
     parallels = nice_ticks_1d(np.nanmin(lat_data), np.nanmax(lat_data))  #horizontal line
     meridians = nice_ticks_1d(np.nanmin(lon_data), np.nanmax(lon_data))  #vertical line
@@ -186,7 +186,15 @@ def map_draw(lon_min, lon_max, lat_min, lat_max, title, lon_data, lat_data, data
         if data_max is None:
             data_max = float(np.nanpercentile(finite_vals, 95))
 
+
     vmin_pad, vmax_pad = _pad_10pct(data_min, data_max)
+
+    # Overwrite in case provided value as input ! Oct 14
+    if data_min is not None:
+        vmin_pad = data_min
+    if data_max is not None:
+        vmax_pad = data_max
+
     ticks = _pretty_ticks(vmin_pad, vmax_pad)
 
     # Colormap and normalization
@@ -228,7 +236,7 @@ def map_draw_point(lon_min, lon_max, lat_min, lat_max, title, lon_data, lat_data
     ax.set_title('%s' % (title))
 
     map2 = Basemap(projection='merc', llcrnrlon=lon_min, llcrnrlat=lat_min,
-                   urcrnrlon=lon_max, urcrnrlat=lat_max, resolution='l', epsg=4326)
+                   urcrnrlon=lon_max, urcrnrlat=lat_max, resolution='i', epsg=4326)
 
     parallels = nice_ticks_1d(np.nanmin(lat_data), np.nanmax(lat_data))  #horizontal line
     meridians = nice_ticks_1d(np.nanmin(lon_data), np.nanmax(lon_data))  #vertical line
@@ -263,6 +271,92 @@ def map_draw_point(lon_min, lon_max, lat_min, lat_max, title, lon_data, lat_data
         plt.scatter (lon_point[i], lat_point[i], s = 20, zorder = 10, marker = "o", edgecolor = "white", facecolor = 'red')
         plt.annotate(i+1, (lon_point[i]+0.05, lat_point[i]), 
             bbox=dict( boxstyle="round,pad=0.3", facecolor="white",edgecolor="None", alpha=0.7,))
+
+    # Colorbar with nice ticks
+    cbar_ax = fig.add_axes([0.15, 0.06, 0.7, 0.02])
+    cb = fig.colorbar(cm, cax=cbar_ax, ticks=ticks, orientation='horizontal')
+    cb.ax.tick_params(labelsize=20)
+
+    # Layout and save
+    fig.subplots_adjust(bottom=0.15, top=0.9, left=0.15, right=0.90, wspace=0.2, hspace=0.3)
+    session_id = random.randint(10000, 99999)
+    plt.savefig('%s/%s_%s.png' % (path_save, name_save, session_id), dpi=250)
+    plt.close()
+
+#########################################################
+
+
+def map_draw_box(lon_min, lon_max, lat_min, lat_max, title, lon_data, lat_data, data_draw, 
+    lon_min_box, lon_max_box, lat_min_box, lat_max_box, label, path_save, name_save):
+    
+    dlon = lon_max - lon_min
+    dlat = lat_max - lat_min
+    dy = np.around(dlat/dlon, 1)
+    if dy >= 2:
+        dy = 1.5
+    elif dy < 0.5:
+        dy = 0.8
+
+    fig = plt.figure(figsize=(7,7*dy))
+    ax = fig.add_subplot(1,1,1)
+    ax.set_title('%s' % (title))
+
+    map2 = Basemap(projection='merc', llcrnrlon=lon_min, llcrnrlat=lat_min,
+                   urcrnrlon=lon_max, urcrnrlat=lat_max, resolution='i', epsg=4326)
+
+    parallels = nice_ticks_1d(np.nanmin(lat_data), np.nanmax(lat_data))  #horizontal line
+    meridians = nice_ticks_1d(np.nanmin(lon_data), np.nanmax(lon_data))  #vertical line
+    map2.drawparallels(parallels, linewidth=0.5, dashes=[2,8], labels=[1,0,0,0], fontsize=15, zorder=12)
+    map2.drawmeridians(meridians, linewidth=0.5, dashes=[2,8], labels=[0,0,0,1], fontsize=15, zorder=12)
+    map2.drawcoastlines(zorder=10)
+
+    # -------- Auto colorbar limits and nice ticks --------
+    finite_vals = np.asarray(data_draw)[np.isfinite(data_draw)]
+    if finite_vals.size == 0:
+        data_min, data_max = 0.0, 1.0
+    else:
+        data_min, data_max = float(np.nanpercentile(finite_vals, 5)), float(np.nanpercentile(finite_vals, 95))
+
+    vmin_pad, vmax_pad = _pad_10pct(data_min, data_max)
+    ticks = _pretty_ticks(vmin_pad, vmax_pad)
+
+    # Colormap and normalization
+    color_map = plt.get_cmap('jet')
+    color_map.set_bad(color='white')
+    norm = colors.Normalize(vmin=ticks[0], vmax=ticks[-1])
+
+    # Grid shift for cell corners (as you had)
+    dlon_cell = (lon_data[0,1] - lon_data[0,0]) / 2.0
+    dlat_cell = (lat_data[1,0] - lat_data[0,0]) / 2.0
+
+    cm = plt.pcolormesh(lon_data - dlon_cell, lat_data - dlat_cell, data_draw,
+                        norm=norm, cmap='jet')
+
+
+
+    for i in range(0, len(lon_min_box)):
+        #Plot the box: 
+        map2.plot([lon_min_box[i], lon_max_box[i], lon_max_box[i], lon_min_box[i], lon_min_box[i]],
+            [lat_min_box[i], lat_min_box[i], lat_max_box[i], lat_max_box[i], lat_min_box[i]],
+            color='white', linewidth=3, zorder = 20)
+
+        #Plot the box: 
+        map2.plot([lon_min_box[i], lon_max_box[i], lon_max_box[i], lon_min_box[i], lon_min_box[i]],
+            [lat_min_box[i], lat_min_box[i], lat_max_box[i], lat_max_box[i], lat_min_box[i]],
+            color='red', linewidth=1.5, zorder = 21)
+
+        # Compute box center
+        lon_center = (lon_min_box[i] + lon_max_box[i]) / 2
+        lat_center = (lat_min_box[i] + lat_max_box[i]) / 2
+
+        # Add text label at center
+        ax.text(
+            lon_center, lat_center, label[i],
+            ha='center', va='center', fontsize=9,
+            color='black', fontweight='bold',
+            bbox=dict(facecolor='white', edgecolor='none', alpha=0.8, boxstyle='round,pad=0.3'),
+            zorder=22
+        )
 
     # Colorbar with nice ticks
     cbar_ax = fig.add_axes([0.15, 0.06, 0.7, 0.02])
@@ -316,7 +410,7 @@ def map_draw_uv(
         projection='merc',
         llcrnrlon=lon_min, llcrnrlat=lat_min,
         urcrnrlon=lon_max, urcrnrlat=lat_max,
-        resolution='l', epsg=4326
+        resolution='i', epsg=4326
     )
 
     # Grid lines and coast
