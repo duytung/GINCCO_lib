@@ -1,86 +1,56 @@
 import numpy as np
 
-def geostrophic_current(ssh, lat, lon, sin_t, cos_t):
+def geos_from_ssh_with_dxdy(ssh, lat, dx, dy, sin_t, cos_t):
     """
-    Compute geostrophic surface currents (u, v) from sea surface height (SSH)
-    on a 2D curvilinear grid.
+    Compute geostrophic currents when dx, dy (in meters) are already known.
 
     Parameters
     ----------
-    ssh : 2D numpy array
-        Sea surface height [m].
-    lat : 2D numpy array
-        Latitude [degrees].
-    lon : 2D numpy array
-        Longitude [degrees].
+    ssh : 2D array [m]
+        Sea surface height.
+    lat : 2D array [deg]
+        Latitude (only used to mask low-latitude values if needed).
+    f : 2D array [s^-1]
+        Coriolis parameter (2*omega*sin(lat)).
+    dx, dy : 2D arrays [m]
+        Grid spacing in x (zonal) and y (meridional) directions.
 
     Returns
     -------
-    u : 2D numpy array
-        Eastward geostrophic velocity [m/s].
-    v : 2D numpy array
-        Northward geostrophic velocity [m/s].
+    u, v : 2D arrays [m/s]
+        Eastward (u) and northward (v) geostrophic velocities.
     """
     g = 9.81
-    omega = 7.292115e-5
-    R = 6371000.0
-
-
-
-    # Convert masked arrays to plain arrays with NaN
-    ssh = np.asarray(ssh, dtype=float)
-    lat = np.asarray(lat, dtype=float)
-    lon = np.asarray(lon, dtype=float)
-
-    if np.ma.isMaskedArray(ssh): ssh = ssh.filled(np.nan)
-    if np.ma.isMaskedArray(lat): lat = lat.filled(np.nan)
-    if np.ma.isMaskedArray(lon): lon = lon.filled(np.nan)
-
-
 
     # Compute Coriolis parameter (same shape as grid)
     f = 2 * omega * np.sin(np.deg2rad(lat))
 
-    # Convert lat/lon to meters for local spacing
-    lat_rad = np.deg2rad(lat)
-    lon_rad = np.deg2rad(lon)
+    # Convert masked arrays to normal arrays with NaN
+    for a_name in ["ssh", "lat", "f", "dx", "dy"]:
+        a = locals()[a_name]
+        if np.ma.isMaskedArray(a):
+            locals()[a_name] = a.filled(np.nan)
 
-    # Compute local metric terms (finite differences)
-    dlat_dy, dlat_dx = np.gradient(lat_rad)
-    dlon_dy, dlon_dx = np.gradient(lon_rad)
-
-    # Grid spacing in meters (approximate)
-    dx = R * np.sqrt((dlon_dx * np.cos(lat_rad))**2 + dlat_dx**2)
-    dy = R * np.sqrt((dlon_dy * np.cos(lat_rad))**2 + dlat_dy**2)
-
-    # SSH gradients
+    # Gradients of SSH (finite differences)
     dssh_dy, dssh_dx = np.gradient(ssh)
-
-    # Convert gradients to per meter
     dssh_dx = dssh_dx / dx
     dssh_dy = dssh_dy / dy
 
-    # Geostrophic velocities
+    # Geostrophic currents
     u = -g / f * dssh_dy
     v =  g / f * dssh_dx
 
-    # Mask out low-latitude region (avoid f ≈ 0)
-    mask = np.abs(f) < 1e-5
-    u[mask] = np.nan
-    v[mask] = np.nan
+    # Mask near equator and invalid data
+    u[np.abs(f) < 1e-5] = np.nan
+    v[np.abs(f) < 1e-5] = np.nan
+    u[np.isnan(ssh)] = np.nan
+    v[np.isnan(ssh)] = np.nan
 
     #Rotate to N-S
     U1 =  u * cos_t + v * sin_t
     V1 = -u * sin_t + v * cos_t
 
-    U1[np.isnan(ssh)]= np.nan
-    V1[np.isnan(ssh)]= np.nan
-
     return U1, V1
-
-
-
-
 
 
 

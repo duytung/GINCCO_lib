@@ -21,6 +21,8 @@ fgrid = Dataset(path + 'grid.nc', 'r')
 lat_t = fgrid.variables['latitude_t'][:]
 lon_t = fgrid.variables['longitude_t'][:]
 mask_t = fgrid.variables['mask_t'][0,:,:]
+dx_t  = fgrid.variables['dx_t'][:,:]
+dy_t  = fgrid.variables['dy_t'][:,:]
 sin_t  = fgrid.variables['gridrotsin_t'][:,:]
 cos_t  = fgrid.variables['gridrotcos_t'][:,:]
 # ============================================================
@@ -42,17 +44,14 @@ for i in range(0,11):
 
 
 #Step 2: Choose a day and calculate
-U1, V1 = gc.geostrophic_current(data_draw, lat_t, lon_t, sin_t, cos_t)
+U1, V1 = gc.geostrophic_current(data_draw, lat_t, dx_t, dy_t, sin_t, cos_t)
 
-U1[mask_t==0] = np.nan
-V1[mask_t==0] = np.nan
+#U1[mask_t==0] = np.nan
+#V1[mask_t==0] = np.nan
 
 for i in range(0,11):
     print (i*10,  np.nanpercentile(U1, i*10),np.nanpercentile(V1, i*10))
 
-
-
-print (V1[200:210, 200:210])
 
 
 #Step 4: Draw
