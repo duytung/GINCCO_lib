@@ -335,7 +335,12 @@ def map_draw_box(lon_min, lon_max, lat_min, lat_max, title, lon_data, lat_data, 
     #Plot the box: 
     map2.plot([lon_min_box, lon_max_box, lon_max_box, lon_min_box, lon_min_box],
         [lat_min_box, lat_min_box, lat_max_box, lat_max_box, lat_min_box],
-        color='red', linewidth=2)
+        color='white', linewidth=3)
+
+    #Plot the box: 
+    map2.plot([lon_min_box, lon_max_box, lon_max_box, lon_min_box, lon_min_box],
+        [lat_min_box, lat_min_box, lat_max_box, lat_max_box, lat_min_box],
+        color='red', linewidth=1.5)
 
 
     # Colorbar with nice ticks
