@@ -25,7 +25,13 @@ def plot_point(
     """
 
     # Build daily time axis
-    n_time = data_point.shape[1]
+    if data_point.ndim == 2:
+        n_time = data_point.shape[1]
+    elif data_point.ndim == 1:
+        n_time = data_point.shape[0]
+    else:
+        raise ValueError("data_point must be 1D or 2D")
+    
     times = [tstart + (tend - tstart) * i/(n_time-1) for i in range(n_time)]
 
     # Duration in days

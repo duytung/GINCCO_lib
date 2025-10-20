@@ -64,10 +64,10 @@ sal_mean = gc.spatial_average(sal_surface,
     mask_ocean=mask_t,
     lon_t=lon_t,
     lat_t=lat_t,
-    lon_min=lon_min,
-    lon_max=lon_max,
-    lat_min=lat_min,
-    lat_max=lat_max,   
+    lon_min=lon_min_box,
+    lon_max=lon_max_box,
+    lat_min=lat_min_box,
+    lat_max=lat_max_box,   
 )
 
 
