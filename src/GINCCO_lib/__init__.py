@@ -13,7 +13,7 @@ from .import_daily import import_section
 
 # post-processing function
 from .interpolate_to_t import interpolate_to_t
-
+from .geostrophic_current import geostrophic_current
 
 # plot-related functions
 from .map_plot import map_draw, map_draw_point, map_draw_uv

@@ -28,7 +28,7 @@ cos_t  = fgrid.variables['gridrotcos_t'][:,:]
 # ============================================================
 
 # Step 1: Import data
-ssh = gc.import_surface(path, 'ssh_ib', tstart, tend, ignore_missing='False')
+ssh = gc.import_3D(path, 'ssh_ib', tstart, tend, ignore_missing='False')
 
 #Step 2: Choose a day and calculate
 U1, V1 = gc.geostrophic_current(ssh, lat_t, lon_t, sin_t, cos_t)
