@@ -10,12 +10,12 @@ def choose_locator(tstart, tend):
 
     if duration_days <= 100:  # short range
         locator = mdates.AutoDateLocator(minticks=5, maxticks=10)
-        fmt = mdates.DateFormatter("%Y-%m-%d")
+        fmt = mdates.DateFormatter("%b-%d\n%Y")
     elif duration_days <= 3650:  # up to ~10 years
         months = max(1, duration_days / 30.44)
         interval = max(1, round(months / 8))
         locator = mdates.MonthLocator(bymonthday=1, interval=interval)
-        fmt = mdates.DateFormatter("%Y-%m-%d")
+        fmt = mdates.DateFormatter("%b-%d\n%Y")
     else:  # very long range
         years = max(1, duration_days / 365)
         interval = max(1, round(years / 8))
