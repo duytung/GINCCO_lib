@@ -10,7 +10,7 @@ import GINCCO_lib as gc
 # CONFIGURATION
 # =========================
 tstart = datetime(2010, 1, 1)
-tend   = datetime(2012, 12, 31)
+tend   = datetime(2011, 12, 31)
 
 path = '/work/users/tungnd/GOT271/GOT_REF5/OFFLINE/'
 
@@ -60,7 +60,7 @@ gc.map_draw_box(
 sal_surface = gc.import_surface(path, 'sal', tstart, tend, ignore_missing='False')
 
 # Step 4: Calculate salinity mean
-sal_mean = np.zeros((len(lon_min_box), (tend-tstart).days +1    ))
+sal_mean = np.zeros((len(lon_min_box), (tend-tstart).days +1    ))  # 3 boxes, 2 years
 
 for i in range(0, len(lat_min_box)):
     sal_mean[i,:] = gc.spatial_average(sal_surface,
@@ -74,15 +74,25 @@ for i in range(0, len(lat_min_box)):
         lat_max=lat_max_box[i],   
     )
 
+# Step 5: Monthly mean
+sal_mean_monthly, label = gc.monthly_mean(data = sal_mean, tstart = tstart,tend =  tend, time_axis = 1)
+print (label)
 
 
-# Step 5: Plot temporal salinity variation for the 3 points
-gc.plot_point(
+gc.plot_point_monthly(
     title="Mean surface salinity in the box",
-    tstart=tstart,
-    tend=tend,
-    data_point=sal_mean,
+    time_label = label,             # sequence of str or anything convertible to str, len = n_time
+    data_point = sal_mean_monthly,  # numpy array, shape (n_point, n_time) or (n_time,)
+    n_xticks_desired=8,             # user suggestion; function will adjust for nice spacing
     path_save="/prod/projects/data/tungnd/figure/",
-    name_save="demo_11",
-    point_labels=label_list
+    name_save="figure9",
+    point_labels=label_list   # optional list of names for each point
 )
+
+
+
+
+
+
+
+
