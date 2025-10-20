@@ -57,8 +57,8 @@ def geostrophic_current(ssh, lat, lon, sin_t, cos_t):
     v[mask] = np.nan
 
     #Rotate to N-S
-    U1 =  u_t * cos_t + v_t * sin_t
-    V1 = -u_t * sin_t + v_t * cos_t
+    U1 =  u * cos_t + v * sin_t
+    V1 = -u * sin_t + v * cos_t
 
     return U1, V1
 
