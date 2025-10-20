@@ -25,6 +25,19 @@ def geostrophic_current(ssh, lat, lon, sin_t, cos_t):
     omega = 7.292115e-5
     R = 6371000.0
 
+
+
+    # Convert masked arrays to plain arrays with NaN
+    ssh = np.asarray(ssh, dtype=float)
+    lat = np.asarray(lat, dtype=float)
+    lon = np.asarray(lon, dtype=float)
+
+    if np.ma.isMaskedArray(ssh): ssh = ssh.filled(np.nan)
+    if np.ma.isMaskedArray(lat): lat = lat.filled(np.nan)
+    if np.ma.isMaskedArray(lon): lon = lon.filled(np.nan)
+
+
+
     # Compute Coriolis parameter (same shape as grid)
     f = 2 * omega * np.sin(np.deg2rad(lat))
 
