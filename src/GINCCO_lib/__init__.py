@@ -15,7 +15,7 @@ from .import_daily import import_section
 from .interpolate_to_t import interpolate_to_t
 from .geostrophic_current import geostrophic_current
 from .spatial_average import spatial_average
-
+from .temporal_mean import monthly_mean, annual_mean
 
 
 # plot-related functions
