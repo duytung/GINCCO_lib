@@ -60,7 +60,7 @@ gc.map_draw_box(
 sal_surface = gc.import_surface(path, 'sal', tstart, tend, ignore_missing='False')
 
 # Step 4: Calculate salinity mean
-sal_mean = np.zeros((len(lon_min_box), (tend-tstart).days +1    ))
+sal_mean = np.zeros((len(lon_min_box), (tend-tstart).days +1    ))  # 3 boxes, 2 years
 
 for i in range(0, len(lat_min_box)):
     sal_mean[i,:] = gc.spatial_average(sal_surface,
@@ -75,7 +75,7 @@ for i in range(0, len(lat_min_box)):
     )
 
 # Step 5: Monthly mean
-sal_mean_monthly, label = gc.monthly_mean(data = sal_mean, tstart = tstart,tend =  tend, time_axis = 0)
+sal_mean_monthly, label = gc.monthly_mean(data = sal_mean, tstart = tstart,tend =  tend, time_axis = 1)
 print (label)
 
 exit()
@@ -90,3 +90,22 @@ gc.plot_point(
     name_save="demo_11",
     point_labels=label_list
 )
+
+
+plot_point_monthly(
+    title="Mean surface salinity in the box",
+    time_label = label,             # sequence of str or anything convertible to str, len = n_time
+    data_point = sal_mean_monthly,  # numpy array, shape (n_point, n_time) or (n_time,)
+    n_xticks_desired=6,             # user suggestion; function will adjust for nice spacing
+    path_save="/prod/projects/data/tungnd/figure/",
+    name_save="figure9",
+    point_labels=label_list   # optional list of names for each point
+)
+
+
+
+
+
+
+
+
