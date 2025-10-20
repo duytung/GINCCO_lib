@@ -78,21 +78,8 @@ for i in range(0, len(lat_min_box)):
 sal_mean_monthly, label = gc.monthly_mean(data = sal_mean, tstart = tstart,tend =  tend, time_axis = 1)
 print (label)
 
-exit()
 
-# Step 6: Plot temporal salinity variation for the 3 points
-gc.plot_point(
-    title="Mean surface salinity in the box",
-    tstart=tstart,
-    tend=tend,
-    data_point=sal_mean,
-    path_save="/prod/projects/data/tungnd/figure/",
-    name_save="demo_11",
-    point_labels=label_list
-)
-
-
-plot_point_monthly(
+gc.plot_point_monthly(
     title="Mean surface salinity in the box",
     time_label = label,             # sequence of str or anything convertible to str, len = n_time
     data_point = sal_mean_monthly,  # numpy array, shape (n_point, n_time) or (n_time,)
