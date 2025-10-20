@@ -165,7 +165,7 @@ def map_draw(lon_min, lon_max, lat_min, lat_max, title, lon_data, lat_data, data
     ax.set_title('%s' % (title))
 
     map2 = Basemap(projection='merc', llcrnrlon=lon_min, llcrnrlat=lat_min,
-                   urcrnrlon=lon_max, urcrnrlat=lat_max, resolution='l', epsg=4326)
+                   urcrnrlon=lon_max, urcrnrlat=lat_max, resolution='i', epsg=4326)
 
     parallels = nice_ticks_1d(np.nanmin(lat_data), np.nanmax(lat_data))  #horizontal line
     meridians = nice_ticks_1d(np.nanmin(lon_data), np.nanmax(lon_data))  #vertical line
@@ -236,7 +236,7 @@ def map_draw_point(lon_min, lon_max, lat_min, lat_max, title, lon_data, lat_data
     ax.set_title('%s' % (title))
 
     map2 = Basemap(projection='merc', llcrnrlon=lon_min, llcrnrlat=lat_min,
-                   urcrnrlon=lon_max, urcrnrlat=lat_max, resolution='l', epsg=4326)
+                   urcrnrlon=lon_max, urcrnrlat=lat_max, resolution='i', epsg=4326)
 
     parallels = nice_ticks_1d(np.nanmin(lat_data), np.nanmax(lat_data))  #horizontal line
     meridians = nice_ticks_1d(np.nanmin(lon_data), np.nanmax(lon_data))  #vertical line
@@ -324,7 +324,7 @@ def map_draw_uv(
         projection='merc',
         llcrnrlon=lon_min, llcrnrlat=lat_min,
         urcrnrlon=lon_max, urcrnrlat=lat_max,
-        resolution='l', epsg=4326
+        resolution='i', epsg=4326
     )
 
     # Grid lines and coast
