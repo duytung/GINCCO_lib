@@ -350,7 +350,7 @@ def map_draw_box(lon_min, lon_max, lat_min, lat_max, title, lon_data, lat_data, 
         lat_center = (lat_min_box[i] + lat_max_box[i]) / 2
 
         # Add text label at center
-        map2.text(
+        ax.text(
             lon_center, lat_center, label,
             ha='center', va='center', fontsize=9,
             color='black', fontweight='bold',
