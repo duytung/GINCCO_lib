@@ -27,12 +27,20 @@ release = '0.5'
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-
 extensions = [
-    'sphinx.ext.autodoc',
-    'sphinx.ext.napoleon',  # for Google/NumPy-style docstrings
-    'sphinx.ext.viewcode',  # optional: adds source links
+    "sphinx.ext.autodoc",
+    "sphinx.ext.autosummary",
+    "sphinx.ext.napoleon",
+    "sphinx.ext.mathjax",
+    "sphinx.ext.viewcode",
+    "sphinx_autodoc_typehints",
 ]
+
+autosummary_generate = True
+add_module_names = False
+napoleon_google_docstring = False
+napoleon_numpy_docstring = True
+
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
@@ -60,17 +68,23 @@ def setup(app):
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 html_theme = "pydata_sphinx_theme"
+
 html_theme_options = {
     "logo": {"text": "GINCCO_lib"},
-    "show_nav_level": 2,
     "navigation_depth": 3,
-    "use_edit_page_button": False,
+    "collapse_navigation": True,
+    "show_nav_level": 2,
+    "navbar_align": "left",
 }
 
-html_static_path = ['_static']
+html_sidebars = {
+    "**": ["search-field.html", "sidebar-nav-bs.html"]
+}
 
-
-
-
-
+html_theme_options.update({
+    "show_prev_next": False,
+    "external_links": [
+        {"url": "https://github.com/duytung/GINCCO_lib", "name": "GitHub"},
+    ],
+})
 
