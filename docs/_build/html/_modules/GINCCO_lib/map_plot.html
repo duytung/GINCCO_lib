@@ -466,6 +466,8 @@
         <span class="n">data_max</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanpercentile</span><span class="p">(</span><span class="n">finite_vals</span><span class="p">,</span> <span class="mi">95</span><span class="p">))</span>
 
     <span class="n">vmin_pad</span><span class="p">,</span> <span class="n">vmax_pad</span> <span class="o">=</span> <span class="n">_pad_10pct</span><span class="p">(</span><span class="n">data_min</span><span class="p">,</span> <span class="n">data_max</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">vmin_pad</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">vmin_pad</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">ticks</span> <span class="o">=</span> <span class="n">_pretty_ticks</span><span class="p">(</span><span class="n">vmin_pad</span><span class="p">,</span> <span class="n">vmax_pad</span><span class="p">)</span>
 
     <span class="c1"># Colormap</span>

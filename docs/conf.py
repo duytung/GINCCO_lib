@@ -9,13 +9,12 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('../src'))
 
-# Optional: print check
-print("DEBUG import path:", os.path.abspath('../src'))
 
 autodoc_mock_imports = [
      'mpl_toolkits', 'mpl_toolkits.basemap',
     'numpy', 'matplotlib', 'netCDF4', 'cartopy', 'Basemap', 'scipy', 'pandas', 'imageio', 'pillow'
 ]
+add_module_names = False
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
