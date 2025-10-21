@@ -15,6 +15,7 @@ autodoc_mock_imports = [
     'numpy', 'matplotlib', 'netCDF4', 'cartopy', 'Basemap', 'scipy', 'pandas', 'imageio', 'pillow'
 ]
 add_module_names = False
+autosummary_generate = True
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 

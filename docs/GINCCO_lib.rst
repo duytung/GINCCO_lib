@@ -1,6 +1,11 @@
 GINCCO\_lib package
 ===================
 
+.. automodule:: GINCCO_lib
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Submodules
 ----------
 
@@ -80,14 +85,6 @@ GINCCO\_lib.time\_series\_plot module
 -------------------------------------
 
 .. automodule:: GINCCO_lib.time_series_plot
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: GINCCO_lib
    :members:
    :undoc-members:
    :show-inheritance:
