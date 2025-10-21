@@ -335,54 +335,6 @@
   <section id="module-GINCCO_lib.import_daily">
 <span id="gincco-lib-import-daily-module"></span><h1>GINCCO_lib.import_daily module<a class="headerlink" href="#module-GINCCO_lib.import_daily" title="Link to this heading">#</a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="GINCCO_lib.import_daily.data_interp">
-<span class="sig-name descname"><span class="pre">data_interp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">depth_sec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_sec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth_interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/GINCCO_lib/import_daily.html#data_interp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.import_daily.data_interp" title="Link to this definition">#</a></dt>
-<dd><p>Interpolate irregular-depth section data (nz, M) onto one shared regular depth grid.</p>
-<section id="assumptions">
-<h2>Assumptions<a class="headerlink" href="#assumptions" title="Link to this heading">#</a></h2>
-<ul class="simple">
-<li><p>Each column in depth_sec is ordered (shallow to deep).</p></li>
-<li><p>No extrapolation: values outside a column’s native range are NaN.</p></li>
-</ul>
-<dl class="field-list simple">
-<dt class="field-odd">type depth_sec<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ndarray, shape (nz, M)</p>
-</dd>
-<dt class="field-even">param depth_sec<span class="colon">:</span></dt>
-<dd class="field-even"><p>Irregular depths for each column.</p>
-</dd>
-<dt class="field-odd">type depth_sec<span class="colon">:</span></dt>
-<dd class="field-odd"><p>ndarray, shape (nz, M)</p>
-</dd>
-<dt class="field-even">type data_sec<span class="colon">:</span></dt>
-<dd class="field-even"><p>ndarray, shape (nz, M)</p>
-</dd>
-<dt class="field-odd">param data_sec<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Data at the given depths.</p>
-</dd>
-<dt class="field-even">type data_sec<span class="colon">:</span></dt>
-<dd class="field-even"><p>ndarray, shape (nz, M)</p>
-</dd>
-<dt class="field-odd">type depth_interval<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float, optional</p>
-</dd>
-<dt class="field-even">param depth_interval<span class="colon">:</span></dt>
-<dd class="field-even"><p>Spacing for the target depth grid.</p>
-</dd>
-<dt class="field-odd">type depth_interval<span class="colon">:</span></dt>
-<dd class="field-odd"><p>float, optional</p>
-</dd>
-<dt class="field-even">returns<span class="colon">:</span></dt>
-<dd class="field-even"><ul class="simple">
-<li><p><strong>new_depth</strong> (<em>ndarray, shape (K, M)</em>) – Shared regular depth grid replicated across columns.</p></li>
-<li><p><strong>data_out</strong> (<em>ndarray, shape (K, M)</em>) – Interpolated data on new_depth.</p></li>
-</ul>
-</dd>
-</dl>
-</section>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="GINCCO_lib.import_daily.import_section">
 <span class="sig-name descname"><span class="pre">import_section</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">M</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth_interval</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/GINCCO_lib/import_daily.html#import_section"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.import_daily.import_section" title="Link to this definition">#</a></dt>
 <dd><p>Import a vertical section from a file. Support all kind of section: along lat, along lon, and diagonal line.
@@ -497,7 +449,6 @@ the solve fails for a point.</p></li>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#GINCCO_lib.import_daily.data_interp"><code class="docutils literal notranslate"><span class="pre">data_interp()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#GINCCO_lib.import_daily.import_section"><code class="docutils literal notranslate"><span class="pre">import_section()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#GINCCO_lib.import_daily.section_extract"><code class="docutils literal notranslate"><span class="pre">section_extract()</span></code></a></li>
 </ul>
