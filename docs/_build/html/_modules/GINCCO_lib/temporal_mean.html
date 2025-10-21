@@ -40,7 +40,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert Python datetime to numpy datetime64 at day resolution.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">date</span><span class="p">(),</span> <span class="s1">&#39;D&#39;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="monthly_mean"><a class="viewcode-back" href="../../GINCCO_lib.html#GINCCO_lib.temporal_mean.monthly_mean">[docs]</a><span class="k">def</span> <span class="nf">monthly_mean</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">tstart</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">tend</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">time_axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="monthly_mean"><a class="viewcode-back" href="../../GINCCO_lib.temporal_mean.html#GINCCO_lib.temporal_mean.monthly_mean">[docs]</a><span class="k">def</span> <span class="nf">monthly_mean</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">tstart</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">tend</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">time_axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute monthly means for daily, contiguous data in [tstart, tend] (inclusive).</span>
 
@@ -95,7 +95,7 @@
     <span class="k">return</span> <span class="n">monthly</span><span class="p">,</span> <span class="n">month_labels</span></div>
 
 
-<div class="viewcode-block" id="annual_mean"><a class="viewcode-back" href="../../GINCCO_lib.html#GINCCO_lib.temporal_mean.annual_mean">[docs]</a><span class="k">def</span> <span class="nf">annual_mean</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">tstart</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">tend</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">time_axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="annual_mean"><a class="viewcode-back" href="../../GINCCO_lib.temporal_mean.html#GINCCO_lib.temporal_mean.annual_mean">[docs]</a><span class="k">def</span> <span class="nf">annual_mean</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">tstart</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">tend</span><span class="p">:</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">time_axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute annual means for daily, contiguous data in [tstart, tend] (inclusive).</span>
 
@@ -160,6 +160,11 @@
 
 
 <h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">GINCCO_lib package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../test_autodoc.html">Test autodoc</a></li>
+</ul>
 
 <div class="relations">
 <h3>Related Topics</h3>
