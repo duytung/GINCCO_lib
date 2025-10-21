@@ -3,6 +3,12 @@
 # For the full list of built-in configuration values, see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
+# -- Path setup -----------------------------------------------------
+
+import os
+import sys
+sys.path.insert(0, os.path.abspath('../src'))
+
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
@@ -14,7 +20,12 @@ release = '0.5'
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = []
+
+extensions = [
+    'sphinx.ext.autodoc',
+    'sphinx.ext.napoleon',  # for Google/NumPy-style docstrings
+    'sphinx.ext.viewcode',  # optional: adds source links
+]
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
