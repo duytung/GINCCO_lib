@@ -643,9 +643,7 @@
 
 <span class="c1"># -----------------------------------------</span>
 
-<div class="viewcode-block" id="data_interp">
-<a class="viewcode-back" href="../../docs/GINCCO_lib.import_daily.html#GINCCO_lib.data_interp">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">data_interp</span><span class="p">(</span><span class="n">depth_sec</span><span class="p">,</span> <span class="n">data_sec</span><span class="p">,</span> <span class="n">depth_interval</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_data_interp</span><span class="p">(</span><span class="n">depth_sec</span><span class="p">,</span> <span class="n">data_sec</span><span class="p">,</span> <span class="n">depth_interval</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Interpolate irregular-depth section data (nz, M) onto one shared regular depth grid.</span>
 
@@ -701,8 +699,7 @@
 
     <span class="c1"># Depth grid replicated to (K, M)</span>
     <span class="n">new_depth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">z1d</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">],</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">M</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">new_depth</span><span class="p">,</span> <span class="n">data_out</span></div>
-
+    <span class="k">return</span> <span class="n">new_depth</span><span class="p">,</span> <span class="n">data_out</span>
 
 
 
@@ -775,7 +772,7 @@
     <span class="n">data_interpolation</span> <span class="o">=</span> <span class="n">apply_interp</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="c1"># shape: (nz, M)</span>
 
     <span class="c1">#interpolate depth and data into 1m for better representation</span>
-    <span class="n">depth_out</span><span class="p">,</span> <span class="n">data_out</span> <span class="o">=</span> <span class="n">data_interp</span><span class="p">(</span><span class="n">depth_sec</span><span class="p">,</span> <span class="n">data_interpolation</span><span class="p">,</span> <span class="n">depth_interval</span><span class="o">=</span><span class="n">depth_interval</span><span class="p">)</span>
+    <span class="n">depth_out</span><span class="p">,</span> <span class="n">data_out</span> <span class="o">=</span> <span class="n">_data_interp</span><span class="p">(</span><span class="n">depth_sec</span><span class="p">,</span> <span class="n">data_interpolation</span><span class="p">,</span> <span class="n">depth_interval</span><span class="o">=</span><span class="n">depth_interval</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">depth_out</span><span class="p">,</span> <span class="n">data_out</span></div>
 

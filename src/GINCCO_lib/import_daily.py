@@ -323,7 +323,7 @@ def section_extract(lat_array, lon_array, depth_array, lat, lon,
 
 # -----------------------------------------
 
-def data_interp(depth_sec, data_sec, depth_interval=1.0):
+def _data_interp(depth_sec, data_sec, depth_interval=1.0):
     """
     Interpolate irregular-depth section data (nz, M) onto one shared regular depth grid.
 
@@ -450,7 +450,7 @@ def import_section(path, file_name, var, lon_min, lon_max, lat_min, lat_max, M, 
     data_interpolation = apply_interp(data) # shape: (nz, M)
 
     #interpolate depth and data into 1m for better representation
-    depth_out, data_out = data_interp(depth_sec, data_interpolation, depth_interval=depth_interval)
+    depth_out, data_out = _data_interp(depth_sec, data_interpolation, depth_interval=depth_interval)
 
     return depth_out, data_out
 
