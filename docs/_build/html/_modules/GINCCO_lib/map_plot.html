@@ -130,7 +130,7 @@
 <span class="c1">#########################################################</span>
 <span class="c1"># these function below set a nice tick for </span>
 
-<div class="viewcode-block" id="nice_ticks_1d"><a class="viewcode-back" href="../../GINCCO_lib.html#GINCCO_lib.map_plot.nice_ticks_1d">[docs]</a><span class="k">def</span> <span class="nf">nice_ticks_1d</span><span class="p">(</span><span class="n">dmin</span><span class="p">,</span> <span class="n">dmax</span><span class="p">,</span> <span class="n">max_ticks</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+<div class="viewcode-block" id="nice_ticks_1d"><a class="viewcode-back" href="../../test_autodoc.html#GINCCO_lib.map_plot.nice_ticks_1d">[docs]</a><span class="k">def</span> <span class="nf">nice_ticks_1d</span><span class="p">(</span><span class="n">dmin</span><span class="p">,</span> <span class="n">dmax</span><span class="p">,</span> <span class="n">max_ticks</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return a list of &#39;nice&#39; tick values between dmin and dmax.</span>
 <span class="sd">    The number of ticks will be &lt;= max_ticks (default=5).</span>
@@ -186,7 +186,7 @@
 
 <span class="c1">#########################################################</span>
 
-<div class="viewcode-block" id="map_draw"><a class="viewcode-back" href="../../GINCCO_lib.html#GINCCO_lib.map_plot.map_draw">[docs]</a><span class="k">def</span> <span class="nf">map_draw</span><span class="p">(</span><span class="n">lon_min</span><span class="p">,</span> <span class="n">lon_max</span><span class="p">,</span> <span class="n">lat_min</span><span class="p">,</span> <span class="n">lat_max</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">lon_data</span><span class="p">,</span> <span class="n">lat_data</span><span class="p">,</span> <span class="n">data_draw</span><span class="p">,</span> <span class="n">path_save</span><span class="p">,</span> <span class="n">name_save</span><span class="p">,</span> <span class="n">data_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">data_max</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="map_draw"><a class="viewcode-back" href="../../GINCCO_lib.map_plot.html#GINCCO_lib.map_plot.map_draw">[docs]</a><span class="k">def</span> <span class="nf">map_draw</span><span class="p">(</span><span class="n">lon_min</span><span class="p">,</span> <span class="n">lon_max</span><span class="p">,</span> <span class="n">lat_min</span><span class="p">,</span> <span class="n">lat_max</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">lon_data</span><span class="p">,</span> <span class="n">lat_data</span><span class="p">,</span> <span class="n">data_draw</span><span class="p">,</span> <span class="n">path_save</span><span class="p">,</span> <span class="n">name_save</span><span class="p">,</span> <span class="n">data_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">data_max</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="n">dlon</span> <span class="o">=</span> <span class="n">lon_max</span> <span class="o">-</span> <span class="n">lon_min</span>
     <span class="n">dlat</span> <span class="o">=</span> <span class="n">lat_max</span> <span class="o">-</span> <span class="n">lat_min</span>
     <span class="n">dy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">dlat</span><span class="o">/</span><span class="n">dlon</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -257,7 +257,7 @@
 
 <span class="c1">#########################################################</span>
 
-<div class="viewcode-block" id="map_draw_point"><a class="viewcode-back" href="../../GINCCO_lib.html#GINCCO_lib.map_plot.map_draw_point">[docs]</a><span class="k">def</span> <span class="nf">map_draw_point</span><span class="p">(</span><span class="n">lon_min</span><span class="p">,</span> <span class="n">lon_max</span><span class="p">,</span> <span class="n">lat_min</span><span class="p">,</span> <span class="n">lat_max</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">lon_data</span><span class="p">,</span> <span class="n">lat_data</span><span class="p">,</span> <span class="n">data_draw</span><span class="p">,</span> <span class="n">lat_point</span><span class="p">,</span> <span class="n">lon_point</span><span class="p">,</span> <span class="n">path_save</span><span class="p">,</span> <span class="n">name_save</span><span class="p">):</span>
+<div class="viewcode-block" id="map_draw_point"><a class="viewcode-back" href="../../GINCCO_lib.map_plot.html#GINCCO_lib.map_plot.map_draw_point">[docs]</a><span class="k">def</span> <span class="nf">map_draw_point</span><span class="p">(</span><span class="n">lon_min</span><span class="p">,</span> <span class="n">lon_max</span><span class="p">,</span> <span class="n">lat_min</span><span class="p">,</span> <span class="n">lat_max</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">lon_data</span><span class="p">,</span> <span class="n">lat_data</span><span class="p">,</span> <span class="n">data_draw</span><span class="p">,</span> <span class="n">lat_point</span><span class="p">,</span> <span class="n">lon_point</span><span class="p">,</span> <span class="n">path_save</span><span class="p">,</span> <span class="n">name_save</span><span class="p">):</span>
     <span class="n">dlon</span> <span class="o">=</span> <span class="n">lon_max</span> <span class="o">-</span> <span class="n">lon_min</span>
     <span class="n">dlat</span> <span class="o">=</span> <span class="n">lat_max</span> <span class="o">-</span> <span class="n">lat_min</span>
     <span class="n">dy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">dlat</span><span class="o">/</span><span class="n">dlon</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -321,7 +321,7 @@
 <span class="c1">#########################################################</span>
 
 
-<div class="viewcode-block" id="map_draw_box"><a class="viewcode-back" href="../../GINCCO_lib.html#GINCCO_lib.map_plot.map_draw_box">[docs]</a><span class="k">def</span> <span class="nf">map_draw_box</span><span class="p">(</span><span class="n">lon_min</span><span class="p">,</span> <span class="n">lon_max</span><span class="p">,</span> <span class="n">lat_min</span><span class="p">,</span> <span class="n">lat_max</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">lon_data</span><span class="p">,</span> <span class="n">lat_data</span><span class="p">,</span> <span class="n">data_draw</span><span class="p">,</span> 
+<div class="viewcode-block" id="map_draw_box"><a class="viewcode-back" href="../../GINCCO_lib.map_plot.html#GINCCO_lib.map_plot.map_draw_box">[docs]</a><span class="k">def</span> <span class="nf">map_draw_box</span><span class="p">(</span><span class="n">lon_min</span><span class="p">,</span> <span class="n">lon_max</span><span class="p">,</span> <span class="n">lat_min</span><span class="p">,</span> <span class="n">lat_max</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">lon_data</span><span class="p">,</span> <span class="n">lat_data</span><span class="p">,</span> <span class="n">data_draw</span><span class="p">,</span> 
     <span class="n">lon_min_box</span><span class="p">,</span> <span class="n">lon_max_box</span><span class="p">,</span> <span class="n">lat_min_box</span><span class="p">,</span> <span class="n">lat_max_box</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">path_save</span><span class="p">,</span> <span class="n">name_save</span><span class="p">):</span>
     
     <span class="n">dlon</span> <span class="o">=</span> <span class="n">lon_max</span> <span class="o">-</span> <span class="n">lon_min</span>
@@ -409,7 +409,7 @@
 
 
 
-<div class="viewcode-block" id="truncate_colormap"><a class="viewcode-back" href="../../GINCCO_lib.html#GINCCO_lib.map_plot.truncate_colormap">[docs]</a><span class="k">def</span> <span class="nf">truncate_colormap</span><span class="p">(</span><span class="n">cmap</span><span class="p">,</span> <span class="n">minval</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">maxval</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">256</span><span class="p">):</span>
+<div class="viewcode-block" id="truncate_colormap"><a class="viewcode-back" href="../../GINCCO_lib.map_plot.html#GINCCO_lib.map_plot.truncate_colormap">[docs]</a><span class="k">def</span> <span class="nf">truncate_colormap</span><span class="p">(</span><span class="n">cmap</span><span class="p">,</span> <span class="n">minval</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">maxval</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">256</span><span class="p">):</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cmap</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">cmap</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="n">cmap</span><span class="p">)</span>
     <span class="n">new_cmap</span> <span class="o">=</span> <span class="n">mcolors</span><span class="o">.</span><span class="n">LinearSegmentedColormap</span><span class="o">.</span><span class="n">from_list</span><span class="p">(</span>
@@ -420,7 +420,7 @@
 
 
 
-<div class="viewcode-block" id="map_draw_uv"><a class="viewcode-back" href="../../GINCCO_lib.html#GINCCO_lib.map_plot.map_draw_uv">[docs]</a><span class="k">def</span> <span class="nf">map_draw_uv</span><span class="p">(</span>
+<div class="viewcode-block" id="map_draw_uv"><a class="viewcode-back" href="../../GINCCO_lib.map_plot.html#GINCCO_lib.map_plot.map_draw_uv">[docs]</a><span class="k">def</span> <span class="nf">map_draw_uv</span><span class="p">(</span>
     <span class="n">lon_min</span><span class="p">,</span> <span class="n">lon_max</span><span class="p">,</span> <span class="n">lat_min</span><span class="p">,</span> <span class="n">lat_max</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span>
     <span class="n">lon_data</span><span class="p">,</span> <span class="n">lat_data</span><span class="p">,</span> <span class="n">data_u</span><span class="p">,</span> <span class="n">data_v</span><span class="p">,</span>
     <span class="n">mask_ocean</span><span class="p">,</span>
@@ -546,6 +546,11 @@
 
 
 <h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">GINCCO_lib package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../test_autodoc.html">Test autodoc</a></li>
+</ul>
 
 <div class="relations">
 <h3>Related Topics</h3>

@@ -58,7 +58,7 @@
 <span class="c1">#############################</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<div class="viewcode-block" id="section_extract"><a class="viewcode-back" href="../../GINCCO_lib.html#GINCCO_lib.import_daily.section_extract">[docs]</a><span class="k">def</span> <span class="nf">section_extract</span><span class="p">(</span><span class="n">lat_array</span><span class="p">,</span> <span class="n">lon_array</span><span class="p">,</span> <span class="n">depth_array</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span>
+<div class="viewcode-block" id="section_extract"><a class="viewcode-back" href="../../GINCCO_lib.import_daily.html#GINCCO_lib.import_daily.section_extract">[docs]</a><span class="k">def</span> <span class="nf">section_extract</span><span class="p">(</span><span class="n">lat_array</span><span class="p">,</span> <span class="n">lon_array</span><span class="p">,</span> <span class="n">depth_array</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span>
                     <span class="n">method</span><span class="o">=</span><span class="s2">&quot;idw&quot;</span><span class="p">,</span> <span class="n">power</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Build a vertical section along given (lat, lon) points on a curvilinear grid,</span>
@@ -375,7 +375,7 @@
 
 <span class="c1"># -----------------------------------------</span>
 
-<div class="viewcode-block" id="data_interp"><a class="viewcode-back" href="../../GINCCO_lib.html#GINCCO_lib.import_daily.data_interp">[docs]</a><span class="k">def</span> <span class="nf">data_interp</span><span class="p">(</span><span class="n">depth_sec</span><span class="p">,</span> <span class="n">data_sec</span><span class="p">,</span> <span class="n">depth_interval</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+<div class="viewcode-block" id="data_interp"><a class="viewcode-back" href="../../GINCCO_lib.import_daily.html#GINCCO_lib.import_daily.data_interp">[docs]</a><span class="k">def</span> <span class="nf">data_interp</span><span class="p">(</span><span class="n">depth_sec</span><span class="p">,</span> <span class="n">data_sec</span><span class="p">,</span> <span class="n">depth_interval</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Interpolate irregular-depth section data (nz, M) onto one shared regular depth grid.</span>
 
@@ -436,7 +436,7 @@
 
 
 
-<div class="viewcode-block" id="import_section"><a class="viewcode-back" href="../../GINCCO_lib.html#GINCCO_lib.import_daily.import_section">[docs]</a><span class="k">def</span> <span class="nf">import_section</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="n">lon_min</span><span class="p">,</span> <span class="n">lon_max</span><span class="p">,</span> <span class="n">lat_min</span><span class="p">,</span> <span class="n">lat_max</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">depth_interval</span><span class="p">):</span>
+<div class="viewcode-block" id="import_section"><a class="viewcode-back" href="../../GINCCO_lib.import_daily.html#GINCCO_lib.import_daily.import_section">[docs]</a><span class="k">def</span> <span class="nf">import_section</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="n">lon_min</span><span class="p">,</span> <span class="n">lon_max</span><span class="p">,</span> <span class="n">lat_min</span><span class="p">,</span> <span class="n">lat_max</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">depth_interval</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Import a vertical section from a file. Support all kind of section: along lat, along lon, and diagonal line. </span>
 <span class="sd">    This is the control for the whole function</span>
@@ -534,6 +534,11 @@
 
 
 <h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">GINCCO_lib package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../test_autodoc.html">Test autodoc</a></li>
+</ul>
 
 <div class="relations">
 <h3>Related Topics</h3>
