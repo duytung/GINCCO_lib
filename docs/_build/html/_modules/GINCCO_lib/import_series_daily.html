@@ -65,7 +65,7 @@
 
 
 
-<div class="viewcode-block" id="build_file_list"><a class="viewcode-back" href="../../GINCCO_lib.html#GINCCO_lib.build_file_list">[docs]</a><span class="k">def</span> <span class="nf">build_file_list</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">tstart</span><span class="p">,</span> <span class="n">tend</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">build_file_list</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">tstart</span><span class="p">,</span> <span class="n">tend</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Build a list of NetCDF file paths between two dates.</span>
 
@@ -123,7 +123,7 @@
 
         <span class="n">t</span> <span class="o">+=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">flist</span></div>
+    <span class="k">return</span> <span class="n">flist</span>
 
 
 
@@ -574,7 +574,7 @@
 
 
 <span class="c1">#############################</span>
-<div class="viewcode-block" id="find_nearest_index_haversine"><a class="viewcode-back" href="../../GINCCO_lib.html#GINCCO_lib.find_nearest_index_haversine">[docs]</a><span class="k">def</span> <span class="nf">find_nearest_index_haversine</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">lat_p</span><span class="p">,</span> <span class="n">lon_p</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">find_nearest_index_haversine</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">lat_p</span><span class="p">,</span> <span class="n">lon_p</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Find the index (i, j) of the nearest grid point in 2D arrays `lat` and `lon`</span>
 <span class="sd">    to a given target coordinate (lat_p, lon_p) using great-circle (Haversine) distance.</span>
@@ -614,7 +614,7 @@
     <span class="n">idx_flat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span>
     <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unravel_index</span><span class="p">(</span><span class="n">idx_flat</span><span class="p">,</span> <span class="n">lat</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span></div>
+    <span class="k">return</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span>
 
 
 
@@ -889,7 +889,7 @@
 <h3>Navigation</h3>
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../modules.html">GINCCO_lib package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">GINCCO_lib</a></li>
 </ul>
 
 <div class="relations">
