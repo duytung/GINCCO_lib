@@ -37,6 +37,24 @@ extensions = [
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
+# --- Auto-clean RST titles after sphinx-apidoc generation ---
+import glob, re, os
+
+def clean_rst_titles():
+    """Remove 'GINCCO_lib.' prefix and 'module' word in generated .rst titles."""
+    pattern = re.compile(r'^GINCCO\\_lib\.([A-Za-z0-9\\_]+)\s+module', flags=re.MULTILINE)
+    for path in glob.glob(os.path.join(os.path.dirname(__file__), "GINCCO_lib.*.rst")):
+        with open(path, "r+", encoding="utf-8") as f:
+            text = f.read()
+            new_text, n = pattern.subn(lambda m: m.group(1).replace("\\_", "_"), text, count=1)
+            if n > 0:
+                f.seek(0)
+                f.write(new_text)
+                f.truncate()
+                print(f"[conf.py] Cleaned title: {os.path.basename(path)}")
+
+def setup(app):
+    app.connect('builder-inited', lambda app: clean_rst_titles())
 
 
 # -- Options for HTML output -------------------------------------------------

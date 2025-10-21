@@ -1,0 +1,357 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>import_series_daily &#8212; GINCCO_lib 0.5 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="interpolate_to_t" href="GINCCO_lib.interpolate_to_t.html" />
+    <link rel="prev" title="import_daily" href="GINCCO_lib.import_daily.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-GINCCO_lib.import_series_daily">
+<span id="import-series-daily"></span><h1>import_series_daily<a class="headerlink" href="#module-GINCCO_lib.import_series_daily" title="Permalink to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="GINCCO_lib.import_series_daily.build_file_list">
+<span class="sig-name descname"><span class="pre">build_file_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tstart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tend</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GINCCO_lib/import_series_daily.html#build_file_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.import_series_daily.build_file_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a list of NetCDF file paths between two dates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em>) – Directory containing the NetCDF files.</p></li>
+<li><p><strong>tstart</strong> (<em>datetime</em>) – Start date (inclusive).</p></li>
+<li><p><strong>tend</strong> (<em>datetime</em>) – End date (inclusive).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of file paths, one entry per day between tstart and tend.
+- If a file exists, the full path is included.
+- If a file is missing, the entry is an empty string “”.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list of str</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>FileNotFoundError</strong> – If the first file cannot be found for tstart.</p></li>
+<li><p><strong>RuntimeError</strong> – If the filename does not contain the expected date string.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GINCCO_lib.import_series_daily.find_nearest_index_haversine">
+<span class="sig-name descname"><span class="pre">find_nearest_index_haversine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GINCCO_lib/import_series_daily.html#find_nearest_index_haversine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.import_series_daily.find_nearest_index_haversine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the index (i, j) of the nearest grid point in 2D arrays <cite>lat</cite> and <cite>lon</cite>
+to a given target coordinate (lat_p, lon_p) using great-circle (Haversine) distance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lat</strong> (<em>np.ndarray</em>) – 2D array of latitude values (degrees).</p></li>
+<li><p><strong>lon</strong> (<em>np.ndarray</em>) – 2D array of longitude values (degrees).</p></li>
+<li><p><strong>lat_p</strong> (<em>float</em>) – Target latitude (degrees).</p></li>
+<li><p><strong>lon_p</strong> (<em>float</em>) – Target longitude (degrees).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>(i, j) index of the nearest grid point.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GINCCO_lib.import_series_daily.import_3D">
+<span class="sig-name descname"><span class="pre">import_3D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tstart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_missing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'False'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GINCCO_lib/import_series_daily.html#import_3D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.import_series_daily.import_3D" title="Permalink to this definition">¶</a></dt>
+<dd><p>Import a 3D variable from a sequence of daily NetCDF files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em>) – Directory containing the NetCDF files.</p></li>
+<li><p><strong>var</strong> (<em>str</em>) – Variable name to read from each file (e.g., ‘veloc_u_t’).</p></li>
+<li><p><strong>tstart</strong> (<em>datetime</em>) – Start date (inclusive).</p></li>
+<li><p><strong>tend</strong> (<em>datetime</em>) – End date (inclusive).</p></li>
+<li><p><strong>ignore_missing</strong> (<em>str</em><em>, </em><em>optional</em>) – If ‘False’ (default), the function exits when a file is missing.
+If ‘True’, missing days are allowed and filled with NaN.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A 3D surface array with shape (ntime, ny, nx), dtype float64.
+Missing files are represented with NaN values.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GINCCO_lib.import_series_daily.import_4D">
+<span class="sig-name descname"><span class="pre">import_4D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tstart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_missing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'False'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GINCCO_lib/import_series_daily.html#import_4D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.import_series_daily.import_4D" title="Permalink to this definition">¶</a></dt>
+<dd><p>Import a 4D variable from a sequence of daily NetCDF files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em>) – Directory containing the NetCDF files.</p></li>
+<li><p><strong>var</strong> (<em>str</em>) – Variable name to read from each file (e.g., ‘veloc_u_t’).</p></li>
+<li><p><strong>tstart</strong> (<em>datetime</em>) – Start date (inclusive).</p></li>
+<li><p><strong>tend</strong> (<em>datetime</em>) – End date (inclusive).</p></li>
+<li><p><strong>ignore_missing</strong> (<em>str</em><em>, </em><em>optional</em>) – If ‘False’ (default), the function exits when a file is missing.
+If ‘True’, missing days are allowed and filled with NaN.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A 4D array with shape (ntime, nz, ny, nx), dtype float64.
+Missing files are represented with NaN values.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GINCCO_lib.import_series_daily.import_depth">
+<span class="sig-name descname"><span class="pre">import_depth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tstart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_missing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'False'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GINCCO_lib/import_series_daily.html#import_depth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.import_series_daily.import_depth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Import a variable in specified depth from daily NetCDF files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em>) – Directory containing the NetCDF files.</p></li>
+<li><p><strong>var</strong> (<em>str</em>) – Variable name to read from each file (e.g., ‘veloc_u_t’).</p></li>
+<li><p><strong>tstart</strong> (<em>datetime</em>) – Start date (inclusive).</p></li>
+<li><p><strong>tend</strong> (<em>datetime</em>) – End date (inclusive).</p></li>
+<li><p><strong>depth</strong> (<em>float</em>) – The depth to import</p></li>
+<li><p><strong>ignore_missing</strong> (<em>str</em><em>, </em><em>optional</em>) – If ‘False’ (default), the function exits when a file is missing.
+If ‘True’, missing days are allowed and filled with NaN.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A 3D array with shape (ntime, ny, nx), dtype float64.
+Missing files are represented with NaN values.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GINCCO_lib.import_series_daily.import_layer">
+<span class="sig-name descname"><span class="pre">import_layer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tstart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_missing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'False'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GINCCO_lib/import_series_daily.html#import_layer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.import_series_daily.import_layer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Import a surface variable from a sequence of daily NetCDF files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em>) – Directory containing the NetCDF files.</p></li>
+<li><p><strong>var</strong> (<em>str</em>) – Variable name to read from each file (e.g., ‘veloc_u_t’).</p></li>
+<li><p><strong>tstart</strong> (<em>datetime</em>) – Start date (inclusive).</p></li>
+<li><p><strong>tend</strong> (<em>datetime</em>) – End date (inclusive).</p></li>
+<li><p><strong>layer</strong> (<em>int</em>) – The layer to import</p></li>
+<li><p><strong>ignore_missing</strong> (<em>str</em><em>, </em><em>optional</em>) – If ‘False’ (default), the function exits when a file is missing.
+If ‘True’, missing days are allowed and filled with NaN.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A 3D array with shape (ntime, ny, nx), dtype float64.
+Missing files are represented with NaN values.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GINCCO_lib.import_series_daily.import_point">
+<span class="sig-name descname"><span class="pre">import_point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tstart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_j</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ji</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'False'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_missing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'False'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GINCCO_lib/import_series_daily.html#import_point"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.import_series_daily.import_point" title="Permalink to this definition">¶</a></dt>
+<dd><p>Import a data point from a variable of daily NetCDF files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em>) – Directory containing the NetCDF files.</p></li>
+<li><p><strong>var</strong> (<em>str</em>) – Variable name to read from each file (e.g., ‘veloc_u_t’).</p></li>
+<li><p><strong>tstart</strong> (<em>datetime</em>) – Start date (inclusive).</p></li>
+<li><p><strong>tend</strong> (<em>datetime</em>) – End date (inclusive).</p></li>
+<li><p><strong>lat_j</strong> (<em>float</em><em> or </em><em>int</em>) – Latitude or j to import</p></li>
+<li><p><strong>lon_j</strong> (<em>float</em><em> or </em><em>int</em>) – Longitude or i to import</p></li>
+<li><p><strong>ji</strong> (<em>str</em><em>, </em><em>optional</em>) – If ‘False’ (default), the function will find i and j based on lat and lon provided
+If ‘True’, the function will use i and j directly to import</p></li>
+<li><p><strong>level</strong> (<em>int</em><em>, </em><em>optinal</em>) – level that we want to import. Only support for 3D field. Default is surface layer</p></li>
+<li><p><strong>ignore_missing</strong> (<em>str</em><em>, </em><em>optional</em>) – If ‘False’ (default), the function exits when a file is missing.
+If ‘True’, missing days are allowed and filled with NaN.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A 3D array with shape (ntime, ny, nx), dtype float64.
+Missing files are represented with NaN values.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GINCCO_lib.import_series_daily.import_profile">
+<span class="sig-name descname"><span class="pre">import_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tstart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_j</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ji</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'False'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_missing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'False'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GINCCO_lib/import_series_daily.html#import_profile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.import_series_daily.import_profile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Import a data point from a variable of daily NetCDF files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em>) – Directory containing the NetCDF files.</p></li>
+<li><p><strong>var</strong> (<em>str</em>) – Variable name to read from each file (e.g., ‘veloc_u_t’).</p></li>
+<li><p><strong>tstart</strong> (<em>datetime</em>) – Start date (inclusive).</p></li>
+<li><p><strong>tend</strong> (<em>datetime</em>) – End date (inclusive).</p></li>
+<li><p><strong>lat_j</strong> (<em>float</em><em> or </em><em>int</em>) – Latitude or j to import</p></li>
+<li><p><strong>lon_j</strong> (<em>float</em><em> or </em><em>int</em>) – Longitude or i to import</p></li>
+<li><p><strong>ji</strong> (<em>str</em><em>, </em><em>optional</em>) – If ‘False’ (default), the function will find i and j based on lat and lon provided
+If ‘True’, the function will use i and j directly to import</p></li>
+<li><p><strong>level</strong> (<em>int</em><em>, </em><em>optinal</em>) – level that we want to import. Only support for 3D field. Default is surface layer</p></li>
+<li><p><strong>ignore_missing</strong> (<em>str</em><em>, </em><em>optional</em>) – If ‘False’ (default), the function exits when a file is missing.
+If ‘True’, missing days are allowed and filled with NaN.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A 3D array with shape (ntime, ny, nx), dtype float64.
+Missing files are represented with NaN values.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="GINCCO_lib.import_series_daily.import_surface">
+<span class="sig-name descname"><span class="pre">import_surface</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tstart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_missing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'False'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GINCCO_lib/import_series_daily.html#import_surface"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.import_series_daily.import_surface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Import a surface variable from a sequence of daily NetCDF files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em>) – Directory containing the NetCDF files.</p></li>
+<li><p><strong>var</strong> (<em>str</em>) – Variable name to read from each file (e.g., ‘veloc_u_t’).</p></li>
+<li><p><strong>tstart</strong> (<em>datetime</em>) – Start date (inclusive).</p></li>
+<li><p><strong>tend</strong> (<em>datetime</em>) – End date (inclusive).</p></li>
+<li><p><strong>ignore_missing</strong> (<em>str</em><em>, </em><em>optional</em>) – If ‘False’ (default), the function exits when a file is missing.
+If ‘True’, missing days are allowed and filled with NaN.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A 3D array with shape (ntime, ny, nx), dtype float64.
+Missing files are represented with NaN values.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">GINCCO_lib</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">GINCCO_lib</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="GINCCO_lib.html">GINCCO_lib package</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">GINCCO_lib</a><ul>
+  <li><a href="GINCCO_lib.html">GINCCO_lib package</a><ul>
+      <li>Previous: <a href="GINCCO_lib.import_daily.html" title="previous chapter">import_daily</a></li>
+      <li>Next: <a href="GINCCO_lib.interpolate_to_t.html" title="next chapter">interpolate_to_t</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2025, Tung Nguyen-Duy.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.3.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.13</a>
+      
+      |
+      <a href="_sources/GINCCO_lib.import_series_daily.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

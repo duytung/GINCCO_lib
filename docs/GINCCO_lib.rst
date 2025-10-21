@@ -1,90 +1,27 @@
 GINCCO\_lib package
 ===================
 
-.. automodule:: GINCCO_lib
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Submodules
 ----------
 
-GINCCO\_lib.geostrophic\_current module
----------------------------------------
+.. toctree::
+   :maxdepth: 4
 
-.. automodule:: GINCCO_lib.geostrophic_current
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   GINCCO_lib.geostrophic_current
+   GINCCO_lib.heatmap_plot
+   GINCCO_lib.image_to_video
+   GINCCO_lib.import_daily
+   GINCCO_lib.import_series_daily
+   GINCCO_lib.interpolate_to_t
+   GINCCO_lib.map_plot
+   GINCCO_lib.spatial_average
+   GINCCO_lib.temporal_mean
+   GINCCO_lib.time_series_plot
 
-GINCCO\_lib.heatmap\_plot module
---------------------------------
+Module contents
+---------------
 
-.. automodule:: GINCCO_lib.heatmap_plot
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-GINCCO\_lib.image\_to\_video module
------------------------------------
-
-.. automodule:: GINCCO_lib.image_to_video
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-GINCCO\_lib.import\_daily module
---------------------------------
-
-.. automodule:: GINCCO_lib.import_daily
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-GINCCO\_lib.import\_series\_daily module
-----------------------------------------
-
-.. automodule:: GINCCO_lib.import_series_daily
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-GINCCO\_lib.interpolate\_to\_t module
--------------------------------------
-
-.. automodule:: GINCCO_lib.interpolate_to_t
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-GINCCO\_lib.map\_plot module
-----------------------------
-
-.. automodule:: GINCCO_lib.map_plot
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-GINCCO\_lib.spatial\_average module
------------------------------------
-
-.. automodule:: GINCCO_lib.spatial_average
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-GINCCO\_lib.temporal\_mean module
----------------------------------
-
-.. automodule:: GINCCO_lib.temporal_mean
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-GINCCO\_lib.time\_series\_plot module
--------------------------------------
-
-.. automodule:: GINCCO_lib.time_series_plot
+.. automodule:: GINCCO_lib
    :members:
    :undoc-members:
    :show-inheritance:
