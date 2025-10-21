@@ -59,6 +59,18 @@ def setup(app):
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
+html_theme = "pydata_sphinx_theme"
+html_theme_options = {
+    "logo": {"text": "GINCCO_lib"},
+    "show_nav_level": 2,
+    "navigation_depth": 3,
+    "use_edit_page_button": False,
+}
 
-html_theme = 'alabaster'
 html_static_path = ['_static']
+
+
+
+
+
+

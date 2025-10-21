@@ -1,5 +1,5 @@
-GINCCO\_lib package
-===================
+GINCCO\_lib
+===========
 
 Submodules
 ----------
