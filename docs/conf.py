@@ -12,7 +12,8 @@ sys.path.insert(0, os.path.abspath('../src'))
 # Optional: print check
 print("DEBUG import path:", os.path.abspath('../src'))
 
-utodoc_mock_imports = [
+autodoc_mock_imports = [
+     'mpl_toolkits', 'mpl_toolkits.basemap',
     'numpy', 'matplotlib', 'netCDF4', 'cartopy', 'Basemap', 'scipy', 'pandas', 'imageio', 'pillow'
 ]
 # -- Project information -----------------------------------------------------

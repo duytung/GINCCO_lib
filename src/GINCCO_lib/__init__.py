@@ -1,3 +1,8 @@
+'''
+.. module:: GINCCO_lib
+   :noindex:
+'''
+
 # import-related functions
 from .import_series_daily import (
     import_4D,
