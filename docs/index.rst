@@ -10,7 +10,7 @@ Welcome to GINCCO_lib's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   modules
+   GINCCO_lib
 
 
 
