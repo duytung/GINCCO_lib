@@ -337,8 +337,47 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="GINCCO_lib.image_to_video.pngs_to_video">
 <span class="sig-name descname"><span class="pre">pngs_to_video</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">24</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resize_to</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/GINCCO_lib/image_to_video.html#pngs_to_video"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.image_to_video.pngs_to_video" title="Link to this definition">#</a></dt>
-<dd><p>Pure-Python PNG -&gt; video with imageio’s PyAV plugin.
-Enforces RGB uint8, contiguous memory, and even dimensions.</p>
+<dd><p>Convert a sequence of PNG images into an MP4 video using <code class="docutils literal notranslate"><span class="pre">imageio</span></code> with the PyAV plugin.</p>
+<p>This function reads a list or folder of PNG images, ensures that each frame
+is RGB (uint8), contiguous in memory, and has even pixel dimensions, then
+encodes them into an H.264 MP4 video file. Optionally, images can be resized
+before encoding. It provides a fully pure-Python workflow using <code class="docutils literal notranslate"><span class="pre">imageio</span></code> and
+<code class="docutils literal notranslate"><span class="pre">Pillow</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inputs</strong> (<em>str</em><em> or </em><em>list</em><em> of </em><em>str</em>) – <dl class="simple">
+<dt>Either:</dt><dd><ul>
+<li><p>a directory path containing PNG files,</p></li>
+<li><p>a glob pattern (e.g., <code class="docutils literal notranslate"><span class="pre">&quot;./frames/*.png&quot;</span></code>), or</p></li>
+<li><p>an explicit list of file paths.</p></li>
+</ul>
+</dd>
+</dl>
+</p></li>
+<li><p><strong>output_path</strong> (<em>str</em>) – Path to the output video file (e.g., <code class="docutils literal notranslate"><span class="pre">&quot;./output.mp4&quot;</span></code>).</p></li>
+<li><p><strong>fps</strong> (<em>int</em><em>, </em><em>optional</em>) – Frames per second of the output video. Default is 24.</p></li>
+<li><p><strong>resize_to</strong> (<em>tuple</em><em> of </em><em>int</em><em>, </em><em>optional</em>) – Target video frame size <code class="docutils literal notranslate"><span class="pre">(width,</span> <span class="pre">height)</span></code> in pixels.
+If <code class="docutils literal notranslate"><span class="pre">None</span></code>, uses the size of the first image. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The video is written directly to <code class="docutils literal notranslate"><span class="pre">output_path</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>The output codec is <strong>H.264</strong> (requires <code class="docutils literal notranslate"><span class="pre">pyav</span></code> plugin in <code class="docutils literal notranslate"><span class="pre">imageio</span></code>).</p></li>
+<li><p>Any unreadable or malformed image will raise a <code class="docutils literal notranslate"><span class="pre">RuntimeError</span></code>.</p></li>
+</ul>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pngs_to_video</span><span class="p">(</span><span class="s2">&quot;./frames/*.png&quot;</span><span class="p">,</span> <span class="s2">&quot;movie.mp4&quot;</span><span class="p">,</span> <span class="n">fps</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pngs_to_video</span><span class="p">([</span><span class="s2">&quot;frame1.png&quot;</span><span class="p">,</span> <span class="s2">&quot;frame2.png&quot;</span><span class="p">,</span> <span class="s2">&quot;frame3.png&quot;</span><span class="p">],</span> <span class="s2">&quot;out.mp4&quot;</span><span class="p">,</span> <span class="n">resize_to</span><span class="o">=</span><span class="p">(</span><span class="mi">1280</span><span class="p">,</span> <span class="mi">720</span><span class="p">))</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </section>

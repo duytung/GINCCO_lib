@@ -380,8 +380,6 @@
 <li class="toctree-l2"><a class="reference internal" href="GINCCO_lib.map_plot.html#GINCCO_lib.map_plot.map_draw_box"><code class="docutils literal notranslate"><span class="pre">map_draw_box()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="GINCCO_lib.map_plot.html#GINCCO_lib.map_plot.map_draw_point"><code class="docutils literal notranslate"><span class="pre">map_draw_point()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="GINCCO_lib.map_plot.html#GINCCO_lib.map_plot.map_draw_uv"><code class="docutils literal notranslate"><span class="pre">map_draw_uv()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="GINCCO_lib.map_plot.html#GINCCO_lib.map_plot.nice_ticks_1d"><code class="docutils literal notranslate"><span class="pre">nice_ticks_1d()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="GINCCO_lib.map_plot.html#GINCCO_lib.map_plot.truncate_colormap"><code class="docutils literal notranslate"><span class="pre">truncate_colormap()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="GINCCO_lib.spatial_average.html">spatial_average</a><ul>
@@ -394,7 +392,6 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="GINCCO_lib.time_series_plot.html">time_series_plot</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="GINCCO_lib.time_series_plot.html#GINCCO_lib.time_series_plot.choose_locator"><code class="docutils literal notranslate"><span class="pre">choose_locator()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="GINCCO_lib.time_series_plot.html#GINCCO_lib.time_series_plot.plot_point"><code class="docutils literal notranslate"><span class="pre">plot_point()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="GINCCO_lib.time_series_plot.html#GINCCO_lib.time_series_plot.plot_point_monthly"><code class="docutils literal notranslate"><span class="pre">plot_point_monthly()</span></code></a></li>
 </ul>
@@ -648,60 +645,239 @@ Missing files are represented with NaN values.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="GINCCO_lib.map_draw">
 <span class="sig-name descname"><span class="pre">map_draw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lon_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_draw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_save</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_save</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GINCCO_lib/map_plot.html#map_draw"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.map_draw" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Draw a 2D geospatial field on a Mercator map using <code class="docutils literal notranslate"><span class="pre">Basemap</span></code> and save it as a PNG image.</p>
+<p>The function plots a rectangular region bounded by the given longitude and latitude
+limits, with grid lines and coastlines automatically drawn. The data range is scaled
+between the 5th and 95th percentiles (unless manually specified) and padded by 10%
+for better visual contrast.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lon_min</strong> (<em>float</em>) – Minimum and maximum longitude boundaries of the map.</p></li>
+<li><p><strong>lon_max</strong> (<em>float</em>) – Minimum and maximum longitude boundaries of the map.</p></li>
+<li><p><strong>lat_min</strong> (<em>float</em>) – Minimum and maximum latitude boundaries of the map.</p></li>
+<li><p><strong>lat_max</strong> (<em>float</em>) – Minimum and maximum latitude boundaries of the map.</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – Title of the map.</p></li>
+<li><p><strong>lon_data</strong> (<em>np.ndarray</em>) – 2D array of longitudes (same shape as <code class="docutils literal notranslate"><span class="pre">data_draw</span></code>).</p></li>
+<li><p><strong>lat_data</strong> (<em>np.ndarray</em>) – 2D array of latitudes (same shape as <code class="docutils literal notranslate"><span class="pre">data_draw</span></code>).</p></li>
+<li><p><strong>data_draw</strong> (<em>np.ndarray</em>) – 2D array of scalar values to plot (e.g., temperature, precipitation).</p></li>
+<li><p><strong>path_save</strong> (<em>str</em>) – Directory path where the output PNG will be saved.</p></li>
+<li><p><strong>name_save</strong> (<em>str</em>) – Base filename (without extension) for the saved image.</p></li>
+<li><p><strong>data_min</strong> (<em>float</em><em>, </em><em>optional</em>) – User-specified minimum and maximum color limits.
+If <code class="docutils literal notranslate"><span class="pre">None</span></code>, they are derived from the 5th and 95th percentiles of <code class="docutils literal notranslate"><span class="pre">data_draw</span></code>.</p></li>
+<li><p><strong>data_max</strong> (<em>float</em><em>, </em><em>optional</em>) – User-specified minimum and maximum color limits.
+If <code class="docutils literal notranslate"><span class="pre">None</span></code>, they are derived from the 5th and 95th percentiles of <code class="docutils literal notranslate"><span class="pre">data_draw</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="GINCCO_lib.map_draw_point">
 <span class="sig-name descname"><span class="pre">map_draw_point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lon_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_draw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_save</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_save</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GINCCO_lib/map_plot.html#map_draw_point"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.map_draw_point" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Draw a 2D geospatial field with annotated point markers on a Mercator map.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lon_min</strong> (<em>float</em>) – Minimum and maximum longitude boundaries of the map.</p></li>
+<li><p><strong>lon_max</strong> (<em>float</em>) – Minimum and maximum longitude boundaries of the map.</p></li>
+<li><p><strong>lat_min</strong> (<em>float</em>) – Minimum and maximum latitude boundaries of the map.</p></li>
+<li><p><strong>lat_max</strong> (<em>float</em>) – Minimum and maximum latitude boundaries of the map.</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – Title of the map.</p></li>
+<li><p><strong>lon_data</strong> (<em>np.ndarray</em>) – 2D array of longitudes (same shape as <code class="docutils literal notranslate"><span class="pre">data_draw</span></code>).</p></li>
+<li><p><strong>lat_data</strong> (<em>np.ndarray</em>) – 2D array of latitudes (same shape as <code class="docutils literal notranslate"><span class="pre">data_draw</span></code>).</p></li>
+<li><p><strong>data_draw</strong> (<em>np.ndarray</em>) – 2D array of scalar values to plot.</p></li>
+<li><p><strong>lat_point</strong> (<em>list</em><em> or </em><em>np.ndarray</em>) – List of latitudes for point markers to display.</p></li>
+<li><p><strong>lon_point</strong> (<em>list</em><em> or </em><em>np.ndarray</em>) – List of longitudes corresponding to <code class="docutils literal notranslate"><span class="pre">lat_point</span></code>.</p></li>
+<li><p><strong>path_save</strong> (<em>str</em>) – Directory path where the output image will be saved.</p></li>
+<li><p><strong>name_save</strong> (<em>str</em>) – Base name (without extension) for the output image file.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="GINCCO_lib.map_draw_uv">
 <span class="sig-name descname"><span class="pre">map_draw_uv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lon_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_u</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask_ocean</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_save</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_save</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiver_max_n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiver_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GINCCO_lib/map_plot.html#map_draw_uv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.map_draw_uv" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Draw a 2D vector field (U–V components) on a Mercator map with colored speed shading.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lon_min</strong> (<em>float</em>) – Minimum and maximum longitude boundaries of the map.</p></li>
+<li><p><strong>lon_max</strong> (<em>float</em>) – Minimum and maximum longitude boundaries of the map.</p></li>
+<li><p><strong>lat_min</strong> (<em>float</em>) – Minimum and maximum latitude boundaries of the map.</p></li>
+<li><p><strong>lat_max</strong> (<em>float</em>) – Minimum and maximum latitude boundaries of the map.</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – Title displayed at the top of the figure.</p></li>
+<li><p><strong>lon_data</strong> (<em>np.ndarray</em>) – 2D array of longitudes (same shape as <code class="docutils literal notranslate"><span class="pre">data_u</span></code> and <code class="docutils literal notranslate"><span class="pre">data_v</span></code>).</p></li>
+<li><p><strong>lat_data</strong> (<em>np.ndarray</em>) – 2D array of latitudes (same shape as <code class="docutils literal notranslate"><span class="pre">data_u</span></code> and <code class="docutils literal notranslate"><span class="pre">data_v</span></code>).</p></li>
+<li><p><strong>data_u</strong> (<em>np.ndarray</em>) – 2D array of the U-component (zonal) of the vector field.</p></li>
+<li><p><strong>data_v</strong> (<em>np.ndarray</em>) – 2D array of the V-component (meridional) of the vector field.</p></li>
+<li><p><strong>mask_ocean</strong> (<em>np.ndarray</em>) – 2D mask array (same shape as data) with <code class="docutils literal notranslate"><span class="pre">1</span></code> indicating valid (e.g., ocean) grid cells.</p></li>
+<li><p><strong>path_save</strong> (<em>str</em>) – Directory path where the output PNG file will be saved.</p></li>
+<li><p><strong>name_save</strong> (<em>str</em>) – Base filename (without extension) for the saved image.</p></li>
+<li><p><strong>quiver_max_n</strong> (<em>int</em><em>, </em><em>optional</em>) – Maximum number of quiver arrows per axis.
+The grid is automatically downsampled to at most <code class="docutils literal notranslate"><span class="pre">quiver_max_n</span> <span class="pre">×</span> <span class="pre">quiver_max_n</span></code> arrows.
+Default is 10.</p></li>
+<li><p><strong>quiver_scale</strong> (<em>float</em><em>, </em><em>optional</em>) – Scaling factor for quiver arrow lengths.
+If <code class="docutils literal notranslate"><span class="pre">None</span></code>, Matplotlib chooses automatically. Examples: <code class="docutils literal notranslate"><span class="pre">50</span></code>, <code class="docutils literal notranslate"><span class="pre">100</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The plot is saved as a PNG image in <code class="docutils literal notranslate"><span class="pre">path_save</span></code> with a random 5-digit suffix.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="GINCCO_lib.plot_heatmap">
 <span class="sig-name descname"><span class="pre">plot_heatmap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tstart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_draw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'figure'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_colors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GINCCO_lib/heatmap_plot.html#plot_heatmap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.plot_heatmap" title="Link to this definition">#</a></dt>
-<dd><p>Time–depth heatmap with pcolormesh.
-- Colormap: jet, BoundaryNorm with n_colors bins.
-- Color range: 5th to 95th percentile.
-- Colorbar: horizontal with 4–7 nice ticks.
-- X ticks: daily / monthly / yearly depending on span.
-- Output filename: name_save + “_” + random number + “.png”</p>
+<dd><p>Plot a time–depth heatmap using <code class="docutils literal notranslate"><span class="pre">pcolormesh</span></code> with adaptive color normalization and
+automatic time axis formatting.</p>
+<p>This function creates a 2D heatmap representing variations of a variable across time and
+depth. The color range is determined from percentiles (5th–95th) to minimize the impact
+of outliers, and the colorbar uses evenly spaced, human-readable tick marks. Time ticks
+are automatically adjusted to daily, monthly, or yearly intervals depending on the
+duration of the dataset. The output figure is saved as a PNG file with a random suffix
+for uniqueness.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>title</strong> (<em>str</em>) – Title of the figure.</p></li>
+<li><p><strong>tstart</strong> (<em>datetime.datetime</em>) – Start time of the dataset.</p></li>
+<li><p><strong>tend</strong> (<em>datetime.datetime</em>) – End time of the dataset. Must be later than <code class="docutils literal notranslate"><span class="pre">tstart</span></code>.</p></li>
+<li><p><strong>data_draw</strong> (<em>np.ndarray</em>) – 2D array of data values to visualize, with shape (n_time, depth).</p></li>
+<li><p><strong>depth</strong> (<em>np.ndarray</em>) – 1D array of depth values (length must match <code class="docutils literal notranslate"><span class="pre">data_draw.shape[1]</span></code>).</p></li>
+<li><p><strong>path_save</strong> (<em>str</em><em>, </em><em>optional</em>) – Directory where the output image will be saved. Default is the current directory <code class="docutils literal notranslate"><span class="pre">&quot;.&quot;</span></code>.</p></li>
+<li><p><strong>name_save</strong> (<em>str</em><em>, </em><em>optional</em>) – Base filename (without extension) used for saving the output image. Default is <code class="docutils literal notranslate"><span class="pre">&quot;figure&quot;</span></code>.</p></li>
+<li><p><strong>n_colors</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of discrete color bins used in the colormap. Must be ≥ 2. Default is 100.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Full path to the saved PNG figure.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="GINCCO_lib.plot_point">
 <span class="sig-name descname"><span class="pre">plot_point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tstart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'figure'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GINCCO_lib/time_series_plot.html#plot_point"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.plot_point" title="Link to this definition">#</a></dt>
-<dd><p>Plot daily time series for multiple points.</p>
-<dl class="simple">
-<dt>Tick rules:</dt><dd><ul class="simple">
-<li><p>&lt;= 100 days: daily ticks, format YYYYMMdd</p></li>
-<li><p>&lt;= 500 days: monthly ticks, format YYYYMM</p></li>
-<li><p>&gt; 500 days: yearly ticks, format YYYY</p></li>
+<dd><p>Plot daily time series for one or multiple points over a given time range.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>title</strong> (<em>str</em>) – Title of the plot.</p></li>
+<li><p><strong>tstart</strong> (<em>datetime.datetime</em>) – Start date of the time series.</p></li>
+<li><p><strong>tend</strong> (<em>datetime.datetime</em>) – End date of the time series.</p></li>
+<li><p><strong>data_point</strong> (<em>np.ndarray</em>) – <p>Array of time series values.
+Shape can be:</p>
+<blockquote>
+<div><ul>
+<li><p>(n_time,) — single time series.</p></li>
+<li><p>(n_point, n_time) — multiple time series.</p></li>
+</ul>
+</div></blockquote>
+</p></li>
+<li><p><strong>path_save</strong> (<em>str</em><em>, </em><em>optional</em>) – Directory where the figure will be saved. Default is the current directory <code class="docutils literal notranslate"><span class="pre">&quot;.&quot;</span></code>.</p></li>
+<li><p><strong>name_save</strong> (<em>str</em><em>, </em><em>optional</em>) – Base filename (without extension) for the saved image. Default is <code class="docutils literal notranslate"><span class="pre">&quot;figure&quot;</span></code>.</p></li>
+<li><p><strong>point_labels</strong> (<em>list</em><em> of </em><em>str</em><em>, </em><em>optional</em>) – Optional list of labels for each time series.
+If not provided, default names like “Point 1”, “Point 2”, etc. are used.</p></li>
 </ul>
 </dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Full path to the saved PNG image.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
 </dl>
-<p>Always show ~4–7 ticks for readability.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="GINCCO_lib.plot_section">
 <span class="sig-name descname"><span class="pre">plot_section</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_draw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth_array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'figure'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_colors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_ticks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GINCCO_lib/heatmap_plot.html#plot_section"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.plot_section" title="Link to this definition">#</a></dt>
-<dd><p>Time–depth heatmap with pcolormesh.
-- Colormap: jet, BoundaryNorm with n_colors bins.
-- Color range: 5th to 95th percentile.
-- Colorbar: horizontal with 4–7 nice ticks.
-- X ticks: daily / monthly / yearly depending on span.
-- Output filename: name_save + “_” + random number + “.png”</p>
+<dd><p>Plot a time–depth heatmap using <code class="docutils literal notranslate"><span class="pre">pcolormesh</span></code> with automatic color normalization and time formatting.</p>
+<p>The function visualizes a 2D time–depth dataset as a color-shaded heatmap, automatically
+selecting appropriate color limits (based on percentiles) and time axis tick intervals
+depending on the temporal span. The color scale uses a discrete “jet” colormap with
+<code class="docutils literal notranslate"><span class="pre">n_colors</span></code> bins and a horizontal colorbar.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>title</strong> (<em>str</em>) – Title of the figure.</p></li>
+<li><p><strong>tstart</strong> (<em>datetime.datetime</em>) – Start time of the dataset.</p></li>
+<li><p><strong>tend</strong> (<em>datetime.datetime</em>) – End time of the dataset. Must be later than <code class="docutils literal notranslate"><span class="pre">tstart</span></code>.</p></li>
+<li><p><strong>data_draw</strong> (<em>np.ndarray</em>) – 2D array of shape (n_time, depth) containing the data to plot.</p></li>
+<li><p><strong>depth</strong> (<em>np.ndarray</em>) – 1D array of depth values (length must match the second dimension of <code class="docutils literal notranslate"><span class="pre">data_draw</span></code>).</p></li>
+<li><p><strong>path_save</strong> (<em>str</em><em>, </em><em>optional</em>) – Directory where the output image will be saved. Defaults to the current directory (“.”).</p></li>
+<li><p><strong>name_save</strong> (<em>str</em><em>, </em><em>optional</em>) – Base name of the output file (without extension). Defaults to “figure”.</p></li>
+<li><p><strong>n_colors</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of discrete color bins for the colormap. Must be ≥ 2. Default is 100.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Full path to the saved PNG file.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="GINCCO_lib.pngs_to_video">
 <span class="sig-name descname"><span class="pre">pngs_to_video</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">24</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resize_to</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GINCCO_lib/image_to_video.html#pngs_to_video"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.pngs_to_video" title="Link to this definition">#</a></dt>
-<dd><p>Pure-Python PNG -&gt; video with imageio’s PyAV plugin.
-Enforces RGB uint8, contiguous memory, and even dimensions.</p>
+<dd><p>Convert a sequence of PNG images into an MP4 video using <code class="docutils literal notranslate"><span class="pre">imageio</span></code> with the PyAV plugin.</p>
+<p>This function reads a list or folder of PNG images, ensures that each frame
+is RGB (uint8), contiguous in memory, and has even pixel dimensions, then
+encodes them into an H.264 MP4 video file. Optionally, images can be resized
+before encoding. It provides a fully pure-Python workflow using <code class="docutils literal notranslate"><span class="pre">imageio</span></code> and
+<code class="docutils literal notranslate"><span class="pre">Pillow</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inputs</strong> (<em>str</em><em> or </em><em>list</em><em> of </em><em>str</em>) – <dl class="simple">
+<dt>Either:</dt><dd><ul>
+<li><p>a directory path containing PNG files,</p></li>
+<li><p>a glob pattern (e.g., <code class="docutils literal notranslate"><span class="pre">&quot;./frames/*.png&quot;</span></code>), or</p></li>
+<li><p>an explicit list of file paths.</p></li>
+</ul>
+</dd>
+</dl>
+</p></li>
+<li><p><strong>output_path</strong> (<em>str</em>) – Path to the output video file (e.g., <code class="docutils literal notranslate"><span class="pre">&quot;./output.mp4&quot;</span></code>).</p></li>
+<li><p><strong>fps</strong> (<em>int</em><em>, </em><em>optional</em>) – Frames per second of the output video. Default is 24.</p></li>
+<li><p><strong>resize_to</strong> (<em>tuple</em><em> of </em><em>int</em><em>, </em><em>optional</em>) – Target video frame size <code class="docutils literal notranslate"><span class="pre">(width,</span> <span class="pre">height)</span></code> in pixels.
+If <code class="docutils literal notranslate"><span class="pre">None</span></code>, uses the size of the first image. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The video is written directly to <code class="docutils literal notranslate"><span class="pre">output_path</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>The output codec is <strong>H.264</strong> (requires <code class="docutils literal notranslate"><span class="pre">pyav</span></code> plugin in <code class="docutils literal notranslate"><span class="pre">imageio</span></code>).</p></li>
+<li><p>Any unreadable or malformed image will raise a <code class="docutils literal notranslate"><span class="pre">RuntimeError</span></code>.</p></li>
+</ul>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">pngs_to_video</span><span class="p">(</span><span class="s2">&quot;./frames/*.png&quot;</span><span class="p">,</span> <span class="s2">&quot;movie.mp4&quot;</span><span class="p">,</span> <span class="n">fps</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pngs_to_video</span><span class="p">([</span><span class="s2">&quot;frame1.png&quot;</span><span class="p">,</span> <span class="s2">&quot;frame2.png&quot;</span><span class="p">,</span> <span class="s2">&quot;frame3.png&quot;</span><span class="p">],</span> <span class="s2">&quot;out.mp4&quot;</span><span class="p">,</span> <span class="n">resize_to</span><span class="o">=</span><span class="p">(</span><span class="mi">1280</span><span class="p">,</span> <span class="mi">720</span><span class="p">))</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </section>

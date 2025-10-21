@@ -337,34 +337,127 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="GINCCO_lib.map_plot.map_draw">
 <span class="sig-name descname"><span class="pre">map_draw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lon_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_draw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_save</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_save</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/GINCCO_lib/map_plot.html#map_draw"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.map_plot.map_draw" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Draw a 2D geospatial field on a Mercator map using <code class="docutils literal notranslate"><span class="pre">Basemap</span></code> and save it as a PNG image.</p>
+<p>The function plots a rectangular region bounded by the given longitude and latitude
+limits, with grid lines and coastlines automatically drawn. The data range is scaled
+between the 5th and 95th percentiles (unless manually specified) and padded by 10%
+for better visual contrast.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lon_min</strong> (<em>float</em>) – Minimum and maximum longitude boundaries of the map.</p></li>
+<li><p><strong>lon_max</strong> (<em>float</em>) – Minimum and maximum longitude boundaries of the map.</p></li>
+<li><p><strong>lat_min</strong> (<em>float</em>) – Minimum and maximum latitude boundaries of the map.</p></li>
+<li><p><strong>lat_max</strong> (<em>float</em>) – Minimum and maximum latitude boundaries of the map.</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – Title of the map.</p></li>
+<li><p><strong>lon_data</strong> (<em>np.ndarray</em>) – 2D array of longitudes (same shape as <code class="docutils literal notranslate"><span class="pre">data_draw</span></code>).</p></li>
+<li><p><strong>lat_data</strong> (<em>np.ndarray</em>) – 2D array of latitudes (same shape as <code class="docutils literal notranslate"><span class="pre">data_draw</span></code>).</p></li>
+<li><p><strong>data_draw</strong> (<em>np.ndarray</em>) – 2D array of scalar values to plot (e.g., temperature, precipitation).</p></li>
+<li><p><strong>path_save</strong> (<em>str</em>) – Directory path where the output PNG will be saved.</p></li>
+<li><p><strong>name_save</strong> (<em>str</em>) – Base filename (without extension) for the saved image.</p></li>
+<li><p><strong>data_min</strong> (<em>float</em><em>, </em><em>optional</em>) – User-specified minimum and maximum color limits.
+If <code class="docutils literal notranslate"><span class="pre">None</span></code>, they are derived from the 5th and 95th percentiles of <code class="docutils literal notranslate"><span class="pre">data_draw</span></code>.</p></li>
+<li><p><strong>data_max</strong> (<em>float</em><em>, </em><em>optional</em>) – User-specified minimum and maximum color limits.
+If <code class="docutils literal notranslate"><span class="pre">None</span></code>, they are derived from the 5th and 95th percentiles of <code class="docutils literal notranslate"><span class="pre">data_draw</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="GINCCO_lib.map_plot.map_draw_box">
 <span class="sig-name descname"><span class="pre">map_draw_box</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lon_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_draw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_min_box</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_max_box</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_min_box</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_max_box</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_save</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_save</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/GINCCO_lib/map_plot.html#map_draw_box"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.map_plot.map_draw_box" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Draw a 2D geospatial field on a Mercator map with labeled rectangular boxes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lon_min</strong> (<em>float</em>) – Minimum and maximum longitude boundaries of the map.</p></li>
+<li><p><strong>lon_max</strong> (<em>float</em>) – Minimum and maximum longitude boundaries of the map.</p></li>
+<li><p><strong>lat_min</strong> (<em>float</em>) – Minimum and maximum latitude boundaries of the map.</p></li>
+<li><p><strong>lat_max</strong> (<em>float</em>) – Minimum and maximum latitude boundaries of the map.</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – Title displayed at the top of the figure.</p></li>
+<li><p><strong>lon_data</strong> (<em>np.ndarray</em>) – 2D array of longitudes (same shape as <code class="docutils literal notranslate"><span class="pre">data_draw</span></code>).</p></li>
+<li><p><strong>lat_data</strong> (<em>np.ndarray</em>) – 2D array of latitudes (same shape as <code class="docutils literal notranslate"><span class="pre">data_draw</span></code>).</p></li>
+<li><p><strong>data_draw</strong> (<em>np.ndarray</em>) – 2D array of scalar values to visualize (e.g., rainfall, temperature).</p></li>
+<li><p><strong>lon_min_box</strong> (<em>list</em><em> or </em><em>np.ndarray</em>) – Lists of minimum and maximum longitudes for each box.</p></li>
+<li><p><strong>lon_max_box</strong> (<em>list</em><em> or </em><em>np.ndarray</em>) – Lists of minimum and maximum longitudes for each box.</p></li>
+<li><p><strong>lat_min_box</strong> (<em>list</em><em> or </em><em>np.ndarray</em>) – Lists of minimum and maximum latitudes for each box.</p></li>
+<li><p><strong>lat_max_box</strong> (<em>list</em><em> or </em><em>np.ndarray</em>) – Lists of minimum and maximum latitudes for each box.</p></li>
+<li><p><strong>label</strong> (<em>list</em><em> of </em><em>str</em>) – Text labels to annotate each box. Length must match the number of boxes.</p></li>
+<li><p><strong>path_save</strong> (<em>str</em>) – Directory path where the output PNG file will be saved.</p></li>
+<li><p><strong>name_save</strong> (<em>str</em>) – Base filename (without extension) for the saved image.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="GINCCO_lib.map_plot.map_draw_point">
 <span class="sig-name descname"><span class="pre">map_draw_point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lon_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_draw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_save</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_save</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/GINCCO_lib/map_plot.html#map_draw_point"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.map_plot.map_draw_point" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
+<dd><p>Draw a 2D geospatial field with annotated point markers on a Mercator map.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lon_min</strong> (<em>float</em>) – Minimum and maximum longitude boundaries of the map.</p></li>
+<li><p><strong>lon_max</strong> (<em>float</em>) – Minimum and maximum longitude boundaries of the map.</p></li>
+<li><p><strong>lat_min</strong> (<em>float</em>) – Minimum and maximum latitude boundaries of the map.</p></li>
+<li><p><strong>lat_max</strong> (<em>float</em>) – Minimum and maximum latitude boundaries of the map.</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – Title of the map.</p></li>
+<li><p><strong>lon_data</strong> (<em>np.ndarray</em>) – 2D array of longitudes (same shape as <code class="docutils literal notranslate"><span class="pre">data_draw</span></code>).</p></li>
+<li><p><strong>lat_data</strong> (<em>np.ndarray</em>) – 2D array of latitudes (same shape as <code class="docutils literal notranslate"><span class="pre">data_draw</span></code>).</p></li>
+<li><p><strong>data_draw</strong> (<em>np.ndarray</em>) – 2D array of scalar values to plot.</p></li>
+<li><p><strong>lat_point</strong> (<em>list</em><em> or </em><em>np.ndarray</em>) – List of latitudes for point markers to display.</p></li>
+<li><p><strong>lon_point</strong> (<em>list</em><em> or </em><em>np.ndarray</em>) – List of longitudes corresponding to <code class="docutils literal notranslate"><span class="pre">lat_point</span></code>.</p></li>
+<li><p><strong>path_save</strong> (<em>str</em>) – Directory path where the output image will be saved.</p></li>
+<li><p><strong>name_save</strong> (<em>str</em>) – Base name (without extension) for the output image file.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="GINCCO_lib.map_plot.map_draw_uv">
 <span class="sig-name descname"><span class="pre">map_draw_uv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lon_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_u</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask_ocean</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_save</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_save</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiver_max_n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiver_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/GINCCO_lib/map_plot.html#map_draw_uv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.map_plot.map_draw_uv" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="GINCCO_lib.map_plot.nice_ticks_1d">
-<span class="sig-name descname"><span class="pre">nice_ticks_1d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_ticks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/GINCCO_lib/map_plot.html#nice_ticks_1d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.map_plot.nice_ticks_1d" title="Link to this definition">#</a></dt>
-<dd><p>Return a list of ‘nice’ tick values between dmin and dmax.
-The number of ticks will be &lt;= max_ticks (default=5).</p>
+<dd><p>Draw a 2D vector field (U–V components) on a Mercator map with colored speed shading.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lon_min</strong> (<em>float</em>) – Minimum and maximum longitude boundaries of the map.</p></li>
+<li><p><strong>lon_max</strong> (<em>float</em>) – Minimum and maximum longitude boundaries of the map.</p></li>
+<li><p><strong>lat_min</strong> (<em>float</em>) – Minimum and maximum latitude boundaries of the map.</p></li>
+<li><p><strong>lat_max</strong> (<em>float</em>) – Minimum and maximum latitude boundaries of the map.</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – Title displayed at the top of the figure.</p></li>
+<li><p><strong>lon_data</strong> (<em>np.ndarray</em>) – 2D array of longitudes (same shape as <code class="docutils literal notranslate"><span class="pre">data_u</span></code> and <code class="docutils literal notranslate"><span class="pre">data_v</span></code>).</p></li>
+<li><p><strong>lat_data</strong> (<em>np.ndarray</em>) – 2D array of latitudes (same shape as <code class="docutils literal notranslate"><span class="pre">data_u</span></code> and <code class="docutils literal notranslate"><span class="pre">data_v</span></code>).</p></li>
+<li><p><strong>data_u</strong> (<em>np.ndarray</em>) – 2D array of the U-component (zonal) of the vector field.</p></li>
+<li><p><strong>data_v</strong> (<em>np.ndarray</em>) – 2D array of the V-component (meridional) of the vector field.</p></li>
+<li><p><strong>mask_ocean</strong> (<em>np.ndarray</em>) – 2D mask array (same shape as data) with <code class="docutils literal notranslate"><span class="pre">1</span></code> indicating valid (e.g., ocean) grid cells.</p></li>
+<li><p><strong>path_save</strong> (<em>str</em>) – Directory path where the output PNG file will be saved.</p></li>
+<li><p><strong>name_save</strong> (<em>str</em>) – Base filename (without extension) for the saved image.</p></li>
+<li><p><strong>quiver_max_n</strong> (<em>int</em><em>, </em><em>optional</em>) – Maximum number of quiver arrows per axis.
+The grid is automatically downsampled to at most <code class="docutils literal notranslate"><span class="pre">quiver_max_n</span> <span class="pre">×</span> <span class="pre">quiver_max_n</span></code> arrows.
+Default is 10.</p></li>
+<li><p><strong>quiver_scale</strong> (<em>float</em><em>, </em><em>optional</em>) – Scaling factor for quiver arrow lengths.
+If <code class="docutils literal notranslate"><span class="pre">None</span></code>, Matplotlib chooses automatically. Examples: <code class="docutils literal notranslate"><span class="pre">50</span></code>, <code class="docutils literal notranslate"><span class="pre">100</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The plot is saved as a PNG image in <code class="docutils literal notranslate"><span class="pre">path_save</span></code> with a random 5-digit suffix.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
 </dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="GINCCO_lib.map_plot.truncate_colormap">
-<span class="sig-name descname"><span class="pre">truncate_colormap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cmap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">256</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/GINCCO_lib/map_plot.html#truncate_colormap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.map_plot.truncate_colormap" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
 
 </section>
 
@@ -395,8 +488,6 @@ The number of ticks will be &lt;= max_ticks (default=5).</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#GINCCO_lib.map_plot.map_draw_box"><code class="docutils literal notranslate"><span class="pre">map_draw_box()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#GINCCO_lib.map_plot.map_draw_point"><code class="docutils literal notranslate"><span class="pre">map_draw_point()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#GINCCO_lib.map_plot.map_draw_uv"><code class="docutils literal notranslate"><span class="pre">map_draw_uv()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#GINCCO_lib.map_plot.nice_ticks_1d"><code class="docutils literal notranslate"><span class="pre">nice_ticks_1d()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#GINCCO_lib.map_plot.truncate_colormap"><code class="docutils literal notranslate"><span class="pre">truncate_colormap()</span></code></a></li>
 </ul>
   </nav></div>
 

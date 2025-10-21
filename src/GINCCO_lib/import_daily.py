@@ -7,31 +7,13 @@ import numpy as np
 from netCDF4 import Dataset 
 
 #############################
-'''
-This module usse to import a single file.
-
-List of functions: 
-* import_section: import vertical section along a line of longitude or latitude (output shape: [x,z])
-
-
-Features: 
-* Automatically load the correct grid indice (_u, _v, _w, ...)
-* For multiple file, it will check if all the file is available or not, before really load the file to avoid crash in the middle. 
-* You can choose to stop the script if any file is missing, or fill the data on that date with nan value
-
-'''
-#############################
-import numpy as np
 
 def section_extract(lat_array, lon_array, depth_array, lat, lon,
                     method="idw", power=2, max_iter=20, tol=1e-10, eps=1e-10):
     """
     Build a vertical section along given (lat, lon) points on a curvilinear grid,
     and return both the interpolated depth_array section and a callable to apply the
-    same section to any 3-D scalar field on the same grid.
-
-    Notes:
-    Currently, we only support scalar fields (e.g., temperature, salinity), not vector fields.
+    same section to any 3-D scalar field on the same grid.    
 
     Algorithm:
     The data will be imported horizontally, layer by layer, and then all layers will be concatenated to form a section.
@@ -88,6 +70,7 @@ def section_extract(lat_array, lon_array, depth_array, lat, lon,
       P(s, t) matches the query point inside that cell. Falls back to IDW if
       the solve fails for a point.
     - depth_array is interpolated with the same precomputed weights.
+    - Currently, we only support scalar fields (e.g., temperature, salinity), not vector fields.
     """
 
     # -----------------------------
@@ -345,7 +328,7 @@ def data_interp(depth_sec, data_sec, depth_interval=1.0):
     Interpolate irregular-depth section data (nz, M) onto one shared regular depth grid.
 
     Assumptions
-    ----------
+    -----------
     - Each column in depth_sec is ordered (shallow to deep).
     - No extrapolation: values outside a column's native range are NaN.
 
