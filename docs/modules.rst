@@ -2,8 +2,9 @@ GINCCO_lib package
 ==================
 
 .. toctree::
-      :maxdepth: 2
-
+   :maxdepth: 2
+   
+   GINCCO_lib
    GINCCO_lib.geostrophic_current
    GINCCO_lib.heatmap_plot
    GINCCO_lib.image_to_video

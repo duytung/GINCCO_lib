@@ -11,6 +11,8 @@ Welcome to GINCCO_lib's documentation!
    :caption: Contents:
 
    modules
+   test_autodoc
+
 
 
 Indices and tables
