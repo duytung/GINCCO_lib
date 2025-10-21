@@ -37,12 +37,39 @@ def plot_heatmap(
     n_colors=100       # number of discrete color bins
 ):
     """
-    Time–depth heatmap with pcolormesh.
-    - Colormap: jet, BoundaryNorm with n_colors bins.
-    - Color range: 5th to 95th percentile.
-    - Colorbar: horizontal with 4–7 nice ticks.
-    - X ticks: daily / monthly / yearly depending on span.
-    - Output filename: name_save + "_" + random number + ".png"
+    Plot a time–depth heatmap using ``pcolormesh`` with adaptive color normalization and
+    automatic time axis formatting.
+
+    This function creates a 2D heatmap representing variations of a variable across time and
+    depth. The color range is determined from percentiles (5th–95th) to minimize the impact
+    of outliers, and the colorbar uses evenly spaced, human-readable tick marks. Time ticks
+    are automatically adjusted to daily, monthly, or yearly intervals depending on the
+    duration of the dataset. The output figure is saved as a PNG file with a random suffix
+    for uniqueness.
+
+    Parameters
+    ----------
+    title : str
+        Title of the figure.
+    tstart : datetime.datetime
+        Start time of the dataset.
+    tend : datetime.datetime
+        End time of the dataset. Must be later than ``tstart``.
+    data_draw : np.ndarray
+        2D array of data values to visualize, with shape (n_time, depth).
+    depth : np.ndarray
+        1D array of depth values (length must match ``data_draw.shape[1]``).
+    path_save : str, optional
+        Directory where the output image will be saved. Default is the current directory ``"."``.
+    name_save : str, optional
+        Base filename (without extension) used for saving the output image. Default is ``"figure"``.
+    n_colors : int, optional
+        Number of discrete color bins used in the colormap. Must be ≥ 2. Default is 100.
+
+    Returns
+    -------
+    str
+        Full path to the saved PNG figure.
     """
     if data_draw.ndim != 2:
         raise ValueError("data_draw must be 2D (n_time, depth).")
@@ -146,12 +173,36 @@ def plot_section(
     n_ticks = 5
 ):
     """
-    Time–depth heatmap with pcolormesh.
-    - Colormap: jet, BoundaryNorm with n_colors bins.
-    - Color range: 5th to 95th percentile.
-    - Colorbar: horizontal with 4–7 nice ticks.
-    - X ticks: daily / monthly / yearly depending on span.
-    - Output filename: name_save + "_" + random number + ".png"
+    Plot a time–depth heatmap using ``pcolormesh`` with automatic color normalization and time formatting.
+
+    The function visualizes a 2D time–depth dataset as a color-shaded heatmap, automatically
+    selecting appropriate color limits (based on percentiles) and time axis tick intervals
+    depending on the temporal span. The color scale uses a discrete "jet" colormap with
+    ``n_colors`` bins and a horizontal colorbar.
+
+    Parameters
+    ----------
+    title : str
+        Title of the figure.
+    tstart : datetime.datetime
+        Start time of the dataset.
+    tend : datetime.datetime
+        End time of the dataset. Must be later than ``tstart``.
+    data_draw : np.ndarray
+        2D array of shape (n_time, depth) containing the data to plot.
+    depth : np.ndarray
+        1D array of depth values (length must match the second dimension of ``data_draw``).
+    path_save : str, optional
+        Directory where the output image will be saved. Defaults to the current directory (".").
+    name_save : str, optional
+        Base name of the output file (without extension). Defaults to "figure".
+    n_colors : int, optional
+        Number of discrete color bins for the colormap. Must be ≥ 2. Default is 100.
+
+    Returns
+    -------
+    str
+        Full path to the saved PNG file.
     """
     if data_draw.ndim != 2:
         raise ValueError("data_draw must be 2D (n_time, depth).")

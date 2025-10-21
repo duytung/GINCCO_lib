@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import random
 
-def choose_locator(tstart, tend):
+def _choose_locator(tstart, tend):
     duration_days = (tend - tstart).days
 
     if duration_days <= 100:  # short range
@@ -35,13 +35,33 @@ def plot_point(
     point_labels=None  # optional list of names for each point
 ):
     """
-    Plot daily time series for multiple points.
+    Plot daily time series for one or multiple points over a given time range.
 
-    Tick rules:
-      * <= 100 days: daily ticks, format YYYYMMdd
-      * <= 500 days: monthly ticks, format YYYYMM
-      * > 500 days: yearly ticks, format YYYY
-    Always show ~4–7 ticks for readability.
+    Parameters
+    ----------
+    title : str
+        Title of the plot.
+    tstart : datetime.datetime
+        Start date of the time series.
+    tend : datetime.datetime
+        End date of the time series.
+    data_point : np.ndarray
+        Array of time series values.  
+        Shape can be:
+          * (n_time,) — single time series.
+          * (n_point, n_time) — multiple time series.
+    path_save : str, optional
+        Directory where the figure will be saved. Default is the current directory ``"."``.
+    name_save : str, optional
+        Base filename (without extension) for the saved image. Default is ``"figure"``.
+    point_labels : list of str, optional
+        Optional list of labels for each time series.  
+        If not provided, default names like “Point 1”, “Point 2”, etc. are used.
+
+    Returns
+    -------
+    str
+        Full path to the saved PNG image.
     """
 
     # Build daily time axis
@@ -81,7 +101,7 @@ def plot_point(
     ax.legend(ncol=1, fontsize=9, frameon=True)
 
     # Apply formatter
-    locator, fmt = choose_locator(tstart, tend)
+    locator, fmt = _choose_locator(tstart, tend)
     ax.xaxis.set_major_locator(locator)
     ax.xaxis.set_major_formatter(fmt)
 
@@ -162,11 +182,37 @@ def plot_point_monthly(
     point_labels=None   # optional list of names for each point
 ):
     """
-    Plot monthly time series for one or many points.
-    - x axis uses 'time_label' directly
-    - the number of ticks is chosen to be 'nice' and near n_xticks_desired
-    - always includes the last month as a tick
+    Plot monthly time series for one or multiple points using custom tick labels.
+
+    Parameters
+    ----------
+    title : str
+        Title of the figure.
+    time_label : sequence of str
+        Sequence of labels for the x-axis, typically months or years.
+        Length must match the time dimension of ``data_point``.
+    data_point : np.ndarray
+        Time series data array.  
+        Shape can be:
+          * (n_time,) — single time series.
+          * (n_point, n_time) — multiple time series.
+    n_xticks_desired : int, optional
+        Desired number of x-axis ticks. The function adjusts this automatically
+        to achieve clean and evenly spaced labels. Default is 6.
+    path_save : str, optional
+        Directory path where the output image will be saved. Default is ``"."``.
+    name_save : str, optional
+        Base name (without extension) for the saved image. Default is ``"figure"``.
+    point_labels : list of str, optional
+        Optional list of names for each time series.  
+        If not provided, default names like “Point 1”, “Point 2”, etc. are used.
+
+    Returns
+    -------
+    str
+        Full path to the saved PNG image.
     """
+
     # Validate shapes
     time_label = [str(x) for x in time_label]
     if np.ndim(data_point) == 1:

@@ -95,7 +95,7 @@ def _pad_10pct(minv, maxv):
 #########################################################
 # these function below set a nice tick for 
 
-def nice_ticks_1d(dmin, dmax, max_ticks=5):
+def _nice_ticks_1d(dmin, dmax, max_ticks=5):
     """
     Return a list of 'nice' tick values between dmin and dmax.
     The number of ticks will be <= max_ticks (default=5).
@@ -152,6 +152,45 @@ def nice_ticks_1d(dmin, dmax, max_ticks=5):
 #########################################################
 
 def map_draw(lon_min, lon_max, lat_min, lat_max, title, lon_data, lat_data, data_draw, path_save, name_save, data_min=None, data_max=None):
+
+    """
+    Draw a 2D geospatial field on a Mercator map using ``Basemap`` and save it as a PNG image.
+
+    The function plots a rectangular region bounded by the given longitude and latitude
+    limits, with grid lines and coastlines automatically drawn. The data range is scaled
+    between the 5th and 95th percentiles (unless manually specified) and padded by 10%
+    for better visual contrast.
+
+    Parameters
+    ----------
+    lon_min, lon_max : float
+        Minimum and maximum longitude boundaries of the map.
+    lat_min, lat_max : float
+        Minimum and maximum latitude boundaries of the map.
+    title : str
+        Title of the map.
+    lon_data : np.ndarray
+        2D array of longitudes (same shape as ``data_draw``).
+    lat_data : np.ndarray
+        2D array of latitudes (same shape as ``data_draw``).
+    data_draw : np.ndarray
+        2D array of scalar values to plot (e.g., temperature, precipitation).
+    path_save : str
+        Directory path where the output PNG will be saved.
+    name_save : str
+        Base filename (without extension) for the saved image.
+    data_min, data_max : float, optional
+        User-specified minimum and maximum color limits.  
+        If ``None``, they are derived from the 5th and 95th percentiles of ``data_draw``.
+
+    Returns
+    -------
+    None
+    
+    """
+
+
+
     dlon = lon_max - lon_min
     dlat = lat_max - lat_min
     dy = np.around(dlat/dlon, 1)
@@ -167,8 +206,8 @@ def map_draw(lon_min, lon_max, lat_min, lat_max, title, lon_data, lat_data, data
     map2 = Basemap(projection='merc', llcrnrlon=lon_min, llcrnrlat=lat_min,
                    urcrnrlon=lon_max, urcrnrlat=lat_max, resolution='i', epsg=4326)
 
-    parallels = nice_ticks_1d(np.nanmin(lat_data), np.nanmax(lat_data))  #horizontal line
-    meridians = nice_ticks_1d(np.nanmin(lon_data), np.nanmax(lon_data))  #vertical line
+    parallels = _nice_ticks_1d(np.nanmin(lat_data), np.nanmax(lat_data))  #horizontal line
+    meridians = _nice_ticks_1d(np.nanmin(lon_data), np.nanmax(lon_data))  #vertical line
     map2.drawparallels(parallels, linewidth=0.5, dashes=[2,8], labels=[1,0,0,0], fontsize=15, zorder=12)
     map2.drawmeridians(meridians, linewidth=0.5, dashes=[2,8], labels=[0,0,0,1], fontsize=15, zorder=12)
     map2.drawcoastlines(zorder=10)
@@ -223,6 +262,36 @@ def map_draw(lon_min, lon_max, lat_min, lat_max, title, lon_data, lat_data, data
 #########################################################
 
 def map_draw_point(lon_min, lon_max, lat_min, lat_max, title, lon_data, lat_data, data_draw, lat_point, lon_point, path_save, name_save):
+    """
+    Draw a 2D geospatial field with annotated point markers on a Mercator map.
+
+    Parameters
+    ----------
+    lon_min, lon_max : float
+        Minimum and maximum longitude boundaries of the map.
+    lat_min, lat_max : float
+        Minimum and maximum latitude boundaries of the map.
+    title : str
+        Title of the map.
+    lon_data : np.ndarray
+        2D array of longitudes (same shape as ``data_draw``).
+    lat_data : np.ndarray
+        2D array of latitudes (same shape as ``data_draw``).
+    data_draw : np.ndarray
+        2D array of scalar values to plot.
+    lat_point : list or np.ndarray
+        List of latitudes for point markers to display.
+    lon_point : list or np.ndarray
+        List of longitudes corresponding to ``lat_point``.
+    path_save : str
+        Directory path where the output image will be saved.
+    name_save : str
+        Base name (without extension) for the output image file.
+
+    Returns
+    -------
+    None
+    """
     dlon = lon_max - lon_min
     dlat = lat_max - lat_min
     dy = np.around(dlat/dlon, 1)
@@ -238,8 +307,8 @@ def map_draw_point(lon_min, lon_max, lat_min, lat_max, title, lon_data, lat_data
     map2 = Basemap(projection='merc', llcrnrlon=lon_min, llcrnrlat=lat_min,
                    urcrnrlon=lon_max, urcrnrlat=lat_max, resolution='i', epsg=4326)
 
-    parallels = nice_ticks_1d(np.nanmin(lat_data), np.nanmax(lat_data))  #horizontal line
-    meridians = nice_ticks_1d(np.nanmin(lon_data), np.nanmax(lon_data))  #vertical line
+    parallels = _nice_ticks_1d(np.nanmin(lat_data), np.nanmax(lat_data))  #horizontal line
+    meridians = _nice_ticks_1d(np.nanmin(lon_data), np.nanmax(lon_data))  #vertical line
     map2.drawparallels(parallels, linewidth=0.5, dashes=[2,8], labels=[1,0,0,0], fontsize=15, zorder=12)
     map2.drawmeridians(meridians, linewidth=0.5, dashes=[2,8], labels=[0,0,0,1], fontsize=15, zorder=12)
     map2.drawcoastlines(zorder=10)
@@ -288,6 +357,40 @@ def map_draw_point(lon_min, lon_max, lat_min, lat_max, title, lon_data, lat_data
 
 def map_draw_box(lon_min, lon_max, lat_min, lat_max, title, lon_data, lat_data, data_draw, 
     lon_min_box, lon_max_box, lat_min_box, lat_max_box, label, path_save, name_save):
+
+    """
+    Draw a 2D geospatial field on a Mercator map with labeled rectangular boxes.
+
+    Parameters
+    ----------
+    lon_min, lon_max : float
+        Minimum and maximum longitude boundaries of the map.
+    lat_min, lat_max : float
+        Minimum and maximum latitude boundaries of the map.
+    title : str
+        Title displayed at the top of the figure.
+    lon_data : np.ndarray
+        2D array of longitudes (same shape as ``data_draw``).
+    lat_data : np.ndarray
+        2D array of latitudes (same shape as ``data_draw``).
+    data_draw : np.ndarray
+        2D array of scalar values to visualize (e.g., rainfall, temperature).
+    lon_min_box, lon_max_box : list or np.ndarray
+        Lists of minimum and maximum longitudes for each box.
+    lat_min_box, lat_max_box : list or np.ndarray
+        Lists of minimum and maximum latitudes for each box.
+    label : list of str
+        Text labels to annotate each box. Length must match the number of boxes.
+    path_save : str
+        Directory path where the output PNG file will be saved.
+    name_save : str
+        Base filename (without extension) for the saved image.
+
+    Returns
+    -------
+    None
+    """
+
     
     dlon = lon_max - lon_min
     dlat = lat_max - lat_min
@@ -304,8 +407,8 @@ def map_draw_box(lon_min, lon_max, lat_min, lat_max, title, lon_data, lat_data, 
     map2 = Basemap(projection='merc', llcrnrlon=lon_min, llcrnrlat=lat_min,
                    urcrnrlon=lon_max, urcrnrlat=lat_max, resolution='i', epsg=4326)
 
-    parallels = nice_ticks_1d(np.nanmin(lat_data), np.nanmax(lat_data))  #horizontal line
-    meridians = nice_ticks_1d(np.nanmin(lon_data), np.nanmax(lon_data))  #vertical line
+    parallels = _nice_ticks_1d(np.nanmin(lat_data), np.nanmax(lat_data))  #horizontal line
+    meridians = _nice_ticks_1d(np.nanmin(lon_data), np.nanmax(lon_data))  #vertical line
     map2.drawparallels(parallels, linewidth=0.5, dashes=[2,8], labels=[1,0,0,0], fontsize=15, zorder=12)
     map2.drawmeridians(meridians, linewidth=0.5, dashes=[2,8], labels=[0,0,0,1], fontsize=15, zorder=12)
     map2.drawcoastlines(zorder=10)
@@ -374,7 +477,7 @@ def map_draw_box(lon_min, lon_max, lat_min, lat_max, title, lon_data, lat_data, 
 
 
 
-def truncate_colormap(cmap, minval=0.0, maxval=1.0, n=256):
+def _truncate_colormap(cmap, minval=0.0, maxval=1.0, n=256):
     if isinstance(cmap, str):
         cmap = plt.get_cmap(cmap)
     new_cmap = mcolors.LinearSegmentedColormap.from_list(
@@ -393,6 +496,51 @@ def map_draw_uv(
     quiver_max_n=10,   # ~max arrows per axis (auto step so arrows <= quiver_max_n x quiver_max_n)
     quiver_scale=None  # None lets Matplotlib choose; or set e.g. 50, 100 for different scaling
 ):
+    
+    """
+    Draw a 2D vector field (U–V components) on a Mercator map with colored speed shading.
+
+
+
+    Parameters
+    ----------
+    lon_min, lon_max : float
+        Minimum and maximum longitude boundaries of the map.
+    lat_min, lat_max : float
+        Minimum and maximum latitude boundaries of the map.
+    title : str
+        Title displayed at the top of the figure.
+    lon_data : np.ndarray
+        2D array of longitudes (same shape as ``data_u`` and ``data_v``).
+    lat_data : np.ndarray
+        2D array of latitudes (same shape as ``data_u`` and ``data_v``).
+    data_u : np.ndarray
+        2D array of the U-component (zonal) of the vector field.
+    data_v : np.ndarray
+        2D array of the V-component (meridional) of the vector field.
+    mask_ocean : np.ndarray
+        2D mask array (same shape as data) with ``1`` indicating valid (e.g., ocean) grid cells.
+    path_save : str
+        Directory path where the output PNG file will be saved.
+    name_save : str
+        Base filename (without extension) for the saved image.
+    quiver_max_n : int, optional
+        Maximum number of quiver arrows per axis.  
+        The grid is automatically downsampled to at most ``quiver_max_n × quiver_max_n`` arrows.
+        Default is 10.
+    quiver_scale : float, optional
+        Scaling factor for quiver arrow lengths.  
+        If ``None``, Matplotlib chooses automatically. Examples: ``50``, ``100``.
+
+    Returns
+    -------
+    None
+        The plot is saved as a PNG image in ``path_save`` with a random 5-digit suffix.
+
+    """
+
+
+
     # --- Figure geometry like your original ---
     dlon = lon_max - lon_min
     dlat = lat_max - lat_min
@@ -414,8 +562,8 @@ def map_draw_uv(
     )
 
     # Grid lines and coast
-    parallels = nice_ticks_1d(np.nanmin(lat_data), np.nanmax(lat_data))
-    meridians = nice_ticks_1d(np.nanmin(lon_data), np.nanmax(lon_data))
+    parallels = _nice_ticks_1d(np.nanmin(lat_data), np.nanmax(lat_data))
+    meridians = _nice_ticks_1d(np.nanmin(lon_data), np.nanmax(lon_data))
     map2.drawparallels(parallels, linewidth=0.5, dashes=[2,8], labels=[1,0,0,0], fontsize=15, zorder=12)
     map2.drawmeridians(meridians, linewidth=0.5, dashes=[2,8], labels=[0,0,0,1], fontsize=15, zorder=12)
     map2.drawcoastlines(zorder=10)
@@ -436,7 +584,7 @@ def map_draw_uv(
     ticks = _pretty_ticks(vmin_pad, vmax_pad)
 
     # Colormap
-    cmap = truncate_colormap("YlOrBr", 0.0, 0.6)
+    cmap = _truncate_colormap("YlOrBr", 0.0, 0.6)
     cmap.set_bad(color='white')
     norm = colors.Normalize(vmin=ticks[0], vmax=ticks[-1])
 
@@ -456,7 +604,7 @@ def map_draw_uv(
     lat_small_1d = np.linspace(np.nanmin(lat_data), np.nanmax(lat_data), quiver_max_n)
     lon_small, lat_small = np.meshgrid(lon_small_1d, lat_small_1d)
 
-    # --- Lấy giá trị gần nhất từ data_u, data_v ---
+    # --- Obtain nearest value from data_u, data_v ---
     u_q = np.full_like(lon_small, np.nan, dtype=float)
     v_q = np.full_like(lon_small, np.nan, dtype=float)
 

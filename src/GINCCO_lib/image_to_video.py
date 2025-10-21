@@ -18,10 +18,44 @@ def _ensure_even_hw(arr):
     return arr
 
 def pngs_to_video(inputs, output_path, fps=24, resize_to=None):
-
     """
-    Pure-Python PNG -> video with imageio's PyAV plugin.
-    Enforces RGB uint8, contiguous memory, and even dimensions.
+    Convert a sequence of PNG images into an MP4 video using ``imageio`` with the PyAV plugin.
+
+    This function reads a list or folder of PNG images, ensures that each frame
+    is RGB (uint8), contiguous in memory, and has even pixel dimensions, then
+    encodes them into an H.264 MP4 video file. Optionally, images can be resized
+    before encoding. It provides a fully pure-Python workflow using ``imageio`` and
+    ``Pillow``.
+
+    Parameters
+    ----------
+    inputs : str or list of str
+        Either:
+          * a directory path containing PNG files,
+          * a glob pattern (e.g., ``"./frames/*.png"``), or
+          * an explicit list of file paths.
+    output_path : str
+        Path to the output video file (e.g., ``"./output.mp4"``).
+    fps : int, optional
+        Frames per second of the output video. Default is 24.
+    resize_to : tuple of int, optional
+        Target video frame size ``(width, height)`` in pixels.  
+        If ``None``, uses the size of the first image. Default is ``None``.
+
+    Returns
+    -------
+    None
+        The video is written directly to ``output_path``.
+
+    Notes
+    -----
+    - The output codec is **H.264** (requires ``pyav`` plugin in ``imageio``).
+    - Any unreadable or malformed image will raise a ``RuntimeError``.
+
+    Examples
+    --------
+    >>> pngs_to_video("./frames/*.png", "movie.mp4", fps=30)
+    >>> pngs_to_video(["frame1.png", "frame2.png", "frame3.png"], "out.mp4", resize_to=(1280, 720))
     """
 
     try:

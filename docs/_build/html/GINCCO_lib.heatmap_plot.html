@@ -342,23 +342,64 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="GINCCO_lib.heatmap_plot.plot_heatmap">
 <span class="sig-name descname"><span class="pre">plot_heatmap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tstart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_draw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'figure'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_colors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GINCCO_lib/heatmap_plot.html#plot_heatmap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.heatmap_plot.plot_heatmap" title="Link to this definition">#</a></dt>
-<dd><p>Time–depth heatmap with pcolormesh.
-- Colormap: jet, BoundaryNorm with n_colors bins.
-- Color range: 5th to 95th percentile.
-- Colorbar: horizontal with 4–7 nice ticks.
-- X ticks: daily / monthly / yearly depending on span.
-- Output filename: name_save + “_” + random number + “.png”</p>
+<dd><p>Plot a time–depth heatmap using <code class="docutils literal notranslate"><span class="pre">pcolormesh</span></code> with adaptive color normalization and
+automatic time axis formatting.</p>
+<p>This function creates a 2D heatmap representing variations of a variable across time and
+depth. The color range is determined from percentiles (5th–95th) to minimize the impact
+of outliers, and the colorbar uses evenly spaced, human-readable tick marks. Time ticks
+are automatically adjusted to daily, monthly, or yearly intervals depending on the
+duration of the dataset. The output figure is saved as a PNG file with a random suffix
+for uniqueness.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>title</strong> (<em>str</em>) – Title of the figure.</p></li>
+<li><p><strong>tstart</strong> (<em>datetime.datetime</em>) – Start time of the dataset.</p></li>
+<li><p><strong>tend</strong> (<em>datetime.datetime</em>) – End time of the dataset. Must be later than <code class="docutils literal notranslate"><span class="pre">tstart</span></code>.</p></li>
+<li><p><strong>data_draw</strong> (<em>np.ndarray</em>) – 2D array of data values to visualize, with shape (n_time, depth).</p></li>
+<li><p><strong>depth</strong> (<em>np.ndarray</em>) – 1D array of depth values (length must match <code class="docutils literal notranslate"><span class="pre">data_draw.shape[1]</span></code>).</p></li>
+<li><p><strong>path_save</strong> (<em>str</em><em>, </em><em>optional</em>) – Directory where the output image will be saved. Default is the current directory <code class="docutils literal notranslate"><span class="pre">&quot;.&quot;</span></code>.</p></li>
+<li><p><strong>name_save</strong> (<em>str</em><em>, </em><em>optional</em>) – Base filename (without extension) used for saving the output image. Default is <code class="docutils literal notranslate"><span class="pre">&quot;figure&quot;</span></code>.</p></li>
+<li><p><strong>n_colors</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of discrete color bins used in the colormap. Must be ≥ 2. Default is 100.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Full path to the saved PNG figure.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="GINCCO_lib.heatmap_plot.plot_section">
 <span class="sig-name descname"><span class="pre">plot_section</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_draw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth_array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'figure'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_colors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_ticks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GINCCO_lib/heatmap_plot.html#plot_section"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.heatmap_plot.plot_section" title="Link to this definition">#</a></dt>
-<dd><p>Time–depth heatmap with pcolormesh.
-- Colormap: jet, BoundaryNorm with n_colors bins.
-- Color range: 5th to 95th percentile.
-- Colorbar: horizontal with 4–7 nice ticks.
-- X ticks: daily / monthly / yearly depending on span.
-- Output filename: name_save + “_” + random number + “.png”</p>
+<dd><p>Plot a time–depth heatmap using <code class="docutils literal notranslate"><span class="pre">pcolormesh</span></code> with automatic color normalization and time formatting.</p>
+<p>The function visualizes a 2D time–depth dataset as a color-shaded heatmap, automatically
+selecting appropriate color limits (based on percentiles) and time axis tick intervals
+depending on the temporal span. The color scale uses a discrete “jet” colormap with
+<code class="docutils literal notranslate"><span class="pre">n_colors</span></code> bins and a horizontal colorbar.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>title</strong> (<em>str</em>) – Title of the figure.</p></li>
+<li><p><strong>tstart</strong> (<em>datetime.datetime</em>) – Start time of the dataset.</p></li>
+<li><p><strong>tend</strong> (<em>datetime.datetime</em>) – End time of the dataset. Must be later than <code class="docutils literal notranslate"><span class="pre">tstart</span></code>.</p></li>
+<li><p><strong>data_draw</strong> (<em>np.ndarray</em>) – 2D array of shape (n_time, depth) containing the data to plot.</p></li>
+<li><p><strong>depth</strong> (<em>np.ndarray</em>) – 1D array of depth values (length must match the second dimension of <code class="docutils literal notranslate"><span class="pre">data_draw</span></code>).</p></li>
+<li><p><strong>path_save</strong> (<em>str</em><em>, </em><em>optional</em>) – Directory where the output image will be saved. Defaults to the current directory (“.”).</p></li>
+<li><p><strong>name_save</strong> (<em>str</em><em>, </em><em>optional</em>) – Base name of the output file (without extension). Defaults to “figure”.</p></li>
+<li><p><strong>n_colors</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of discrete color bins for the colormap. Must be ≥ 2. Default is 100.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Full path to the saved PNG file.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>

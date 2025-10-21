@@ -422,8 +422,6 @@ This is the control for the whole function</p>
 <dd><p>Build a vertical section along given (lat, lon) points on a curvilinear grid,
 and return both the interpolated depth_array section and a callable to apply the
 same section to any 3-D scalar field on the same grid.</p>
-<p>Notes:
-Currently, we only support scalar fields (e.g., temperature, salinity), not vector fields.</p>
 <p>Algorithm:
 The data will be imported horizontally, layer by layer, and then all layers will be concatenated to form a section.
 First, the section will be divided into small parts. For example: lat = 10, lon = [10, 10.1, 10.2, …, 11].
@@ -475,6 +473,7 @@ Finally, we obtain both the data section and the depth_array section, which can 
 P(s, t) matches the query point inside that cell. Falls back to IDW if
 the solve fails for a point.</p></li>
 <li><p>depth_array is interpolated with the same precomputed weights.</p></li>
+<li><p>Currently, we only support scalar fields (e.g., temperature, salinity), not vector fields.</p></li>
 </ul>
 </dd></dl>
 
