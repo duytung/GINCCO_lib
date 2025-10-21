@@ -1,32 +1,27 @@
 # Configuration file for the Sphinx documentation builder.
-#
-# For the full list of built-in configuration values, see the documentation:
-# https://www.sphinx-doc.org/en/master/usage/configuration.html
-
-# -- Path setup -----------------------------------------------------
 
 import os
 import sys
+import re
+import glob
+
+# -- Path setup -----------------------------------------------------
 sys.path.insert(0, os.path.abspath('../src'))
 
-
+# Mock heavy imports so autodoc can build on ReadTheDocs
 autodoc_mock_imports = [
-     'mpl_toolkits', 'mpl_toolkits.basemap',
-    'numpy', 'matplotlib', 'netCDF4', 'cartopy', 'Basemap', 'scipy', 'pandas', 'imageio', 'pillow'
+    'mpl_toolkits', 'mpl_toolkits.basemap', 'dateutil', 'PIL',
+    'numpy', 'matplotlib', 'netCDF4', 'cartopy', 'Basemap',
+    'scipy', 'pandas', 'imageio', 'pillow'
 ]
-add_module_names = False
-autosummary_generate = True
-# -- Project information -----------------------------------------------------
-# https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
+# -- Project information --------------------------------------------
 project = 'GINCCO_lib'
 copyright = '2025, Tung Nguyen-Duy'
 author = 'Tung Nguyen-Duy'
 release = '0.5'
 
-# -- General configuration ---------------------------------------------------
-# https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
-
+# -- General configuration ------------------------------------------
 extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.autosummary",
@@ -36,22 +31,20 @@ extensions = [
     "sphinx_autodoc_typehints",
 ]
 
-autosummary_generate = True
 add_module_names = False
+autosummary_generate = True
 napoleon_google_docstring = False
 napoleon_numpy_docstring = True
-
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
-# --- Auto-clean RST titles after sphinx-apidoc generation ---
-import glob, re, os
-
+# -- Helper: clean .rst titles -------------------------------------
 def clean_rst_titles():
-    """Remove 'GINCCO_lib.' prefix and 'module' word in generated .rst titles."""
+    """Remove 'GINCCO_lib.' prefix and 'module' from generated .rst titles."""
     pattern = re.compile(r'^GINCCO\\_lib\.([A-Za-z0-9\\_]+)\s+module', flags=re.MULTILINE)
-    for path in glob.glob(os.path.join(os.path.dirname(__file__), "GINCCO_lib.*.rst")):
+    rst_dir = os.path.dirname(__file__)
+    for path in glob.glob(os.path.join(rst_dir, "GINCCO_lib.*.rst")):
         with open(path, "r+", encoding="utf-8") as f:
             text = f.read()
             new_text, n = pattern.subn(lambda m: m.group(1).replace("\\_", "_"), text, count=1)
@@ -61,30 +54,35 @@ def clean_rst_titles():
                 f.truncate()
                 print(f"[conf.py] Cleaned title: {os.path.basename(path)}")
 
+# -- Auto-generate one page per function/class ----------------------
+from sphinx.ext.autosummary.generate import generate_autosummary_docs
+
+def run_autosummary(app):
+    """Generate autosummary .rst files (Sphinx ≥ 8.2.3)."""
+    try:
+        generate_autosummary_docs(app, ["./GINCCO_lib.rst"])
+        print("[conf.py] Autosummary generation complete.")
+    except Exception as e:
+        print(f"[conf.py] Autosummary generation skipped: {e}")
+
 def setup(app):
-    app.connect('builder-inited', lambda app: clean_rst_titles())
+    app.connect("builder-inited", lambda app: clean_rst_titles())
+    app.connect("builder-inited", run_autosummary)
 
-
-# -- Options for HTML output -------------------------------------------------
-# https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
+# -- HTML output ----------------------------------------------------
 html_theme = "pydata_sphinx_theme"
-
 html_theme_options = {
     "logo": {"text": "GINCCO_lib"},
     "navigation_depth": 3,
     "collapse_navigation": True,
     "show_nav_level": 2,
     "navbar_align": "left",
-}
-
-html_sidebars = {
-    "**": ["search-field.html", "sidebar-nav-bs.html"]
-}
-
-html_theme_options.update({
     "show_prev_next": False,
     "external_links": [
         {"url": "https://github.com/duytung/GINCCO_lib", "name": "GitHub"},
     ],
-})
+}
+html_sidebars = {"**": ["search-field.html", "sidebar-nav-bs.html"]}
+
+
 
