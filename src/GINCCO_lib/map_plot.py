@@ -431,6 +431,8 @@ def map_draw_uv(
         data_max = float(np.nanpercentile(finite_vals, 95))
 
     vmin_pad, vmax_pad = _pad_10pct(data_min, data_max)
+    if vmin_pad < 0:
+        vmin_pad = 0
     ticks = _pretty_ticks(vmin_pad, vmax_pad)
 
     # Colormap
