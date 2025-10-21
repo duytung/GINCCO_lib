@@ -1,9 +1,8 @@
 
-
 <!DOCTYPE html>
 
 
-<html lang="en" >
+<html lang="en" data-content_root="./" >
 
   <head>
     <meta charset="utf-8" />
@@ -14,37 +13,39 @@
   
   <script data-cfasync="false">
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
-    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
   
-  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
-
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-  
+  <!-- So that users can add custom icons -->
+  <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/documentation_options.js?v=db78e746"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'genindex';</script>
     <link rel="index" title="Index" href="#" />
     <link rel="search" title="Search" href="search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
   </head>
   
   
@@ -52,23 +53,16 @@
 
   
   
-  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
   
-  <input type="checkbox"
-          class="sidebar-toggle"
-          name="__primary"
-          id="__primary"/>
-  <label class="overlay overlay-primary" for="__primary"></label>
+  <div id="pst-scroll-pixel-helper"></div>
   
-  <input type="checkbox"
-          class="sidebar-toggle"
-          name="__secondary"
-          id="__secondary"/>
-  <label class="overlay overlay-secondary" for="__secondary"></label>
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
   
-  <div class="search-button__wrapper">
-    <div class="search-button__overlay"></div>
-    <div class="search-button__search-container">
+  <dialog id="pst-search-dialog">
+    
 <form class="bd-search d-flex align-items-center"
       action="search.html"
       method="get">
@@ -76,7 +70,6 @@
   <input type="search"
          class="form-control"
          name="q"
-         id="search-input"
          placeholder="Search the docs ..."
          aria-label="Search the docs ..."
          autocomplete="off"
@@ -84,21 +77,31 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form></div>
-  </div>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
   
-    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
 <div class="bd-header__inner bd-page-width">
-  <label class="sidebar-toggle primary-toggle" for="__primary">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
     <span class="fa-solid fa-bars"></span>
-  </label>
+  </button>
   
-  <div class="navbar-header-items__start">
+  
+  <div class=" navbar-header-items__start">
     
       <div class="navbar-item">
+
+  
+    
   
 
 <a class="navbar-brand logo" href="index.html">
+  
   
   
   
@@ -110,33 +113,27 @@
     
   </div>
   
-  
   <div class=" navbar-header-items">
     
     <div class="me-auto navbar-header-items__center">
       
-        <div class="navbar-item"><nav class="navbar-nav">
-  <p class="sidebar-header-items__title"
-     role="heading"
-     aria-level="1"
-     aria-label="Site Navigation">
-    Site Navigation
-  </p>
+        <div class="navbar-item">
+<nav>
   <ul class="bd-navbar-elements navbar-nav">
     
-                    <li class="nav-item">
-                      <a class="nav-link nav-internal" href="GINCCO_lib.html">
-                        GINCCO_lib
-                      </a>
-                    </li>
-                
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="GINCCO_lib.html">
+    GINCCO_lib
+  </a>
+</li>
 
-                <li class="nav-item">
-                  <a class="nav-link nav-external" href="https://github.com/duytung/GINCCO_lib">
-                    GitHub
-                  </a>
-                </li>
-                
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://github.com/duytung/GINCCO_lib">
+    GitHub
+  </a>
+</li>
+
   </ul>
 </nav></div>
       
@@ -147,26 +144,22 @@
       
         <div class="navbar-item navbar-persistent--container">
           
-<script>
-document.write(`
-  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
-  </button>
-`);
-</script>
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
         </div>
       
       
         <div class="navbar-item">
-<script>
-document.write(`
-  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
-    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
-    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
-  </button>
-`);
-</script></div>
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
       
     </div>
     
@@ -174,25 +167,30 @@ document.write(`
   
   
     <div class="navbar-persistent--mobile">
-<script>
-document.write(`
-  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
-  </button>
-`);
-</script>
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
     </div>
   
 
   
 </div>
 
-    </nav>
+    </header>
   
+
   <div class="bd-container">
     <div class="bd-container__inner bd-page-width">
       
-      <div class="bd-sidebar-primary bd-sidebar">
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -201,30 +199,28 @@ document.write(`
     
       <div class="sidebar-header-items__center">
         
-          <div class="navbar-item"><nav class="navbar-nav">
-  <p class="sidebar-header-items__title"
-     role="heading"
-     aria-level="1"
-     aria-label="Site Navigation">
-    Site Navigation
-  </p>
+          
+          
+            <div class="navbar-item">
+<nav>
   <ul class="bd-navbar-elements navbar-nav">
     
-                    <li class="nav-item">
-                      <a class="nav-link nav-internal" href="GINCCO_lib.html">
-                        GINCCO_lib
-                      </a>
-                    </li>
-                
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="GINCCO_lib.html">
+    GINCCO_lib
+  </a>
+</li>
 
-                <li class="nav-item">
-                  <a class="nav-link nav-external" href="https://github.com/duytung/GINCCO_lib">
-                    GitHub
-                  </a>
-                </li>
-                
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://github.com/duytung/GINCCO_lib">
+    GitHub
+  </a>
+</li>
+
   </ul>
 </nav></div>
+          
         
       </div>
     
@@ -233,15 +229,12 @@ document.write(`
       <div class="sidebar-header-items__end">
         
           <div class="navbar-item">
-<script>
-document.write(`
-  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
-    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
-    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
-  </button>
-`);
-</script></div>
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
         
       </div>
     
@@ -256,7 +249,6 @@ document.write(`
   <input type="search"
          class="form-control"
          name="q"
-         id="search-input"
          placeholder="Search the docs ..."
          aria-label="Search the docs ..."
          autocomplete="off"
@@ -269,26 +261,31 @@ document.write(`
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
   </div>
-  
-  <div id="rtd-footer-container"></div>
 
 
       </div>
       
-      <main id="main-content" class="bd-main">
+      <main id="main-content" class="bd-main" role="main">
         
         
           <div class="bd-content">
             <div class="bd-article-container">
               
-              <div class="bd-header-article"></div>
+              <div class="bd-header-article d-print-none"></div>
               
               
               
                 
 <div id="searchbox"></div>
-                <article class="bd-article" role="main">
+                <article class="bd-article">
                   
 
 <h1 id="index">Index</h1>
@@ -311,7 +308,7 @@ document.write(`
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="GINCCO_lib.temporal_mean.html#GINCCO_lib.temporal_mean.annual_mean">annual_mean() (in module GINCCO_lib.temporal_mean)</a>
+      <li><a href="GINCCO_lib.temporal_mean.html#GINCCO_lib.temporal_mean.annual_mean">annual_mean() (in module GINCCO_lib.temporal_mean)</a>, <a href="docs/GINCCO_lib.temporal_mean.html#GINCCO_lib.temporal_mean.annual_mean">[1]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -319,7 +316,7 @@ document.write(`
 <h2 id="B">B</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="GINCCO_lib.import_series_daily.html#GINCCO_lib.import_series_daily.build_file_list">build_file_list() (in module GINCCO_lib.import_series_daily)</a>
+      <li><a href="GINCCO_lib.import_series_daily.html#GINCCO_lib.import_series_daily.build_file_list">build_file_list() (in module GINCCO_lib.import_series_daily)</a>, <a href="docs/GINCCO_lib.import_series_daily.html#GINCCO_lib.import_series_daily.build_file_list">[1]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -327,7 +324,7 @@ document.write(`
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="GINCCO_lib.time_series_plot.html#GINCCO_lib.time_series_plot.choose_locator">choose_locator() (in module GINCCO_lib.time_series_plot)</a>
+      <li><a href="GINCCO_lib.time_series_plot.html#GINCCO_lib.time_series_plot.choose_locator">choose_locator() (in module GINCCO_lib.time_series_plot)</a>, <a href="docs/GINCCO_lib.time_series_plot.html#GINCCO_lib.time_series_plot.choose_locator">[1]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -335,7 +332,7 @@ document.write(`
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="GINCCO_lib.import_daily.html#GINCCO_lib.import_daily.data_interp">data_interp() (in module GINCCO_lib.import_daily)</a>
+      <li><a href="GINCCO_lib.import_daily.html#GINCCO_lib.import_daily.data_interp">data_interp() (in module GINCCO_lib.import_daily)</a>, <a href="docs/GINCCO_lib.import_daily.html#GINCCO_lib.import_daily.data_interp">[1]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -343,7 +340,7 @@ document.write(`
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="GINCCO_lib.import_series_daily.html#GINCCO_lib.import_series_daily.find_nearest_index_haversine">find_nearest_index_haversine() (in module GINCCO_lib.import_series_daily)</a>
+      <li><a href="GINCCO_lib.import_series_daily.html#GINCCO_lib.import_series_daily.find_nearest_index_haversine">find_nearest_index_haversine() (in module GINCCO_lib.import_series_daily)</a>, <a href="docs/GINCCO_lib.import_series_daily.html#GINCCO_lib.import_series_daily.find_nearest_index_haversine">[1]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -351,41 +348,41 @@ document.write(`
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="GINCCO_lib.geostrophic_current.html#GINCCO_lib.geostrophic_current.geostrophic_current">geostrophic_current() (in module GINCCO_lib.geostrophic_current)</a>
+      <li><a href="GINCCO_lib.geostrophic_current.html#GINCCO_lib.geostrophic_current.geostrophic_current">geostrophic_current() (in module GINCCO_lib.geostrophic_current)</a>, <a href="docs/GINCCO_lib.geostrophic_current.html#GINCCO_lib.geostrophic_current.geostrophic_current">[1]</a>
 </li>
       <li>
     GINCCO_lib
 
       <ul>
-        <li><a href="GINCCO_lib.html#module-GINCCO_lib">module</a>
+        <li><a href="GINCCO_lib.html#module-GINCCO_lib">module</a>, <a href="docs/GINCCO_lib.html#module-GINCCO_lib">[1]</a>
 </li>
       </ul></li>
       <li>
     GINCCO_lib.geostrophic_current
 
       <ul>
-        <li><a href="GINCCO_lib.geostrophic_current.html#module-GINCCO_lib.geostrophic_current">module</a>
+        <li><a href="GINCCO_lib.geostrophic_current.html#module-GINCCO_lib.geostrophic_current">module</a>, <a href="docs/GINCCO_lib.geostrophic_current.html#module-GINCCO_lib.geostrophic_current">[1]</a>
 </li>
       </ul></li>
       <li>
     GINCCO_lib.heatmap_plot
 
       <ul>
-        <li><a href="GINCCO_lib.heatmap_plot.html#module-GINCCO_lib.heatmap_plot">module</a>
+        <li><a href="GINCCO_lib.heatmap_plot.html#module-GINCCO_lib.heatmap_plot">module</a>, <a href="docs/GINCCO_lib.heatmap_plot.html#module-GINCCO_lib.heatmap_plot">[1]</a>
 </li>
       </ul></li>
       <li>
     GINCCO_lib.image_to_video
 
       <ul>
-        <li><a href="GINCCO_lib.image_to_video.html#module-GINCCO_lib.image_to_video">module</a>
+        <li><a href="GINCCO_lib.image_to_video.html#module-GINCCO_lib.image_to_video">module</a>, <a href="docs/GINCCO_lib.image_to_video.html#module-GINCCO_lib.image_to_video">[1]</a>
 </li>
       </ul></li>
       <li>
     GINCCO_lib.import_daily
 
       <ul>
-        <li><a href="GINCCO_lib.import_daily.html#module-GINCCO_lib.import_daily">module</a>
+        <li><a href="GINCCO_lib.import_daily.html#module-GINCCO_lib.import_daily">module</a>, <a href="docs/GINCCO_lib.import_daily.html#module-GINCCO_lib.import_daily">[1]</a>
 </li>
       </ul></li>
   </ul></td>
@@ -394,42 +391,42 @@ document.write(`
     GINCCO_lib.import_series_daily
 
       <ul>
-        <li><a href="GINCCO_lib.import_series_daily.html#module-GINCCO_lib.import_series_daily">module</a>
+        <li><a href="GINCCO_lib.import_series_daily.html#module-GINCCO_lib.import_series_daily">module</a>, <a href="docs/GINCCO_lib.import_series_daily.html#module-GINCCO_lib.import_series_daily">[1]</a>
 </li>
       </ul></li>
       <li>
     GINCCO_lib.interpolate_to_t
 
       <ul>
-        <li><a href="GINCCO_lib.interpolate_to_t.html#module-GINCCO_lib.interpolate_to_t">module</a>
+        <li><a href="GINCCO_lib.interpolate_to_t.html#module-GINCCO_lib.interpolate_to_t">module</a>, <a href="docs/GINCCO_lib.interpolate_to_t.html#module-GINCCO_lib.interpolate_to_t">[1]</a>
 </li>
       </ul></li>
       <li>
     GINCCO_lib.map_plot
 
       <ul>
-        <li><a href="GINCCO_lib.map_plot.html#module-GINCCO_lib.map_plot">module</a>
+        <li><a href="GINCCO_lib.map_plot.html#module-GINCCO_lib.map_plot">module</a>, <a href="docs/GINCCO_lib.map_plot.html#module-GINCCO_lib.map_plot">[1]</a>
 </li>
       </ul></li>
       <li>
     GINCCO_lib.spatial_average
 
       <ul>
-        <li><a href="GINCCO_lib.spatial_average.html#module-GINCCO_lib.spatial_average">module</a>
+        <li><a href="GINCCO_lib.spatial_average.html#module-GINCCO_lib.spatial_average">module</a>, <a href="docs/GINCCO_lib.spatial_average.html#module-GINCCO_lib.spatial_average">[1]</a>
 </li>
       </ul></li>
       <li>
     GINCCO_lib.temporal_mean
 
       <ul>
-        <li><a href="GINCCO_lib.temporal_mean.html#module-GINCCO_lib.temporal_mean">module</a>
+        <li><a href="GINCCO_lib.temporal_mean.html#module-GINCCO_lib.temporal_mean">module</a>, <a href="docs/GINCCO_lib.temporal_mean.html#module-GINCCO_lib.temporal_mean">[1]</a>
 </li>
       </ul></li>
       <li>
     GINCCO_lib.time_series_plot
 
       <ul>
-        <li><a href="GINCCO_lib.time_series_plot.html#module-GINCCO_lib.time_series_plot">module</a>
+        <li><a href="GINCCO_lib.time_series_plot.html#module-GINCCO_lib.time_series_plot">module</a>, <a href="docs/GINCCO_lib.time_series_plot.html#module-GINCCO_lib.time_series_plot">[1]</a>
 </li>
       </ul></li>
   </ul></td>
@@ -438,60 +435,60 @@ document.write(`
 <h2 id="I">I</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="GINCCO_lib.html#GINCCO_lib.import_3D">import_3D() (in module GINCCO_lib)</a>
+      <li><a href="GINCCO_lib.html#GINCCO_lib.import_3D">import_3D() (in module GINCCO_lib)</a>, <a href="docs/GINCCO_lib.html#GINCCO_lib.import_3D">[1]</a>
 
       <ul>
-        <li><a href="GINCCO_lib.import_series_daily.html#GINCCO_lib.import_series_daily.import_3D">(in module GINCCO_lib.import_series_daily)</a>
+        <li><a href="GINCCO_lib.import_series_daily.html#GINCCO_lib.import_series_daily.import_3D">(in module GINCCO_lib.import_series_daily)</a>, <a href="docs/GINCCO_lib.import_series_daily.html#GINCCO_lib.import_series_daily.import_3D">[1]</a>
 </li>
       </ul></li>
-      <li><a href="GINCCO_lib.html#GINCCO_lib.import_4D">import_4D() (in module GINCCO_lib)</a>
+      <li><a href="GINCCO_lib.html#GINCCO_lib.import_4D">import_4D() (in module GINCCO_lib)</a>, <a href="docs/GINCCO_lib.html#GINCCO_lib.import_4D">[1]</a>
 
       <ul>
-        <li><a href="GINCCO_lib.import_series_daily.html#GINCCO_lib.import_series_daily.import_4D">(in module GINCCO_lib.import_series_daily)</a>
+        <li><a href="GINCCO_lib.import_series_daily.html#GINCCO_lib.import_series_daily.import_4D">(in module GINCCO_lib.import_series_daily)</a>, <a href="docs/GINCCO_lib.import_series_daily.html#GINCCO_lib.import_series_daily.import_4D">[1]</a>
 </li>
       </ul></li>
-      <li><a href="GINCCO_lib.html#GINCCO_lib.import_depth">import_depth() (in module GINCCO_lib)</a>
+      <li><a href="GINCCO_lib.html#GINCCO_lib.import_depth">import_depth() (in module GINCCO_lib)</a>, <a href="docs/GINCCO_lib.html#GINCCO_lib.import_depth">[1]</a>
 
       <ul>
-        <li><a href="GINCCO_lib.import_series_daily.html#GINCCO_lib.import_series_daily.import_depth">(in module GINCCO_lib.import_series_daily)</a>
+        <li><a href="GINCCO_lib.import_series_daily.html#GINCCO_lib.import_series_daily.import_depth">(in module GINCCO_lib.import_series_daily)</a>, <a href="docs/GINCCO_lib.import_series_daily.html#GINCCO_lib.import_series_daily.import_depth">[1]</a>
 </li>
       </ul></li>
-      <li><a href="GINCCO_lib.html#GINCCO_lib.import_layer">import_layer() (in module GINCCO_lib)</a>
+      <li><a href="GINCCO_lib.html#GINCCO_lib.import_layer">import_layer() (in module GINCCO_lib)</a>, <a href="docs/GINCCO_lib.html#GINCCO_lib.import_layer">[1]</a>
 
       <ul>
-        <li><a href="GINCCO_lib.import_series_daily.html#GINCCO_lib.import_series_daily.import_layer">(in module GINCCO_lib.import_series_daily)</a>
+        <li><a href="GINCCO_lib.import_series_daily.html#GINCCO_lib.import_series_daily.import_layer">(in module GINCCO_lib.import_series_daily)</a>, <a href="docs/GINCCO_lib.import_series_daily.html#GINCCO_lib.import_series_daily.import_layer">[1]</a>
 </li>
       </ul></li>
-      <li><a href="GINCCO_lib.html#GINCCO_lib.import_point">import_point() (in module GINCCO_lib)</a>
+      <li><a href="GINCCO_lib.html#GINCCO_lib.import_point">import_point() (in module GINCCO_lib)</a>, <a href="docs/GINCCO_lib.html#GINCCO_lib.import_point">[1]</a>
 
       <ul>
-        <li><a href="GINCCO_lib.import_series_daily.html#GINCCO_lib.import_series_daily.import_point">(in module GINCCO_lib.import_series_daily)</a>
+        <li><a href="GINCCO_lib.import_series_daily.html#GINCCO_lib.import_series_daily.import_point">(in module GINCCO_lib.import_series_daily)</a>, <a href="docs/GINCCO_lib.import_series_daily.html#GINCCO_lib.import_series_daily.import_point">[1]</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="GINCCO_lib.html#GINCCO_lib.import_profile">import_profile() (in module GINCCO_lib)</a>
+      <li><a href="GINCCO_lib.html#GINCCO_lib.import_profile">import_profile() (in module GINCCO_lib)</a>, <a href="docs/GINCCO_lib.html#GINCCO_lib.import_profile">[1]</a>
 
       <ul>
-        <li><a href="GINCCO_lib.import_series_daily.html#GINCCO_lib.import_series_daily.import_profile">(in module GINCCO_lib.import_series_daily)</a>
+        <li><a href="GINCCO_lib.import_series_daily.html#GINCCO_lib.import_series_daily.import_profile">(in module GINCCO_lib.import_series_daily)</a>, <a href="docs/GINCCO_lib.import_series_daily.html#GINCCO_lib.import_series_daily.import_profile">[1]</a>
 </li>
       </ul></li>
-      <li><a href="GINCCO_lib.html#GINCCO_lib.import_section">import_section() (in module GINCCO_lib)</a>
+      <li><a href="GINCCO_lib.html#GINCCO_lib.import_section">import_section() (in module GINCCO_lib)</a>, <a href="docs/GINCCO_lib.html#GINCCO_lib.import_section">[1]</a>
 
       <ul>
-        <li><a href="GINCCO_lib.import_daily.html#GINCCO_lib.import_daily.import_section">(in module GINCCO_lib.import_daily)</a>
+        <li><a href="GINCCO_lib.import_daily.html#GINCCO_lib.import_daily.import_section">(in module GINCCO_lib.import_daily)</a>, <a href="docs/GINCCO_lib.import_daily.html#GINCCO_lib.import_daily.import_section">[1]</a>
 </li>
       </ul></li>
-      <li><a href="GINCCO_lib.html#GINCCO_lib.import_surface">import_surface() (in module GINCCO_lib)</a>
+      <li><a href="GINCCO_lib.html#GINCCO_lib.import_surface">import_surface() (in module GINCCO_lib)</a>, <a href="docs/GINCCO_lib.html#GINCCO_lib.import_surface">[1]</a>
 
       <ul>
-        <li><a href="GINCCO_lib.import_series_daily.html#GINCCO_lib.import_series_daily.import_surface">(in module GINCCO_lib.import_series_daily)</a>
+        <li><a href="GINCCO_lib.import_series_daily.html#GINCCO_lib.import_series_daily.import_surface">(in module GINCCO_lib.import_series_daily)</a>, <a href="docs/GINCCO_lib.import_series_daily.html#GINCCO_lib.import_series_daily.import_surface">[1]</a>
 </li>
       </ul></li>
-      <li><a href="GINCCO_lib.html#GINCCO_lib.interpolate_to_t">interpolate_to_t() (in module GINCCO_lib)</a>
+      <li><a href="GINCCO_lib.html#GINCCO_lib.interpolate_to_t">interpolate_to_t() (in module GINCCO_lib)</a>, <a href="docs/GINCCO_lib.html#GINCCO_lib.interpolate_to_t">[1]</a>
 
       <ul>
-        <li><a href="GINCCO_lib.interpolate_to_t.html#GINCCO_lib.interpolate_to_t.interpolate_to_t">(in module GINCCO_lib.interpolate_to_t)</a>
+        <li><a href="GINCCO_lib.interpolate_to_t.html#GINCCO_lib.interpolate_to_t.interpolate_to_t">(in module GINCCO_lib.interpolate_to_t)</a>, <a href="docs/GINCCO_lib.interpolate_to_t.html#GINCCO_lib.interpolate_to_t.interpolate_to_t">[1]</a>
 </li>
       </ul></li>
   </ul></td>
@@ -500,56 +497,56 @@ document.write(`
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="GINCCO_lib.html#GINCCO_lib.map_draw">map_draw() (in module GINCCO_lib)</a>
+      <li><a href="GINCCO_lib.html#GINCCO_lib.map_draw">map_draw() (in module GINCCO_lib)</a>, <a href="docs/GINCCO_lib.html#GINCCO_lib.map_draw">[1]</a>
 
       <ul>
-        <li><a href="GINCCO_lib.map_plot.html#GINCCO_lib.map_plot.map_draw">(in module GINCCO_lib.map_plot)</a>
+        <li><a href="GINCCO_lib.map_plot.html#GINCCO_lib.map_plot.map_draw">(in module GINCCO_lib.map_plot)</a>, <a href="docs/GINCCO_lib.map_plot.html#GINCCO_lib.map_plot.map_draw">[1]</a>
 </li>
       </ul></li>
-      <li><a href="GINCCO_lib.map_plot.html#GINCCO_lib.map_plot.map_draw_box">map_draw_box() (in module GINCCO_lib.map_plot)</a>
+      <li><a href="GINCCO_lib.map_plot.html#GINCCO_lib.map_plot.map_draw_box">map_draw_box() (in module GINCCO_lib.map_plot)</a>, <a href="docs/GINCCO_lib.map_plot.html#GINCCO_lib.map_plot.map_draw_box">[1]</a>
 </li>
-      <li><a href="GINCCO_lib.html#GINCCO_lib.map_draw_point">map_draw_point() (in module GINCCO_lib)</a>
+      <li><a href="GINCCO_lib.html#GINCCO_lib.map_draw_point">map_draw_point() (in module GINCCO_lib)</a>, <a href="docs/GINCCO_lib.html#GINCCO_lib.map_draw_point">[1]</a>
 
       <ul>
-        <li><a href="GINCCO_lib.map_plot.html#GINCCO_lib.map_plot.map_draw_point">(in module GINCCO_lib.map_plot)</a>
+        <li><a href="GINCCO_lib.map_plot.html#GINCCO_lib.map_plot.map_draw_point">(in module GINCCO_lib.map_plot)</a>, <a href="docs/GINCCO_lib.map_plot.html#GINCCO_lib.map_plot.map_draw_point">[1]</a>
 </li>
       </ul></li>
-      <li><a href="GINCCO_lib.html#GINCCO_lib.map_draw_uv">map_draw_uv() (in module GINCCO_lib)</a>
+      <li><a href="GINCCO_lib.html#GINCCO_lib.map_draw_uv">map_draw_uv() (in module GINCCO_lib)</a>, <a href="docs/GINCCO_lib.html#GINCCO_lib.map_draw_uv">[1]</a>
 
       <ul>
-        <li><a href="GINCCO_lib.map_plot.html#GINCCO_lib.map_plot.map_draw_uv">(in module GINCCO_lib.map_plot)</a>
+        <li><a href="GINCCO_lib.map_plot.html#GINCCO_lib.map_plot.map_draw_uv">(in module GINCCO_lib.map_plot)</a>, <a href="docs/GINCCO_lib.map_plot.html#GINCCO_lib.map_plot.map_draw_uv">[1]</a>
 </li>
       </ul></li>
       <li>
     module
 
       <ul>
-        <li><a href="GINCCO_lib.html#module-GINCCO_lib">GINCCO_lib</a>
+        <li><a href="GINCCO_lib.html#module-GINCCO_lib">GINCCO_lib</a>, <a href="docs/GINCCO_lib.html#module-GINCCO_lib">[1]</a>
 </li>
-        <li><a href="GINCCO_lib.geostrophic_current.html#module-GINCCO_lib.geostrophic_current">GINCCO_lib.geostrophic_current</a>
+        <li><a href="GINCCO_lib.geostrophic_current.html#module-GINCCO_lib.geostrophic_current">GINCCO_lib.geostrophic_current</a>, <a href="docs/GINCCO_lib.geostrophic_current.html#module-GINCCO_lib.geostrophic_current">[1]</a>
 </li>
-        <li><a href="GINCCO_lib.heatmap_plot.html#module-GINCCO_lib.heatmap_plot">GINCCO_lib.heatmap_plot</a>
+        <li><a href="GINCCO_lib.heatmap_plot.html#module-GINCCO_lib.heatmap_plot">GINCCO_lib.heatmap_plot</a>, <a href="docs/GINCCO_lib.heatmap_plot.html#module-GINCCO_lib.heatmap_plot">[1]</a>
 </li>
-        <li><a href="GINCCO_lib.image_to_video.html#module-GINCCO_lib.image_to_video">GINCCO_lib.image_to_video</a>
+        <li><a href="GINCCO_lib.image_to_video.html#module-GINCCO_lib.image_to_video">GINCCO_lib.image_to_video</a>, <a href="docs/GINCCO_lib.image_to_video.html#module-GINCCO_lib.image_to_video">[1]</a>
 </li>
-        <li><a href="GINCCO_lib.import_daily.html#module-GINCCO_lib.import_daily">GINCCO_lib.import_daily</a>
+        <li><a href="GINCCO_lib.import_daily.html#module-GINCCO_lib.import_daily">GINCCO_lib.import_daily</a>, <a href="docs/GINCCO_lib.import_daily.html#module-GINCCO_lib.import_daily">[1]</a>
 </li>
-        <li><a href="GINCCO_lib.import_series_daily.html#module-GINCCO_lib.import_series_daily">GINCCO_lib.import_series_daily</a>
+        <li><a href="GINCCO_lib.import_series_daily.html#module-GINCCO_lib.import_series_daily">GINCCO_lib.import_series_daily</a>, <a href="docs/GINCCO_lib.import_series_daily.html#module-GINCCO_lib.import_series_daily">[1]</a>
 </li>
-        <li><a href="GINCCO_lib.interpolate_to_t.html#module-GINCCO_lib.interpolate_to_t">GINCCO_lib.interpolate_to_t</a>
+        <li><a href="GINCCO_lib.interpolate_to_t.html#module-GINCCO_lib.interpolate_to_t">GINCCO_lib.interpolate_to_t</a>, <a href="docs/GINCCO_lib.interpolate_to_t.html#module-GINCCO_lib.interpolate_to_t">[1]</a>
 </li>
-        <li><a href="GINCCO_lib.map_plot.html#module-GINCCO_lib.map_plot">GINCCO_lib.map_plot</a>
+        <li><a href="GINCCO_lib.map_plot.html#module-GINCCO_lib.map_plot">GINCCO_lib.map_plot</a>, <a href="docs/GINCCO_lib.map_plot.html#module-GINCCO_lib.map_plot">[1]</a>
 </li>
-        <li><a href="GINCCO_lib.spatial_average.html#module-GINCCO_lib.spatial_average">GINCCO_lib.spatial_average</a>
+        <li><a href="GINCCO_lib.spatial_average.html#module-GINCCO_lib.spatial_average">GINCCO_lib.spatial_average</a>, <a href="docs/GINCCO_lib.spatial_average.html#module-GINCCO_lib.spatial_average">[1]</a>
 </li>
-        <li><a href="GINCCO_lib.temporal_mean.html#module-GINCCO_lib.temporal_mean">GINCCO_lib.temporal_mean</a>
+        <li><a href="GINCCO_lib.temporal_mean.html#module-GINCCO_lib.temporal_mean">GINCCO_lib.temporal_mean</a>, <a href="docs/GINCCO_lib.temporal_mean.html#module-GINCCO_lib.temporal_mean">[1]</a>
 </li>
-        <li><a href="GINCCO_lib.time_series_plot.html#module-GINCCO_lib.time_series_plot">GINCCO_lib.time_series_plot</a>
+        <li><a href="GINCCO_lib.time_series_plot.html#module-GINCCO_lib.time_series_plot">GINCCO_lib.time_series_plot</a>, <a href="docs/GINCCO_lib.time_series_plot.html#module-GINCCO_lib.time_series_plot">[1]</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="GINCCO_lib.temporal_mean.html#GINCCO_lib.temporal_mean.monthly_mean">monthly_mean() (in module GINCCO_lib.temporal_mean)</a>
+      <li><a href="GINCCO_lib.temporal_mean.html#GINCCO_lib.temporal_mean.monthly_mean">monthly_mean() (in module GINCCO_lib.temporal_mean)</a>, <a href="docs/GINCCO_lib.temporal_mean.html#GINCCO_lib.temporal_mean.monthly_mean">[1]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -557,7 +554,7 @@ document.write(`
 <h2 id="N">N</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="GINCCO_lib.map_plot.html#GINCCO_lib.map_plot.nice_ticks_1d">nice_ticks_1d() (in module GINCCO_lib.map_plot)</a>
+      <li><a href="GINCCO_lib.map_plot.html#GINCCO_lib.map_plot.nice_ticks_1d">nice_ticks_1d() (in module GINCCO_lib.map_plot)</a>, <a href="docs/GINCCO_lib.map_plot.html#GINCCO_lib.map_plot.nice_ticks_1d">[1]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -565,32 +562,32 @@ document.write(`
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="GINCCO_lib.html#GINCCO_lib.plot_heatmap">plot_heatmap() (in module GINCCO_lib)</a>
+      <li><a href="GINCCO_lib.html#GINCCO_lib.plot_heatmap">plot_heatmap() (in module GINCCO_lib)</a>, <a href="docs/GINCCO_lib.html#GINCCO_lib.plot_heatmap">[1]</a>
 
       <ul>
-        <li><a href="GINCCO_lib.heatmap_plot.html#GINCCO_lib.heatmap_plot.plot_heatmap">(in module GINCCO_lib.heatmap_plot)</a>
+        <li><a href="GINCCO_lib.heatmap_plot.html#GINCCO_lib.heatmap_plot.plot_heatmap">(in module GINCCO_lib.heatmap_plot)</a>, <a href="docs/GINCCO_lib.heatmap_plot.html#GINCCO_lib.heatmap_plot.plot_heatmap">[1]</a>
 </li>
       </ul></li>
-      <li><a href="GINCCO_lib.html#GINCCO_lib.plot_point">plot_point() (in module GINCCO_lib)</a>
+      <li><a href="GINCCO_lib.html#GINCCO_lib.plot_point">plot_point() (in module GINCCO_lib)</a>, <a href="docs/GINCCO_lib.html#GINCCO_lib.plot_point">[1]</a>
 
       <ul>
-        <li><a href="GINCCO_lib.time_series_plot.html#GINCCO_lib.time_series_plot.plot_point">(in module GINCCO_lib.time_series_plot)</a>
+        <li><a href="GINCCO_lib.time_series_plot.html#GINCCO_lib.time_series_plot.plot_point">(in module GINCCO_lib.time_series_plot)</a>, <a href="docs/GINCCO_lib.time_series_plot.html#GINCCO_lib.time_series_plot.plot_point">[1]</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="GINCCO_lib.time_series_plot.html#GINCCO_lib.time_series_plot.plot_point_monthly">plot_point_monthly() (in module GINCCO_lib.time_series_plot)</a>
+      <li><a href="GINCCO_lib.time_series_plot.html#GINCCO_lib.time_series_plot.plot_point_monthly">plot_point_monthly() (in module GINCCO_lib.time_series_plot)</a>, <a href="docs/GINCCO_lib.time_series_plot.html#GINCCO_lib.time_series_plot.plot_point_monthly">[1]</a>
 </li>
-      <li><a href="GINCCO_lib.html#GINCCO_lib.plot_section">plot_section() (in module GINCCO_lib)</a>
+      <li><a href="GINCCO_lib.html#GINCCO_lib.plot_section">plot_section() (in module GINCCO_lib)</a>, <a href="docs/GINCCO_lib.html#GINCCO_lib.plot_section">[1]</a>
 
       <ul>
-        <li><a href="GINCCO_lib.heatmap_plot.html#GINCCO_lib.heatmap_plot.plot_section">(in module GINCCO_lib.heatmap_plot)</a>
+        <li><a href="GINCCO_lib.heatmap_plot.html#GINCCO_lib.heatmap_plot.plot_section">(in module GINCCO_lib.heatmap_plot)</a>, <a href="docs/GINCCO_lib.heatmap_plot.html#GINCCO_lib.heatmap_plot.plot_section">[1]</a>
 </li>
       </ul></li>
-      <li><a href="GINCCO_lib.html#GINCCO_lib.pngs_to_video">pngs_to_video() (in module GINCCO_lib)</a>
+      <li><a href="GINCCO_lib.html#GINCCO_lib.pngs_to_video">pngs_to_video() (in module GINCCO_lib)</a>, <a href="docs/GINCCO_lib.html#GINCCO_lib.pngs_to_video">[1]</a>
 
       <ul>
-        <li><a href="GINCCO_lib.image_to_video.html#GINCCO_lib.image_to_video.pngs_to_video">(in module GINCCO_lib.image_to_video)</a>
+        <li><a href="GINCCO_lib.image_to_video.html#GINCCO_lib.image_to_video.pngs_to_video">(in module GINCCO_lib.image_to_video)</a>, <a href="docs/GINCCO_lib.image_to_video.html#GINCCO_lib.image_to_video.pngs_to_video">[1]</a>
 </li>
       </ul></li>
   </ul></td>
@@ -599,11 +596,11 @@ document.write(`
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="GINCCO_lib.import_daily.html#GINCCO_lib.import_daily.section_extract">section_extract() (in module GINCCO_lib.import_daily)</a>
+      <li><a href="GINCCO_lib.import_daily.html#GINCCO_lib.import_daily.section_extract">section_extract() (in module GINCCO_lib.import_daily)</a>, <a href="docs/GINCCO_lib.import_daily.html#GINCCO_lib.import_daily.section_extract">[1]</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="GINCCO_lib.spatial_average.html#GINCCO_lib.spatial_average.spatial_average">spatial_average() (in module GINCCO_lib.spatial_average)</a>
+      <li><a href="GINCCO_lib.spatial_average.html#GINCCO_lib.spatial_average.spatial_average">spatial_average() (in module GINCCO_lib.spatial_average)</a>, <a href="docs/GINCCO_lib.spatial_average.html#GINCCO_lib.spatial_average.spatial_average">[1]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -611,7 +608,7 @@ document.write(`
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="GINCCO_lib.map_plot.html#GINCCO_lib.map_plot.truncate_colormap">truncate_colormap() (in module GINCCO_lib.map_plot)</a>
+      <li><a href="GINCCO_lib.map_plot.html#GINCCO_lib.map_plot.truncate_colormap">truncate_colormap() (in module GINCCO_lib.map_plot)</a>, <a href="docs/GINCCO_lib.map_plot.html#GINCCO_lib.map_plot.truncate_colormap">[1]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -619,6 +616,8 @@ document.write(`
 
 
                 </article>
+              
+              
               
               
               
@@ -637,8 +636,8 @@ document.write(`
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
-<script src="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+  <script defer src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -646,6 +645,7 @@ document.write(`
     <div class="footer-items__start">
       
         <div class="footer-item">
+
   <p class="copyright">
     
       © Copyright 2025, Tung Nguyen-Duy.
@@ -655,8 +655,9 @@ document.write(`
 </div>
       
         <div class="footer-item">
+
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
     <br/>
   </p>
 </div>
@@ -664,10 +665,13 @@ document.write(`
     </div>
   
   
+  
     <div class="footer-items__end">
       
-        <div class="footer-item"><p class="theme-version">
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.13.3.
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
 </p></div>
       
     </div>
