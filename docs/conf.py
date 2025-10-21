@@ -12,7 +12,9 @@ sys.path.insert(0, os.path.abspath('../src'))
 # Optional: print check
 print("DEBUG import path:", os.path.abspath('../src'))
 
-
+utodoc_mock_imports = [
+    'numpy', 'matplotlib', 'netCDF4', 'cartopy', 'Basemap', 'scipy', 'pandas', 'imageio', 'pillow'
+]
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
