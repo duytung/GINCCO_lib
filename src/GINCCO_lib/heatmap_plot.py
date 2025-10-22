@@ -247,7 +247,7 @@ def plot_section(
     mesh = ax.pcolormesh(X_axis, Z_axis, data_draw, cmap=cmap, norm=norm, shading="auto")
 
     ax.set_title(title)
-    ax.set_xlabel("Position")
+    ax.set_xlabel("Position (Lat - Lon)")
     ax.set_ylabel("Depth")
     ax.invert_yaxis()
 
@@ -274,7 +274,7 @@ def plot_section(
     #cb.ax.tick_params(labelsize=20)
     cbar_ax.set_label("Value")
 
-    fig.subplots_adjust(bottom=0.35, top=0.9, left=0.1, right=0.95, wspace=0.2, hspace=0.3)
+    fig.subplots_adjust(bottom=0.3, top=0.9, left=0.1, right=0.95, wspace=0.2, hspace=0.3)
 
     # Save with random number
     os.makedirs(path_save, exist_ok=True)
@@ -366,7 +366,7 @@ def plot_section_contourf(
     cf = ax.contourf(X_axis, Z_axis, data_draw, levels=levels, cmap=cmap, norm=norm, extend="both")
 
     ax.set_title(title)
-    ax.set_xlabel("Position")
+    ax.set_xlabel("Position (Lat - Lon)")
     ax.set_ylabel("Depth (m)")
     #ax.invert_yaxis()
 
@@ -383,7 +383,7 @@ def plot_section_contourf(
     cb = fig.colorbar(cf, cax=cbar_ax, ticks=ticks, orientation='horizontal')
     cbar_ax.set_label("Value")
 
-    fig.subplots_adjust(bottom=0.35, top=0.9, left=0.1, right=0.95, wspace=0.2, hspace=0.3)
+    fig.subplots_adjust(bottom=0.3, top=0.9, left=0.1, right=0.95, wspace=0.2, hspace=0.3)
     
     # Save figure
     os.makedirs(path_save, exist_ok=True)
