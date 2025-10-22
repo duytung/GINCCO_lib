@@ -248,7 +248,7 @@ def plot_section(
 
     ax.set_title(title)
     ax.set_xlabel("Time")
-    ax.set_ylabel("Depth")
+    ax.set_ylabel("Location")
     ax.invert_yaxis()
 
     # X axis ticks
@@ -274,7 +274,7 @@ def plot_section(
     #cb.ax.tick_params(labelsize=20)
     cbar_ax.set_label("Value")
 
-    fig.subplots_adjust(bottom=0.25, top=0.9, left=0.1, right=0.95, wspace=0.2, hspace=0.3)
+    fig.subplots_adjust(bottom=0.35, top=0.9, left=0.1, right=0.95, wspace=0.2, hspace=0.3)
 
     # Save with random number
     os.makedirs(path_save, exist_ok=True)
@@ -285,9 +285,111 @@ def plot_section(
     return out_path
 
 
+#---------#---------#---------#---------#---------#---------#
 
+def plot_section_contourf(
+    title,
+    data_draw,         # np.ndarray, shape (depth, M)
+    depth_array,       # np.ndarray, shape (depth, M)
+    lon_min, lon_max,
+    lat_min, lat_max,
+    path_save=".",
+    name_save="figure",
+    n_colors=100,      # number of discrete color bins
+    n_ticks=5
+):
+    """
+    Plot a vertical section using contourf with automatic color normalization.
 
+    This function visualizes a 2D (depth × distance) dataset using filled contours.
+    The color scale is automatically normalized based on percentiles (5–95%) and uses
+    a discrete 'jet' colormap with n_colors levels.
 
+    Parameters
+    ----------
+    title : str
+        Figure title.
+    data_draw : np.ndarray
+        2D array of shape (depth, M).
+    depth_array : np.ndarray
+        2D array of depth values with the same shape as data_draw.
+    lon_min, lon_max : float
+        Longitude range of the section.
+    lat_min, lat_max : float
+        Latitude range of the section.
+    path_save : str, optional
+        Output directory.
+    name_save : str, optional
+        Base filename (without extension).
+    n_colors : int, optional
+        Number of discrete color bins.
+    n_ticks : int, optional
+        Number of colorbar ticks.
+
+    Returns
+    -------
+    str
+        Full path to the saved PNG file.
+    """
+    if data_draw.ndim != 2:
+        raise ValueError("data_draw must be 2D (depth, M).")
+    if depth_array.shape != data_draw.shape:
+        raise ValueError("depth_array must have the same shape as data_draw.")
+
+    n_depth, n_M = data_draw.shape
+    if n_colors < 2:
+        raise ValueError("n_colors must be >= 2.")
+
+    # Compute color limits (robust against outliers)
+    vmin = np.nanpercentile(data_draw, 5)
+    vmax = np.nanpercentile(data_draw, 95)
+    if not np.isfinite(vmin) or not np.isfinite(vmax) or vmin >= vmax:
+        vmin, vmax = np.nanmin(data_draw), np.nanmax(data_draw)
+        if not np.isfinite(vmin) or not np.isfinite(vmax) or vmin == vmax:
+            vmin, vmax = -0.5, 0.5
+
+    # Discrete color levels
+    levels = np.linspace(vmin, vmax, n_colors + 1)
+    cmap = plt.get_cmap("jet", n_colors)
+    norm = BoundaryNorm(levels, ncolors=cmap.N, clip=True)
+
+    # Nice colorbar ticks
+    ticks = _nice_ticks(vmin, vmax, n_ticks)
+
+    # Build X–Z mesh
+    X_axis = np.arange(n_M)
+    Z_axis = depth_array[:, 0]
+    X_axis, Z_axis = np.meshgrid(X_axis, Z_axis)
+
+    # Figure
+    fig, ax = plt.subplots(figsize=(9, 4), constrained_layout=True)
+    cf = ax.contourf(X_axis, Z_axis, data_draw, levels=levels, cmap=cmap, norm=norm, extend="both")
+
+    ax.set_title(title)
+    ax.set_xlabel("Position")
+    ax.set_ylabel("Depth (m)")
+    ax.invert_yaxis()
+
+    # X-axis ticks: show combined Lat/Lon
+    lat_list = np.linspace(lat_min, lat_max, n_M)
+    lon_list = np.linspace(lon_min, lon_max, n_M)
+    xtick = np.linspace(0, n_M - 1, n_ticks, dtype=int)
+    xtick_label = [f"{lat_list[i]:.2f}N\n{lon_list[i]:.2f}E" for i in xtick]
+    ax.set_xticks(xtick)
+    ax.set_xticklabels(xtick_label)
+
+    # Colorbar
+    cbar_ax = fig.add_axes([0.15, 0.07, 0.7, 0.02])
+    cb = fig.colorbar(cf, cax=cbar_ax, ticks=ticks, orientation='horizontal')
+    cbar_ax.set_label("Value")
+
+    # Save figure
+    os.makedirs(path_save, exist_ok=True)
+    rand_num = random.randint(10000, 99999)
+    out_path = os.path.join(path_save, f"{name_save}_{rand_num}.png")
+    fig.savefig(out_path, dpi=200)
+    plt.close(fig)
+    return out_path
 
 
 
