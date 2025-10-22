@@ -93,7 +93,7 @@ gc.plot_section_contourf(
     lat_min=lat_p[0], lat_max=lat_p[1],
     path_save="/prod/projects/data/tungnd/figure/",
     name_save="section",
-    n_colors=100,   # number of discrete color bins
+    n_colors=250,   # number of discrete color bins
     n_ticks=5
 )
 
