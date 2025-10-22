@@ -151,7 +151,8 @@ def _nice_ticks_1d(dmin, dmax, max_ticks=5):
 
 #########################################################
 
-def map_draw(lon_min, lon_max, lat_min, lat_max, title, lon_data, lat_data, data_draw, path_save, name_save, data_min=None, data_max=None):
+def map_draw(lon_min, lon_max, lat_min, lat_max, title, lon_data, lat_data, data_draw, path_save, name_save, 
+    data_min=None, data_max=None, custom_coastline = None, layer_name = None, ):
 
     """
     Draw a 2D geospatial field on a Mercator map using ``Basemap`` and save it as a PNG image.
@@ -182,6 +183,11 @@ def map_draw(lon_min, lon_max, lat_min, lat_max, title, lon_data, lat_data, data
     data_min, data_max : float, optional
         User-specified minimum and maximum color limits.  
         If ``None``, they are derived from the 5th and 95th percentiles of ``data_draw``.
+    custom_coastline : str, optional
+        User-specified path of the custom coastline 
+        If ``None``, they are derived from the default map of Basemap library 
+    layer_name : str, optional
+        Name of the layer of the custom shapefile to draw
 
     Returns
     -------
@@ -210,7 +216,11 @@ def map_draw(lon_min, lon_max, lat_min, lat_max, title, lon_data, lat_data, data
     meridians = _nice_ticks_1d(np.nanmin(lon_data), np.nanmax(lon_data))  #vertical line
     map2.drawparallels(parallels, linewidth=0.5, dashes=[2,8], labels=[1,0,0,0], fontsize=15, zorder=12)
     map2.drawmeridians(meridians, linewidth=0.5, dashes=[2,8], labels=[0,0,0,1], fontsize=15, zorder=12)
-    map2.drawcoastlines(zorder=10)
+    
+    if custom_coastline is None:
+        map2.drawcoastlines(zorder=10)
+    else: 
+        map2.readshapefile(custom_coastline, layer_name, linewidth=1, color='k', zorder = 20)
 
     # -------- Auto colorbar limits and nice ticks --------
     finite_vals = np.asarray(data_draw)[np.isfinite(data_draw)]
