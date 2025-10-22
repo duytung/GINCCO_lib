@@ -20,7 +20,11 @@ path = '/work/users/tungnd/GOT271/GOT_REF5/OFFLINE/'
 fgrid = Dataset(path + 'grid.nc', 'r')
 lat_t = fgrid.variables['latitude_t'][:]
 lon_t = fgrid.variables['longitude_t'][:]
-mask_t = fgrid.variables['mask_t'][0,:,:]
+mask_t_var = fgrid.variables['mask_t']
+if mask_t_var.ndim == 3:
+    mask_t = mask_t_var[0, :, :]
+elif mask_t_var.ndim == 2:
+    mask_t = mask_t_var[:, :]
 sin_t  = fgrid.variables['gridrotsin_t'][:,:]
 cos_t  = fgrid.variables['gridrotcos_t'][:,:]
 # ============================================================

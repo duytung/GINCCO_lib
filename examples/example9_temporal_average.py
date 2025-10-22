@@ -22,8 +22,11 @@ lat_t   = fgrid.variables['latitude_t'][:]
 lon_t   = fgrid.variables['longitude_t'][:]
 depth_t   = fgrid.variables['depth_t'][0,:,:]
 dxy_t   = fgrid.variables['dxdy_t'][:]
-mask_t  = fgrid.variables['mask_t'][0, :, :]
-
+mask_t_var = fgrid.variables['mask_t']
+if mask_t_var.ndim == 3:
+    mask_t = mask_t_var[0, :, :]
+elif mask_t_var.ndim == 2:
+    mask_t = mask_t_var[:, :]
 depth_t[mask_t==0] = np.nan
 
 # ============================================================
