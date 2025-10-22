@@ -170,7 +170,7 @@ def plot_section(
     path_save=".",
     name_save="figure",
     n_colors=100 ,      # number of discrete color bins
-    n_ticks = 5
+    n_ticks = 5 , 
 ):
     """
     Plot a time–depth heatmap using ``pcolormesh`` with automatic color normalization and time formatting.
@@ -324,7 +324,7 @@ def plot_section_contourf(
     n_colors : int, optional
         Number of discrete color bins.
     n_ticks : int, optional
-        Number of colorbar ticks.
+        Number of x-axis ticks.
 
     Returns
     -------
@@ -354,7 +354,7 @@ def plot_section_contourf(
     norm = BoundaryNorm(levels, ncolors=cmap.N, clip=True)
 
     # Nice colorbar ticks
-    ticks = _nice_ticks(vmin, vmax, n_ticks)
+    ticks = _nice_ticks(vmin, vmax)
 
     # Build X–Z mesh
     X_axis = np.arange(n_M)
