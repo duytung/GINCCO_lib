@@ -247,8 +247,8 @@ def plot_section(
     mesh = ax.pcolormesh(X_axis, Z_axis, data_draw, cmap=cmap, norm=norm, shading="auto")
 
     ax.set_title(title)
-    ax.set_xlabel("Time")
-    ax.set_ylabel("Location")
+    ax.set_xlabel("Position")
+    ax.set_ylabel("Depth")
     ax.invert_yaxis()
 
     # X axis ticks
@@ -368,7 +368,7 @@ def plot_section_contourf(
     ax.set_title(title)
     ax.set_xlabel("Position")
     ax.set_ylabel("Depth (m)")
-    ax.invert_yaxis()
+    #ax.invert_yaxis()
 
     # X-axis ticks: show combined Lat/Lon
     lat_list = np.linspace(lat_min, lat_max, n_M)
@@ -383,6 +383,8 @@ def plot_section_contourf(
     cb = fig.colorbar(cf, cax=cbar_ax, ticks=ticks, orientation='horizontal')
     cbar_ax.set_label("Value")
 
+    fig.subplots_adjust(bottom=0.35, top=0.9, left=0.1, right=0.95, wspace=0.2, hspace=0.3)
+    
     # Save figure
     os.makedirs(path_save, exist_ok=True)
     rand_num = random.randint(10000, 99999)
