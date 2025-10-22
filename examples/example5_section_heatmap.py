@@ -13,7 +13,7 @@ tstart = datetime(2010, 1, 1)
 tend   = datetime(2010, 10, 30)
 
 path      = '/work/users/tungnd/GOT271/GOT_REF5/OFFLINE/'
-file_name = '20150828_120000.symphonie.nc'
+file_name = '20130128_120000.symphonie.nc'
 
 # =========================
 # LOAD GRID AND DEPTH
@@ -80,3 +80,25 @@ gc.plot_section(
     n_colors=100,   # number of discrete color bins
     n_ticks=5
 )
+
+
+# Option 2: plot using contourfill
+
+# Step 4: Plot section heatmap
+gc.plot_section_contourf(
+    title='Salinity section',
+    data_draw=data_out,
+    depth_array=depth_out,     # ndarray, shape (depth, M)
+    lon_min=lon_p[0], lon_max=lon_p[1],
+    lat_min=lat_p[0], lat_max=lat_p[1],
+    path_save="/prod/projects/data/tungnd/figure/",
+    name_save="section",
+    n_colors=100,   # number of discrete color bins
+    n_ticks=5
+)
+
+
+
+
+
+
