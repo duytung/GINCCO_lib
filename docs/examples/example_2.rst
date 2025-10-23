@@ -1,5 +1,5 @@
-Example 1: Load a list and create a map
-=======================================
+Example 2: Point plot
+=====================
 
 This example demonstrates how to import file and draw a time series off one or several points with GINCCO_lib
 using :func:`GINCCO_lib.time_series_plot.plot_point`.
