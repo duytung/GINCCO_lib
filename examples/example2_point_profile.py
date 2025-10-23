@@ -20,7 +20,13 @@ path = '/work/users/tungnd/GOT271/GOT_REF5/OFFLINE/'
 fgrid   = Dataset(path + 'grid.nc', 'r')
 lat_t   = fgrid.variables['latitude_t'][:]
 lon_t   = fgrid.variables['longitude_t'][:]
-mask_t  = fgrid.variables['mask_t'][0, :, :]
+
+mask_t_var = fgrid.variables['mask_t']
+if mask_t_var.ndim == 3:
+    mask_t = mask_t_var[0, :, :]
+elif mask_t_var.ndim == 2:
+    mask_t = mask_t_var[:, :]
+
 depth_t = fgrid.variables['depth_t'][0, :, :]  # only bottom depth
 
 # Apply mask: set land values to NaN
@@ -45,7 +51,7 @@ gc.map_draw_point(
     lat_point=lat_p,
     lon_point=lon_p,
     path_save="/prod/projects/data/tungnd/figure/",
-    name_save="demo_11"
+    name_save="example2.1"
 )
 
 # Step 3: Import salinity at the defined points
@@ -65,6 +71,6 @@ gc.plot_point(
     tend=tend,
     data_point=data_draw,
     path_save="/prod/projects/data/tungnd/figure/",
-    name_save="demo_11",
+    name_save="example2.2",
     point_labels=["1", "2", "3"]
 )

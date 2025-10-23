@@ -34,7 +34,7 @@ gc.map_draw(
     lat_data=lat_t,
     data_draw=sal_full[0, 0, :, :],  # day 0, level 0
     path_save="/prod/projects/data/tungnd/figure/",
-    name_save="demo_01"
+    name_save="example1.1"
 )
 
 print('#--------#--------#--------#--------#--------#--------#')
@@ -53,7 +53,7 @@ gc.map_draw(
     lat_data=lat_t,
     data_draw=ssh[0, :, :],
     path_save="/prod/projects/data/tungnd/figure/",
-    name_save="demo_02"
+    name_save="example1.2"
 )
 
 print('#--------#--------#--------#--------#--------#--------#')
@@ -71,7 +71,7 @@ gc.map_draw(
     lat_data=lat_t,
     data_draw=sal_surface[0, :, :],
     path_save="/prod/projects/data/tungnd/figure/",
-    name_save="demo_03"
+    name_save="example1.3"
 )
 
 print('#--------#--------#--------#--------#--------#--------#')
@@ -89,7 +89,7 @@ gc.map_draw(
     lat_data=lat_t,
     data_draw=sal_layer[0, :, :],
     path_save="/prod/projects/data/tungnd/figure/",
-    name_save="demo_04"
+    name_save="example1.4"
 )
 
 print('#--------#--------#--------#--------#--------#--------#')
@@ -107,5 +107,5 @@ gc.map_draw(
     lat_data=lat_t,
     data_draw=sal_depth[0, :, :],  # day 0
     path_save="/prod/projects/data/tungnd/figure/",
-    name_save="demo_05"
+    name_save="example1.5"
 )
