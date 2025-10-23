@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Example 2: Point plot &#8212; GINCCO_lib 0.5 documentation</title>
+    <title>Example 3: Section Plot &#8212; GINCCO_lib 0.5 documentation</title>
   
   
   
@@ -41,11 +41,11 @@
     <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <script src="../_static/sphinx_highlight.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'examples/example_2';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'examples/example_3';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Example 3: Section Plot" href="example_3.html" />
-    <link rel="prev" title="Example 1: Load a list and create a map" href="example_1.html" />
+    <link rel="next" title="Example 4: Create video" href="example_4.html" />
+    <link rel="prev" title="Example 2: Point plot" href="example_2.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -291,8 +291,8 @@ document.write(`
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="example_1.html">Example 1: Load a list and create a map</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Example 2: Point plot</a></li>
-<li class="toctree-l1"><a class="reference internal" href="example_3.html">Example 3: Section Plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_2.html">Example 2: Point plot</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Example 3: Section Plot</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_4.html">Example 4: Create video</a></li>
 </ul>
 </div>
@@ -334,7 +334,7 @@ document.write(`
     
     <li class="breadcrumb-item"><a href="index.html" class="nav-link">Examples</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page">Example 2: Point plot</li>
+    <li class="breadcrumb-item active" aria-current="page">Example 3: Section Plot</li>
   </ul>
 </nav>
 </div>
@@ -351,10 +351,10 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <section id="example-2-point-plot">
-<h1>Example 2: Point plot<a class="headerlink" href="#example-2-point-plot" title="Permalink to this heading">#</a></h1>
-<p>This example demonstrates how to import file and draw a time series off one or several points with GINCCO_lib
-using <a class="reference internal" href="../GINCCO_lib.time_series_plot.html#GINCCO_lib.time_series_plot.plot_point" title="GINCCO_lib.time_series_plot.plot_point"><code class="xref py py-func docutils literal notranslate"><span class="pre">GINCCO_lib.time_series_plot.plot_point()</span></code></a>.</p>
+  <section id="example-3-section-plot">
+<h1>Example 3: Section Plot<a class="headerlink" href="#example-3-section-plot" title="Permalink to this heading">#</a></h1>
+<p>This example demonstrates how to import file and draw a section plot of one or several points with GINCCO_lib
+using <a class="reference internal" href="../GINCCO_lib.heatmap_plot.html#GINCCO_lib.heatmap_plot.plot_heatmap" title="GINCCO_lib.heatmap_plot.plot_heatmap"><code class="xref py py-func docutils literal notranslate"><span class="pre">GINCCO_lib.heatmap_plot.plot_heatmap()</span></code></a>.</p>
 <section id="code-example">
 <h2>Code Example<a class="headerlink" href="#code-example" title="Permalink to this heading">#</a></h2>
 <p>Now we will import the library and the grid</p>
@@ -370,7 +370,7 @@ using <a class="reference internal" href="../GINCCO_lib.time_series_plot.html#GI
 <span class="c1"># CONFIGURATION</span>
 <span class="c1"># =========================</span>
 <span class="n">tstart</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2010</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">tend</span>   <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2010</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">tend</span>   <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">2010</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
 
 <span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;/work/users/tungnd/GOT271/GOT_REF5/OFFLINE/&#39;</span>
 
@@ -380,67 +380,73 @@ using <a class="reference internal" href="../GINCCO_lib.time_series_plot.html#GI
 <span class="n">fgrid</span>   <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="s1">&#39;grid.nc&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
 <span class="n">lat_t</span>   <span class="o">=</span> <span class="n">fgrid</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;latitude_t&#39;</span><span class="p">][:]</span>
 <span class="n">lon_t</span>   <span class="o">=</span> <span class="n">fgrid</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;longitude_t&#39;</span><span class="p">][:]</span>
-
 <span class="n">mask_t_var</span> <span class="o">=</span> <span class="n">fgrid</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;mask_t&#39;</span><span class="p">]</span>
 <span class="k">if</span> <span class="n">mask_t_var</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
     <span class="n">mask_t</span> <span class="o">=</span> <span class="n">mask_t_var</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>
 <span class="k">elif</span> <span class="n">mask_t_var</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
     <span class="n">mask_t</span> <span class="o">=</span> <span class="n">mask_t_var</span><span class="p">[:,</span> <span class="p">:]</span>
 
-<span class="n">depth_t</span> <span class="o">=</span> <span class="n">fgrid</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;depth_t&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>  <span class="c1"># only bottom depth</span>
+<span class="n">depth_t</span> <span class="o">=</span> <span class="n">fgrid</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s1">&#39;depth_t&#39;</span><span class="p">][:,</span> <span class="p">:,</span> <span class="p">:]</span>
 
 <span class="c1"># Apply mask: set land values to NaN</span>
-<span class="n">depth_t</span><span class="p">[</span><span class="n">mask_t</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+<span class="n">mask_t_3d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">mask_t</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:],</span> <span class="n">depth_t</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">depth_t</span><span class="p">[</span><span class="n">mask_t_3d</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
 </pre></div>
 </div>
 <p>Now define the point and see where it is on map</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ============================================================</span>
-<span class="c1"># EXAMPLE 1: Plot temporal variation of surface salinity</span>
+<span class="c1"># EXAMPLE: Plot salinity profiles at 3 points</span>
 <span class="c1"># ============================================================</span>
 
 <span class="c1"># Step 1: Define three points along latitude 19N</span>
 <span class="n">lon_p</span> <span class="o">=</span> <span class="p">[</span><span class="mi">106</span><span class="p">,</span> <span class="mi">107</span><span class="p">,</span> <span class="mi">108</span><span class="p">]</span>
 <span class="n">lat_p</span> <span class="o">=</span> <span class="p">[</span><span class="mi">19</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">19</span><span class="p">]</span>
 
-<span class="c1"># Step 2: Plot locations of the points on the map with bathymetry</span>
+<span class="c1"># Step 2: Plot locations of the points with bathymetry</span>
 <span class="n">gc</span><span class="o">.</span><span class="n">map_draw_point</span><span class="p">(</span>
     <span class="n">lon_min</span><span class="o">=</span><span class="mi">105</span><span class="p">,</span> <span class="n">lon_max</span><span class="o">=</span><span class="mi">111</span><span class="p">,</span>
     <span class="n">lat_min</span><span class="o">=</span><span class="mf">16.5</span><span class="p">,</span> <span class="n">lat_max</span><span class="o">=</span><span class="mi">22</span><span class="p">,</span>
     <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Locations of points and bathymetry (in m)&quot;</span><span class="p">,</span>
     <span class="n">lon_data</span><span class="o">=</span><span class="n">lon_t</span><span class="p">,</span>
     <span class="n">lat_data</span><span class="o">=</span><span class="n">lat_t</span><span class="p">,</span>
-    <span class="n">data_draw</span><span class="o">=</span><span class="n">depth_t</span><span class="p">[:,</span> <span class="p">:],</span>
+    <span class="n">data_draw</span><span class="o">=</span><span class="n">depth_t</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:],</span>
     <span class="n">lat_point</span><span class="o">=</span><span class="n">lat_p</span><span class="p">,</span>
     <span class="n">lon_point</span><span class="o">=</span><span class="n">lon_p</span><span class="p">,</span>
     <span class="n">path_save</span><span class="o">=</span><span class="s2">&quot;/prod/projects/data/tungnd/figure/&quot;</span><span class="p">,</span>
-    <span class="n">name_save</span><span class="o">=</span><span class="s2">&quot;demo_11&quot;</span>
+    <span class="n">name_save</span><span class="o">=</span><span class="s2">&quot;example3.1&quot;</span>
 <span class="p">)</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="../_images/example2.1_61854.png"><img alt="../_images/example2.1_61854.png" class="align-center" src="../_images/example2.1_61854.png" style="width: 500px;" /></a>
+<a class="reference internal image-reference" href="../_images/example3.1_82511.png"><img alt="../_images/example3.1_82511.png" class="align-center" src="../_images/example3.1_82511.png" style="width: 500px;" /></a>
 <p>Now import data and plot the results</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Step 3: Import salinity at the defined points</span>
-<span class="n">data_draw</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">lon_p</span><span class="p">),</span> <span class="p">(</span><span class="n">tend</span> <span class="o">-</span> <span class="n">tstart</span><span class="p">)</span><span class="o">.</span><span class="n">days</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Step 3: Import salinity profiles for the defined points</span>
+<span class="c1"># data_draw shape = (number of points, number of days, number of depths)</span>
+<span class="n">data_draw</span>    <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">lon_p</span><span class="p">),</span> <span class="p">(</span><span class="n">tend</span> <span class="o">-</span> <span class="n">tstart</span><span class="p">)</span><span class="o">.</span><span class="n">days</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">depth_t</span><span class="p">,</span> <span class="mi">0</span><span class="p">)))</span>
+<span class="n">point_index</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">lon_p</span><span class="p">),</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lon_p</span><span class="p">)):</span>
-    <span class="n">data_draw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">gc</span><span class="o">.</span><span class="n">import_point</span><span class="p">(</span>
-        <span class="n">path</span><span class="p">,</span> <span class="s1">&#39;sal&#39;</span><span class="p">,</span> <span class="n">tstart</span><span class="p">,</span> <span class="n">tend</span><span class="p">,</span>
-        <span class="n">lat_p</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">lon_p</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-        <span class="n">ji</span><span class="o">=</span><span class="s1">&#39;False&#39;</span><span class="p">,</span> <span class="n">level</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">ignore_missing</span><span class="o">=</span><span class="s1">&#39;False&#39;</span>  <span class="c1"># surface point</span>
+    <span class="n">data_draw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:],</span> <span class="n">point_index</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">gc</span><span class="o">.</span><span class="n">import_profile</span><span class="p">(</span>
+        <span class="n">path</span><span class="p">,</span> <span class="s1">&#39;sal&#39;</span><span class="p">,</span> <span class="n">tstart</span><span class="p">,</span> <span class="n">tend</span><span class="p">,</span> <span class="n">lat_p</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">lon_p</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+        <span class="n">ji</span><span class="o">=</span><span class="s1">&#39;False&#39;</span><span class="p">,</span> <span class="n">ignore_missing</span><span class="o">=</span><span class="s1">&#39;False&#39;</span>
     <span class="p">)</span>
 
-<span class="c1"># Step 4: Plot temporal salinity variation for the 3 points</span>
-<span class="n">gc</span><span class="o">.</span><span class="n">plot_point</span><span class="p">(</span>
-    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Surface salinity at different points&quot;</span><span class="p">,</span>
-    <span class="n">tstart</span><span class="o">=</span><span class="n">tstart</span><span class="p">,</span>
-    <span class="n">tend</span><span class="o">=</span><span class="n">tend</span><span class="p">,</span>
-    <span class="n">data_point</span><span class="o">=</span><span class="n">data_draw</span><span class="p">,</span>
-    <span class="n">path_save</span><span class="o">=</span><span class="s2">&quot;/prod/projects/data/tungnd/figure/&quot;</span><span class="p">,</span>
-    <span class="n">name_save</span><span class="o">=</span><span class="s2">&quot;demo_11&quot;</span><span class="p">,</span>
-    <span class="n">point_labels</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span> <span class="s2">&quot;3&quot;</span><span class="p">]</span>
-<span class="p">)</span>
+<span class="c1"># Step 4: Plot heatmaps for each point</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lon_p</span><span class="p">)):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">data_draw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">depth_t</span><span class="p">[:,</span> <span class="n">point_index</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">point_index</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">gc</span><span class="o">.</span><span class="n">plot_heatmap</span><span class="p">(</span>
+        <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Salinity profile at </span><span class="si">%s</span><span class="s2">E </span><span class="si">%s</span><span class="s2">N&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">lon_p</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">lat_p</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span>
+        <span class="n">tstart</span><span class="o">=</span><span class="n">tstart</span><span class="p">,</span>
+        <span class="n">tend</span><span class="o">=</span><span class="n">tend</span><span class="p">,</span>
+        <span class="n">data_draw</span><span class="o">=</span><span class="n">data_draw</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:],</span>
+        <span class="n">depth</span><span class="o">=</span><span class="n">depth_t</span><span class="p">[:,</span> <span class="n">point_index</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">point_index</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span>
+        <span class="n">path_save</span><span class="o">=</span><span class="s2">&quot;/prod/projects/data/tungnd/figure/&quot;</span><span class="p">,</span>
+        <span class="n">name_save</span><span class="o">=</span><span class="s2">&quot;example3.2&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="../_images/example2.2_24217.png"><img alt="../_images/example2.2_24217.png" class="align-center" src="../_images/example2.2_24217.png" style="width: 500px;" /></a>
+<a class="reference internal image-reference" href="../_images/example3.2_66236.png"><img alt="../_images/example3.2_66236.png" class="align-center" src="../_images/example3.2_66236.png" style="width: 700px;" /></a>
+<a class="reference internal image-reference" href="../_images/example3.2_23402.png"><img alt="../_images/example3.2_23402.png" class="align-center" src="../_images/example3.2_23402.png" style="width: 700px;" /></a>
+<a class="reference internal image-reference" href="../_images/example3.1_82511.png"><img alt="../_images/example3.1_82511.png" class="align-center" src="../_images/example3.1_82511.png" style="width: 700px;" /></a>
 </section>
 </section>
 
@@ -467,7 +473,7 @@ using <a class="reference internal" href="../GINCCO_lib.time_series_plot.html#GI
 
   <div class="sidebar-secondary-item">
   <div class="tocsection sourcelink">
-    <a href="../_sources/examples/example_2.rst.txt">
+    <a href="../_sources/examples/example_3.rst.txt">
       <i class="fa-solid fa-file-lines"></i> Show Source
     </a>
   </div>

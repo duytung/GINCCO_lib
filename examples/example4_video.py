@@ -60,6 +60,7 @@ gc.pngs_to_video(
     fps=5
 )
 
+'''
 # Step 4: Delete temporary PNG files
 for path in Path("/prod/projects/data/tungnd/figure").glob("demo_%s_*.png" % session_id):
     try:
@@ -67,3 +68,4 @@ for path in Path("/prod/projects/data/tungnd/figure").glob("demo_%s_*.png" % ses
         print(f"Deleted: {path}")
     except Exception as e:
         print(f"Error deleting {path}: {e}")
+'''

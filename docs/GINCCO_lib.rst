@@ -17,11 +17,3 @@ Submodules
    GINCCO_lib.spatial_average
    GINCCO_lib.temporal_mean
    GINCCO_lib.time_series_plot
-
-Module contents
----------------
-
-.. automodule:: GINCCO_lib
-   :members:
-   :undoc-members:
-   :show-inheritance:

@@ -29,7 +29,8 @@ elif mask_t_var.ndim == 2:
 depth_t = fgrid.variables['depth_t'][:, :, :]
 
 # Apply mask: set land values to NaN
-depth_t[mask_t == 0] = np.nan
+mask_t_3d = np.repeat(mask_t[np.newaxis, :, :], depth_t.shape[0], axis=0)
+depth_t[mask_t_3d == 0] = np.nan
 
 # ============================================================
 # EXAMPLE: Plot salinity profiles at 3 points
@@ -50,7 +51,7 @@ gc.map_draw_point(
     lat_point=lat_p,
     lon_point=lon_p,
     path_save="/prod/projects/data/tungnd/figure/",
-    name_save="demo_11"
+    name_save="example3.1"
 )
 
 # Step 3: Import salinity profiles for the defined points
@@ -74,5 +75,5 @@ for i in range(len(lon_p)):
         data_draw=data_draw[i, :, :],
         depth=depth_t[:, point_index[i, 0], point_index[i, 1]],
         path_save="/prod/projects/data/tungnd/figure/",
-        name_save="demo_11",
+        name_save="example3.2",
     )
