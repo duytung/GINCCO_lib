@@ -1,5 +1,5 @@
-GINCCO\_lib
-===========
+List of functions
+=================
 
 Submodules
 ----------
