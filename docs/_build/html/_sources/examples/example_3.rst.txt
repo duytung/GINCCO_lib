@@ -119,7 +119,7 @@ Now import data and plot the results
    :align: center
 
 
-.. image:: ../_static/example3.1_82511.png
+.. image:: ../_static/example3.2_69289.png
    :width: 700px
    :align: center
 
