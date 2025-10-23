@@ -192,6 +192,11 @@ def map_draw(lon_min, lon_max, lat_min, lat_max, title, lon_data, lat_data, data
     Returns
     -------
     None
+
+    Examples
+    --------
+    :doc:`/examples/example1`
+
     
     """
 
@@ -301,6 +306,12 @@ def map_draw_point(lon_min, lon_max, lat_min, lat_max, title, lon_data, lat_data
     Returns
     -------
     None
+
+    Examples
+    --------
+    :doc:`/examples/example2`
+
+
     """
     dlon = lon_max - lon_min
     dlat = lat_max - lat_min

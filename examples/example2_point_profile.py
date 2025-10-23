@@ -51,7 +51,7 @@ gc.map_draw_point(
     lat_point=lat_p,
     lon_point=lon_p,
     path_save="/prod/projects/data/tungnd/figure/",
-    name_save="demo_11"
+    name_save="example2.1"
 )
 
 # Step 3: Import salinity at the defined points
@@ -71,6 +71,6 @@ gc.plot_point(
     tend=tend,
     data_point=data_draw,
     path_save="/prod/projects/data/tungnd/figure/",
-    name_save="demo_11",
+    name_save="example2.2",
     point_labels=["1", "2", "3"]
 )
