@@ -55,6 +55,7 @@ Now the first example
        name_save="demo_01"
    )
 
+
 .. image:: ../_static/example1.1_73204.png
    :width: 500px
    :align: center
@@ -82,6 +83,7 @@ Second example
        name_save="demo_02"
    )
 
+
 .. image:: ../_static/example1.2_11611.png
    :width: 500px
    :align: center
@@ -106,6 +108,7 @@ Third example
        path_save="/prod/projects/data/tungnd/figure/",
        name_save="demo_03"
    )
+
 
 .. image:: ../_static/example1.3_31743.png
    :width: 500px
@@ -161,6 +164,5 @@ Fifth example
 .. image:: ../_static/example1.5_76246.png
    :width: 500px
    :align: center
-
 
 

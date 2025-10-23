@@ -48,8 +48,8 @@ def plot_point(
     data_point : np.ndarray
         Array of time series values.  
         Shape can be:
-          * (n_time,) — single time series.
-          * (n_point, n_time) — multiple time series.
+        * (n_time,) — single time series.
+        * (n_point, n_time) — multiple time series.
     path_save : str, optional
         Directory where the figure will be saved. Default is the current directory ``"."``.
     name_save : str, optional

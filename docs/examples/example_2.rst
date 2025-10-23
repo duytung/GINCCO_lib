@@ -50,6 +50,7 @@ Now we will import the library and the grid
 Now define the point and see where it is on map 
 
 .. code-block:: python
+
    # ============================================================
    # EXAMPLE 1: Plot temporal variation of surface salinity
    # ============================================================
@@ -72,6 +73,7 @@ Now define the point and see where it is on map
        name_save="demo_11"
    )
 
+
 .. image:: ../_static/example2.1_61854.png
    :width: 500px
    :align: center
@@ -81,6 +83,7 @@ Now define the point and see where it is on map
 Now import data and plot the results
 
 .. code-block:: python
+
    # Step 3: Import salinity at the defined points
    data_draw = np.zeros((len(lon_p), (tend - tstart).days + 1))
    for i in range(len(lon_p)):

@@ -11,6 +11,7 @@ Welcome to GINCCO_lib's documentation!
    :caption: Contents:
 
    GINCCO_lib
+   examples/index
 
 
 

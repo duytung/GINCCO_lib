@@ -1,12 +1,13 @@
 
+
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="./" >
+<html lang="en" >
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
     <title>GINCCO_lib &#8212; GINCCO_lib 0.5 documentation</title>
   
@@ -14,33 +15,32 @@
   
   <script data-cfasync="false">
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
-    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
   </script>
-  <!--
-    this give us a css class that will be invisible only if js is disabled
-  -->
-  <noscript>
-    <style>
-      .pst-js-only { display: none !important; }
-
-    </style>
-  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
   
-  <!-- So that users can add custom icons -->
-  <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
-  <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    <script src="_static/documentation_options.js?v=db78e746"></script>
-    <script src="_static/doctools.js?v=9bcbadda"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'GINCCO_lib';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -48,7 +48,6 @@
     <link rel="prev" title="Welcome to GINCCO_lib’s documentation!" href="index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="" />
   </head>
   
   
@@ -56,16 +55,23 @@
 
   
   
-  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
   
-  <div id="pst-scroll-pixel-helper"></div>
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
   
-  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
-    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
-
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
   
-  <dialog id="pst-search-dialog">
-    
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
 <form class="bd-search d-flex align-items-center"
       action="search.html"
       method="get">
@@ -73,6 +79,7 @@
   <input type="search"
          class="form-control"
          name="q"
+         id="search-input"
          placeholder="Search the docs ..."
          aria-label="Search the docs ..."
          autocomplete="off"
@@ -80,31 +87,21 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form>
-  </dialog>
-
-  <div class="pst-async-banner-revealer d-none">
-  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
-</div>
-
+</form></div>
+  </div>
   
-    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
 <div class="bd-header__inner bd-page-width">
-  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
     <span class="fa-solid fa-bars"></span>
-  </button>
+  </label>
   
-  
-  <div class=" navbar-header-items__start">
+  <div class="navbar-header-items__start">
     
       <div class="navbar-item">
-
-  
-    
   
 
 <a class="navbar-brand logo" href="index.html">
-  
   
   
   
@@ -116,27 +113,40 @@
     
   </div>
   
+  
   <div class=" navbar-header-items">
     
     <div class="me-auto navbar-header-items__center">
       
-        <div class="navbar-item">
-<nav>
+        <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
   <ul class="bd-navbar-elements navbar-nav">
     
-<li class="nav-item current active">
-  <a class="nav-link nav-internal" href="#">
-    GINCCO_lib
-  </a>
-</li>
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="#">
+                        GINCCO_lib
+                      </a>
+                    </li>
+                
 
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="examples/index.html">
+                        Examples
+                      </a>
+                    </li>
+                
 
-<li class="nav-item ">
-  <a class="nav-link nav-external" href="https://github.com/duytung/GINCCO_lib">
-    GitHub
-  </a>
-</li>
-
+                <li class="nav-item">
+                  <a class="nav-link nav-external" href="https://github.com/duytung/GINCCO_lib">
+                    GitHub
+                  </a>
+                </li>
+                
   </ul>
 </nav></div>
       
@@ -147,22 +157,26 @@
       
         <div class="navbar-item navbar-persistent--container">
           
-
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
- <i class="fa-solid fa-magnifying-glass"></i>
- <span class="search-button__default-text">Search</span>
- <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-</button>
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
         </div>
       
       
         <div class="navbar-item">
-
-<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
-  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
-  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
-</button></div>
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
       
     </div>
     
@@ -170,32 +184,29 @@
   
   
     <div class="navbar-persistent--mobile">
-
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
- <i class="fa-solid fa-magnifying-glass"></i>
- <span class="search-button__default-text">Search</span>
- <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-</button>
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
     </div>
   
 
   
-    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+    <label class="sidebar-toggle secondary-toggle" for="__secondary">
       <span class="fa-solid fa-outdent"></span>
-    </button>
+    </label>
   
 </div>
 
-    </header>
+    </nav>
   
-
   <div class="bd-container">
     <div class="bd-container__inner bd-page-width">
       
-      
-      
-      <dialog id="pst-primary-sidebar-modal"></dialog>
-      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+      <div class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -204,28 +215,37 @@
     
       <div class="sidebar-header-items__center">
         
-          
-          
-            <div class="navbar-item">
-<nav>
+          <div class="navbar-item"><nav class="navbar-nav">
+  <p class="sidebar-header-items__title"
+     role="heading"
+     aria-level="1"
+     aria-label="Site Navigation">
+    Site Navigation
+  </p>
   <ul class="bd-navbar-elements navbar-nav">
     
-<li class="nav-item current active">
-  <a class="nav-link nav-internal" href="#">
-    GINCCO_lib
-  </a>
-</li>
+                    <li class="nav-item current active">
+                      <a class="nav-link nav-internal" href="#">
+                        GINCCO_lib
+                      </a>
+                    </li>
+                
 
+                    <li class="nav-item">
+                      <a class="nav-link nav-internal" href="examples/index.html">
+                        Examples
+                      </a>
+                    </li>
+                
 
-<li class="nav-item ">
-  <a class="nav-link nav-external" href="https://github.com/duytung/GINCCO_lib">
-    GitHub
-  </a>
-</li>
-
+                <li class="nav-item">
+                  <a class="nav-link nav-external" href="https://github.com/duytung/GINCCO_lib">
+                    GitHub
+                  </a>
+                </li>
+                
   </ul>
 </nav></div>
-          
         
       </div>
     
@@ -234,12 +254,15 @@
       <div class="sidebar-header-items__end">
         
           <div class="navbar-item">
-
-<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
-  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
-  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
-</button></div>
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script></div>
         
       </div>
     
@@ -254,6 +277,7 @@
   <input type="search"
          class="form-control"
          name="q"
+         id="search-input"
          placeholder="Search the docs ..."
          aria-label="Search the docs ..."
          autocomplete="off"
@@ -262,8 +286,7 @@
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
 </form></div>
-        <div class="sidebar-primary-item">
-<nav class="bd-docs-nav bd-links"
+        <div class="sidebar-primary-item"><nav class="bd-docs-nav bd-links"
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
@@ -284,40 +307,37 @@
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
-      <div class="sidebar-primary-item">
-<div id="ethical-ad-placement"
-      class="flat"
-      data-ea-publisher="readthedocs"
-      data-ea-type="readthedocs-sidebar"
-      data-ea-manual="true">
-</div></div>
   </div>
+  
+  <div id="rtd-footer-container"></div>
 
 
       </div>
       
-      <main id="main-content" class="bd-main" role="main">
+      <main id="main-content" class="bd-main">
         
         
           <div class="bd-content">
             <div class="bd-article-container">
               
-              <div class="bd-header-article d-print-none">
+              <div class="bd-header-article">
 <div class="header-article-items header-article__inner">
   
     <div class="header-article-items__start">
       
         <div class="header-article-item">
 
-<nav aria-label="Breadcrumb" class="d-print-none">
-  <ul class="bd-breadcrumbs">
+
+
+<nav aria-label="Breadcrumbs">
+  <ul class="bd-breadcrumbs" role="navigation" aria-label="Breadcrumb">
     
     <li class="breadcrumb-item breadcrumb-home">
       <a href="index.html" class="nav-link" aria-label="Home">
         <i class="fa-solid fa-home"></i>
       </a>
     </li>
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">GINCCO_lib</span></li>
+    <li class="breadcrumb-item active" aria-current="page">GINCCO_lib</li>
   </ul>
 </nav>
 </div>
@@ -332,12 +352,12 @@
               
                 
 <div id="searchbox"></div>
-                <article class="bd-article">
+                <article class="bd-article" role="main">
                   
   <section id="gincco-lib">
-<h1>GINCCO_lib<a class="headerlink" href="#gincco-lib" title="Link to this heading">#</a></h1>
+<h1>GINCCO_lib<a class="headerlink" href="#gincco-lib" title="Permalink to this heading">#</a></h1>
 <section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">#</a></h2>
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">#</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="GINCCO_lib.geostrophic_current.html">geostrophic_current</a><ul>
@@ -347,6 +367,7 @@
 <li class="toctree-l1"><a class="reference internal" href="GINCCO_lib.heatmap_plot.html">heatmap_plot</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="GINCCO_lib.heatmap_plot.html#GINCCO_lib.heatmap_plot.plot_heatmap"><code class="docutils literal notranslate"><span class="pre">plot_heatmap()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="GINCCO_lib.heatmap_plot.html#GINCCO_lib.heatmap_plot.plot_section"><code class="docutils literal notranslate"><span class="pre">plot_section()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="GINCCO_lib.heatmap_plot.html#GINCCO_lib.heatmap_plot.plot_section_contourf"><code class="docutils literal notranslate"><span class="pre">plot_section_contourf()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="GINCCO_lib.image_to_video.html">image_to_video</a><ul>
@@ -399,10 +420,10 @@
 </div>
 </section>
 <section id="module-GINCCO_lib">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-GINCCO_lib" title="Link to this heading">#</a></h2>
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-GINCCO_lib" title="Permalink to this heading">#</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="GINCCO_lib.import_3D">
-<span class="sig-name descname"><span class="pre">import_3D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tstart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_missing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'False'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GINCCO_lib/import_series_daily.html#import_3D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.import_3D" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">import_3D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tstart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_missing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'False'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GINCCO_lib/import_series_daily.html#import_3D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.import_3D" title="Permalink to this definition">#</a></dt>
 <dd><p>Import a 3D variable from a sequence of daily NetCDF files.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -427,7 +448,7 @@ Missing files are represented with NaN values.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="GINCCO_lib.import_4D">
-<span class="sig-name descname"><span class="pre">import_4D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tstart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_missing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'False'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GINCCO_lib/import_series_daily.html#import_4D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.import_4D" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">import_4D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tstart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_missing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'False'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GINCCO_lib/import_series_daily.html#import_4D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.import_4D" title="Permalink to this definition">#</a></dt>
 <dd><p>Import a 4D variable from a sequence of daily NetCDF files.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -452,7 +473,7 @@ Missing files are represented with NaN values.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="GINCCO_lib.import_depth">
-<span class="sig-name descname"><span class="pre">import_depth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tstart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_missing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'False'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GINCCO_lib/import_series_daily.html#import_depth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.import_depth" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">import_depth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tstart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_missing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'False'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GINCCO_lib/import_series_daily.html#import_depth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.import_depth" title="Permalink to this definition">#</a></dt>
 <dd><p>Import a variable in specified depth from daily NetCDF files.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -478,7 +499,7 @@ Missing files are represented with NaN values.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="GINCCO_lib.import_layer">
-<span class="sig-name descname"><span class="pre">import_layer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tstart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_missing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'False'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GINCCO_lib/import_series_daily.html#import_layer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.import_layer" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">import_layer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tstart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_missing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'False'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GINCCO_lib/import_series_daily.html#import_layer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.import_layer" title="Permalink to this definition">#</a></dt>
 <dd><p>Import a surface variable from a sequence of daily NetCDF files.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -504,7 +525,7 @@ Missing files are represented with NaN values.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="GINCCO_lib.import_point">
-<span class="sig-name descname"><span class="pre">import_point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tstart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_j</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ji</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'False'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_missing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'False'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GINCCO_lib/import_series_daily.html#import_point"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.import_point" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">import_point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tstart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_j</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ji</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'False'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_missing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'False'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GINCCO_lib/import_series_daily.html#import_point"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.import_point" title="Permalink to this definition">#</a></dt>
 <dd><p>Import a data point from a variable of daily NetCDF files.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -534,7 +555,7 @@ Missing files are represented with NaN values.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="GINCCO_lib.import_profile">
-<span class="sig-name descname"><span class="pre">import_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tstart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_j</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ji</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'False'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_missing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'False'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GINCCO_lib/import_series_daily.html#import_profile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.import_profile" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">import_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tstart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_j</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ji</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'False'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_missing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'False'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GINCCO_lib/import_series_daily.html#import_profile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.import_profile" title="Permalink to this definition">#</a></dt>
 <dd><p>Import a data point from a variable of daily NetCDF files.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -564,7 +585,7 @@ Missing files are represented with NaN values.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="GINCCO_lib.import_section">
-<span class="sig-name descname"><span class="pre">import_section</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">M</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth_interval</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GINCCO_lib/import_daily.html#import_section"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.import_section" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">import_section</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">M</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth_interval</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GINCCO_lib/import_daily.html#import_section"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.import_section" title="Permalink to this definition">#</a></dt>
 <dd><p>Import a vertical section from a file. Support all kind of section: along lat, along lon, and diagonal line.
 This is the control for the whole function</p>
 <dl class="field-list simple">
@@ -593,7 +614,7 @@ This is the control for the whole function</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="GINCCO_lib.import_surface">
-<span class="sig-name descname"><span class="pre">import_surface</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tstart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_missing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'False'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GINCCO_lib/import_series_daily.html#import_surface"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.import_surface" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">import_surface</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tstart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_missing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'False'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GINCCO_lib/import_series_daily.html#import_surface"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.import_surface" title="Permalink to this definition">#</a></dt>
 <dd><p>Import a surface variable from a sequence of daily NetCDF files.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -618,7 +639,7 @@ Missing files are represented with NaN values.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="GINCCO_lib.interpolate_to_t">
-<span class="sig-name descname"><span class="pre">interpolate_to_t</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">stagger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask_t</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GINCCO_lib/interpolate_to_t.html#interpolate_to_t"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.interpolate_to_t" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">interpolate_to_t</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stagger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask_t</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GINCCO_lib/interpolate_to_t.html#interpolate_to_t"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.interpolate_to_t" title="Permalink to this definition">#</a></dt>
 <dd><p>Interpolate a staggered field (U or V) onto the T grid.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -643,7 +664,7 @@ Missing files are represented with NaN values.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="GINCCO_lib.map_draw">
-<span class="sig-name descname"><span class="pre">map_draw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lon_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_draw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_save</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_save</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GINCCO_lib/map_plot.html#map_draw"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.map_draw" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">map_draw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lon_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_draw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_save</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_save</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">custom_coastline</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GINCCO_lib/map_plot.html#map_draw"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.map_draw" title="Permalink to this definition">#</a></dt>
 <dd><p>Draw a 2D geospatial field on a Mercator map using <code class="docutils literal notranslate"><span class="pre">Basemap</span></code> and save it as a PNG image.</p>
 <p>The function plots a rectangular region bounded by the given longitude and latitude
 limits, with grid lines and coastlines automatically drawn. The data range is scaled
@@ -666,17 +687,22 @@ for better visual contrast.</p>
 If <code class="docutils literal notranslate"><span class="pre">None</span></code>, they are derived from the 5th and 95th percentiles of <code class="docutils literal notranslate"><span class="pre">data_draw</span></code>.</p></li>
 <li><p><strong>data_max</strong> (<em>float</em><em>, </em><em>optional</em>) – User-specified minimum and maximum color limits.
 If <code class="docutils literal notranslate"><span class="pre">None</span></code>, they are derived from the 5th and 95th percentiles of <code class="docutils literal notranslate"><span class="pre">data_draw</span></code>.</p></li>
+<li><p><strong>custom_coastline</strong> (<em>str</em><em>, </em><em>optional</em>) – User-specified path of the custom coastline
+If <code class="docutils literal notranslate"><span class="pre">None</span></code>, they are derived from the default map of Basemap library</p></li>
+<li><p><strong>layer_name</strong> (<em>str</em><em>, </em><em>optional</em>) – Name of the layer of the custom shapefile to draw</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>None</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<p>See <a class="reference internal" href="examples/example1.html"><span class="doc">Example 1: Load a list and create a map</span></a></p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="GINCCO_lib.map_draw_point">
-<span class="sig-name descname"><span class="pre">map_draw_point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lon_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_draw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_save</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_save</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GINCCO_lib/map_plot.html#map_draw_point"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.map_draw_point" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">map_draw_point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lon_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_draw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_save</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_save</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GINCCO_lib/map_plot.html#map_draw_point"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.map_draw_point" title="Permalink to this definition">#</a></dt>
 <dd><p>Draw a 2D geospatial field with annotated point markers on a Mercator map.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -699,11 +725,13 @@ If <code class="docutils literal notranslate"><span class="pre">None</span></cod
 <dd class="field-even"><p>None</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<p>See <a class="reference internal" href="examples/example2.html"><span class="doc">Example 1: Load a list and create a map</span></a></p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="GINCCO_lib.map_draw_uv">
-<span class="sig-name descname"><span class="pre">map_draw_uv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lon_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_u</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask_ocean</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_save</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_save</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiver_max_n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiver_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GINCCO_lib/map_plot.html#map_draw_uv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.map_draw_uv" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">map_draw_uv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lon_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_u</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask_ocean</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_save</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_save</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiver_max_n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiver_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GINCCO_lib/map_plot.html#map_draw_uv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.map_draw_uv" title="Permalink to this definition">#</a></dt>
 <dd><p>Draw a 2D vector field (U–V components) on a Mercator map with colored speed shading.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -738,7 +766,7 @@ If <code class="docutils literal notranslate"><span class="pre">None</span></cod
 
 <dl class="py function">
 <dt class="sig sig-object py" id="GINCCO_lib.plot_heatmap">
-<span class="sig-name descname"><span class="pre">plot_heatmap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tstart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_draw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'figure'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_colors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GINCCO_lib/heatmap_plot.html#plot_heatmap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.plot_heatmap" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">plot_heatmap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tstart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_draw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'figure'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_colors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GINCCO_lib/heatmap_plot.html#plot_heatmap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.plot_heatmap" title="Permalink to this definition">#</a></dt>
 <dd><p>Plot a time–depth heatmap using <code class="docutils literal notranslate"><span class="pre">pcolormesh</span></code> with adaptive color normalization and
 automatic time axis formatting.</p>
 <p>This function creates a 2D heatmap representing variations of a variable across time and
@@ -771,7 +799,7 @@ for uniqueness.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="GINCCO_lib.plot_point">
-<span class="sig-name descname"><span class="pre">plot_point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tstart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'figure'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GINCCO_lib/time_series_plot.html#plot_point"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.plot_point" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">plot_point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tstart</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_point</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'figure'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GINCCO_lib/time_series_plot.html#plot_point"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.plot_point" title="Permalink to this definition">#</a></dt>
 <dd><p>Plot daily time series for one or multiple points over a given time range.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -779,15 +807,10 @@ for uniqueness.</p>
 <li><p><strong>title</strong> (<em>str</em>) – Title of the plot.</p></li>
 <li><p><strong>tstart</strong> (<em>datetime.datetime</em>) – Start date of the time series.</p></li>
 <li><p><strong>tend</strong> (<em>datetime.datetime</em>) – End date of the time series.</p></li>
-<li><p><strong>data_point</strong> (<em>np.ndarray</em>) – <p>Array of time series values.
-Shape can be:</p>
-<blockquote>
-<div><ul>
-<li><p>(n_time,) — single time series.</p></li>
-<li><p>(n_point, n_time) — multiple time series.</p></li>
-</ul>
-</div></blockquote>
-</p></li>
+<li><p><strong>data_point</strong> (<em>np.ndarray</em>) – Array of time series values.
+Shape can be:
+* (n_time,) — single time series.
+* (n_point, n_time) — multiple time series.</p></li>
 <li><p><strong>path_save</strong> (<em>str</em><em>, </em><em>optional</em>) – Directory where the figure will be saved. Default is the current directory <code class="docutils literal notranslate"><span class="pre">&quot;.&quot;</span></code>.</p></li>
 <li><p><strong>name_save</strong> (<em>str</em><em>, </em><em>optional</em>) – Base filename (without extension) for the saved image. Default is <code class="docutils literal notranslate"><span class="pre">&quot;figure&quot;</span></code>.</p></li>
 <li><p><strong>point_labels</strong> (<em>list</em><em> of </em><em>str</em><em>, </em><em>optional</em>) – Optional list of labels for each time series.
@@ -805,7 +828,7 @@ If not provided, default names like “Point 1”, “Point 2”, etc. are used.
 
 <dl class="py function">
 <dt class="sig sig-object py" id="GINCCO_lib.plot_section">
-<span class="sig-name descname"><span class="pre">plot_section</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_draw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth_array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'figure'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_colors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_ticks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GINCCO_lib/heatmap_plot.html#plot_section"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.plot_section" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">plot_section</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_draw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth_array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'figure'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_colors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_ticks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GINCCO_lib/heatmap_plot.html#plot_section"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.plot_section" title="Permalink to this definition">#</a></dt>
 <dd><p>Plot a time–depth heatmap using <code class="docutils literal notranslate"><span class="pre">pcolormesh</span></code> with automatic color normalization and time formatting.</p>
 <p>The function visualizes a 2D time–depth dataset as a color-shaded heatmap, automatically
 selecting appropriate color limits (based on percentiles) and time axis tick intervals
@@ -835,7 +858,7 @@ depending on the temporal span. The color scale uses a discrete “jet” colorm
 
 <dl class="py function">
 <dt class="sig sig-object py" id="GINCCO_lib.pngs_to_video">
-<span class="sig-name descname"><span class="pre">pngs_to_video</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">24</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resize_to</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GINCCO_lib/image_to_video.html#pngs_to_video"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.pngs_to_video" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">pngs_to_video</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">24</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resize_to</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GINCCO_lib/image_to_video.html#pngs_to_video"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.pngs_to_video" title="Permalink to this definition">#</a></dt>
 <dd><p>Convert a sequence of PNG images into an MP4 video using <code class="docutils literal notranslate"><span class="pre">imageio</span></code> with the PyAV plugin.</p>
 <p>This function reads a list or folder of PNG images, ensures that each frame
 is RGB (uint8), contiguous in memory, and has even pixel dimensions, then
@@ -887,23 +910,17 @@ If <code class="docutils literal notranslate"><span class="pre">None</span></cod
               
               
               
-              
-              
             </div>
             
             
               
-                <dialog id="pst-secondary-sidebar-modal"></dialog>
-                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
-
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
   <div class="sidebar-secondary-item">
-<div
-    id="pst-page-navigation-heading-2"
-    class="page-toc tocsection onthispage">
+  <div class="page-toc tocsection onthispage">
     <i class="fa-solid fa-list"></i> On this page
   </div>
-  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+  <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-GINCCO_lib">Module contents</a><ul class="nav section-nav flex-column">
@@ -929,13 +946,12 @@ If <code class="docutils literal notranslate"><span class="pre">None</span></cod
   </nav></div>
 
   <div class="sidebar-secondary-item">
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="_sources/GINCCO_lib.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div></div>
+  <div class="tocsection sourcelink">
+    <a href="_sources/GINCCO_lib.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
 
 </div></div>
               
@@ -950,8 +966,8 @@ If <code class="docutils literal notranslate"><span class="pre">None</span></cod
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
-<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+  <script src="_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -959,7 +975,6 @@ If <code class="docutils literal notranslate"><span class="pre">None</span></cod
     <div class="footer-items__start">
       
         <div class="footer-item">
-
   <p class="copyright">
     
       © Copyright 2025, Tung Nguyen-Duy.
@@ -969,9 +984,8 @@ If <code class="docutils literal notranslate"><span class="pre">None</span></cod
 </div>
       
         <div class="footer-item">
-
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
     <br/>
   </p>
 </div>
@@ -979,13 +993,10 @@ If <code class="docutils literal notranslate"><span class="pre">None</span></cod
     </div>
   
   
-  
     <div class="footer-items__end">
       
-        <div class="footer-item">
-<p class="theme-version">
-  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+        <div class="footer-item"><p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.13.3.
 </p></div>
       
     </div>
