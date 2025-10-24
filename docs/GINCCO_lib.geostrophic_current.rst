@@ -1,5 +1,5 @@
 geostrophic_current
-=======================================
+===================
 
 .. automodule:: GINCCO_lib.geostrophic_current
    :members:

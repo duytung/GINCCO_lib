@@ -1,5 +1,5 @@
 spatial_average
-===================================
+===============
 
 .. automodule:: GINCCO_lib.spatial_average
    :members:
