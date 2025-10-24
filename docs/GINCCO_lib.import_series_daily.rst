@@ -5,3 +5,5 @@ import_series_daily
    :members:
    :undoc-members:
    :show-inheritance:
+   :autosummary:
+   :toctree: generated/

@@ -5,3 +5,5 @@ temporal_mean
    :members:
    :undoc-members:
    :show-inheritance:
+   :autosummary:
+   :toctree: generated/
