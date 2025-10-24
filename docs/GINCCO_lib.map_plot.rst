@@ -5,5 +5,7 @@ map_plot
    :members:
    :undoc-members:
    :show-inheritance:
-   :autosummary:
+
+.. autosummary::
    :toctree: generated/
+   :recursive:
