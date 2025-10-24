@@ -130,7 +130,7 @@ Plot using pcolormesh
 
 
 .. image:: ../_static/example5.2_96810.png
-   :width: 500px
+   :width: 700px
    :align: center
 
 
@@ -154,7 +154,7 @@ Plot using contourfill
     )
 
 .. image:: ../_static/example5.3_88045.png
-   :width: 500px
+   :width: 700px
    :align: center
 
 
