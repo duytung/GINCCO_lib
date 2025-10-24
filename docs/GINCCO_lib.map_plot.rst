@@ -11,3 +11,9 @@ map_plot
 .. autosummary::
    :toctree: generated/
    :recursive:
+
+.. toctree::
+   :maxdepth: 1
+   :glob:
+
+   generated/GINCCO_lib.map_plot.*

@@ -7,3 +7,10 @@ image_to_video
    :show-inheritance:
    :autosummary:
    :toctree: generated/
+
+
+.. toctree::
+   :maxdepth: 1
+   :glob:
+
+   generated/GINCCO_lib.image_to_video.*
