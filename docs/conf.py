@@ -57,25 +57,17 @@ def clean_rst_titles():
 # -- Auto-generate one page per function/class ----------------------
 from sphinx.ext.autosummary.generate import generate_autosummary_docs
 
-def run_autosummary(app):
-    """Generate autosummary .rst files (Sphinx ≥ 8.2.3)."""
-    try:
-        generate_autosummary_docs(app, ["./GINCCO_lib.rst"])
-        print("[conf.py] Autosummary generation complete.")
-    except Exception as e:
-        print(f"[conf.py] Autosummary generation skipped: {e}")
 
 def setup(app):
     app.connect("builder-inited", lambda app: clean_rst_titles())
-    app.connect("builder-inited", run_autosummary)
 
 # -- HTML output ----------------------------------------------------
 html_theme = "pydata_sphinx_theme"
 html_theme_options = {
     "logo": {"text": "GINCCO_lib"},
     "navigation_depth": 3,
-    "collapse_navigation": True,
-    "show_nav_level": 2,
+    "collapse_navigation": False,
+    "show_nav_level": 3,
     "navbar_align": "left",
     "show_prev_next": False,
     "external_links": [
