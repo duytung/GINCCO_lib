@@ -6,6 +6,8 @@ time_series_plot
    :undoc-members:
    :show-inheritance:
 
+.. currentmodule:: GINCCO_lib.time_series_plot
+
 .. autosummary::
    :toctree: generated/
    :recursive:

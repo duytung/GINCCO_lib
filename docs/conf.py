@@ -36,7 +36,7 @@ autosummary_generate = True
 napoleon_google_docstring = False
 napoleon_numpy_docstring = True
 
-templates_path = ['_templates']
+
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 # -- Helper: clean .rst titles -------------------------------------
