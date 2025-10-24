@@ -104,7 +104,7 @@ Now import data and plot the results
        point_labels=["1", "2", "3"]
    )
 .. image:: ../_static/example2.2_24217.png
-   :width: 500px
+   :width: 700px
    :align: center
 
 

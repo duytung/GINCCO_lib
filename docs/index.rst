@@ -13,11 +13,3 @@ Welcome to GINCCO_lib's documentation!
    GINCCO_lib
    examples/index
 
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
