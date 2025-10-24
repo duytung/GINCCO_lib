@@ -1,7 +1,7 @@
 Example 4: Create video
 =======================
 
-This example demonstrates how to import file and draw a section plot of one or several points with GINCCO_lib
+This example demonstrates how to import file and create video with GINCCO_lib
 using :func:`GINCCO_lib.image_to_video.pngs_to_video`.
 
 

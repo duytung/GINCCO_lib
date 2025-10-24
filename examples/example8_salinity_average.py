@@ -86,6 +86,7 @@ gc.plot_point(
     tend=tend,
     data_point=sal_mean,
     path_save="/prod/projects/data/tungnd/figure/",
-    name_save="demo_11",
+    name_save="example8",
     point_labels=label_list
 )
+

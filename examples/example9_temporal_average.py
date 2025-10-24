@@ -88,7 +88,7 @@ gc.plot_point_monthly(
     data_point = sal_mean_monthly,  # numpy array, shape (n_point, n_time) or (n_time,)
     n_xticks_desired=8,             # user suggestion; function will adjust for nice spacing
     path_save="/prod/projects/data/tungnd/figure/",
-    name_save="figure9",
+    name_save="example9",
     point_labels=label_list   # optional list of names for each point
 )
 
