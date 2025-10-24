@@ -76,5 +76,5 @@ html_theme_options = {
 }
 html_sidebars = {"**": ["search-field.html", "sidebar-nav-bs.html"]}
 
-
+html_css_files = ["custom.css"]
 
