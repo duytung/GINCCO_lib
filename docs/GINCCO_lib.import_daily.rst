@@ -7,3 +7,9 @@ import_daily
    :show-inheritance:
    :autosummary:
    :toctree: generated/
+
+.. toctree::
+   :maxdepth: 1
+   :glob:
+
+   generated/GINCCO_lib.import_daily.*

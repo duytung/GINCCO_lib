@@ -7,3 +7,10 @@ interpolate_to_t
    :show-inheritance:
    :autosummary:
    :toctree: generated/
+
+
+.. toctree::
+   :maxdepth: 1
+   :glob:
+
+   generated/GINCCO_lib.interpolate_to_t.*

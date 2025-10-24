@@ -7,3 +7,10 @@ spatial_average
    :show-inheritance:
    :autosummary:
    :toctree: generated/
+
+
+.. toctree::
+   :maxdepth: 1
+   :glob:
+
+   generated/GINCCO_lib.spatial_average.*

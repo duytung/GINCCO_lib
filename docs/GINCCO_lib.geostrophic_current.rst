@@ -7,3 +7,10 @@ geostrophic_current
    :show-inheritance:
    :autosummary:
    :toctree: generated/
+
+
+.. toctree::
+   :maxdepth: 1
+   :glob:
+
+   generated/GINCCO_lib.geostrophic_current.*
