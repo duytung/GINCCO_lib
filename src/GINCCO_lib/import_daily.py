@@ -71,6 +71,7 @@ def section_extract(lat_array, lon_array, depth_array, lat, lon,
       the solve fails for a point.
     - depth_array is interpolated with the same precomputed weights.
     - Currently, we only support scalar fields (e.g., temperature, salinity), not vector fields.
+
     """
 
     # -----------------------------
@@ -383,34 +384,35 @@ def _data_interp(depth_sec, data_sec, depth_interval=1.0):
 
 
 
-
 def import_section(path, file_name, var, lon_min, lon_max, lat_min, lat_max, M, depth_interval):
     """
-    Import a vertical section from a file. Support all kind of section: along lat, along lon, and diagonal line. 
-    This is the control for the whole function
+    Import a vertical section from a file. Supports all kinds of sections: along latitude, longitude, or diagonal line.
+    This function serves as the main controller.
 
     Parameters
     ----------
     path : str
-        Path to file. This path should contain the grid.nc as well
+        Path to the file. This path should contain the grid.nc as well.
     file_name : str
-        Name of the file
+        Name of the file.
     var : str
-        Name of the variable
-    lon_min, lon_max, lat_min, lat_max : float    
-        limit of the line: if lon_min = lon_max, it will understand it as a line along the longitude, and vice versa. 
-    M: int
-        the number of point in the section following its direction from A to B
-    depth_interval: float
-        the interval of Z. 
+        Name of the variable.
+    lon_min, lon_max, lat_min, lat_max : float
+        Limits of the line. If lon_min = lon_max, it is treated as a line along longitude, and vice versa.
+    M : int
+        Number of points in the section following its direction from A to B.
+    depth_interval : float
+        Interval of Z.
 
     Returns
     -------
-    new_depth : ndarray, shape (K, M)
+    new_depth : ndarray of shape (K, M)
         Shared regular depth grid replicated across columns.
-    data_out : ndarray, shape (K, M)
+    data_out : ndarray of shape (K, M)
         Interpolated data on new_depth.
+
     """
+
 
     # Open the grid file to determine depth dimensions
     grid = ''.join(glob.glob(path + '/grid.nc'))
@@ -453,10 +455,6 @@ def import_section(path, file_name, var, lon_min, lon_max, lat_min, lat_max, M, 
     depth_out, data_out = _data_interp(depth_sec, data_interpolation, depth_interval=depth_interval)
 
     return depth_out, data_out
-
-
-
-
 
 
 

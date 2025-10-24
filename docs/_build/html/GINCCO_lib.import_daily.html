@@ -45,7 +45,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="import_series_daily" href="GINCCO_lib.import_series_daily.html" />
-    <link rel="prev" title="image_to_video" href="GINCCO_lib.image_to_video.html" />
+    <link rel="prev" title="List of functions" href="GINCCO_lib.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -129,7 +129,7 @@
     
                     <li class="nav-item current active">
                       <a class="nav-link nav-internal" href="GINCCO_lib.html">
-                        GINCCO_lib
+                        List of functions
                       </a>
                     </li>
                 
@@ -226,7 +226,7 @@ document.write(`
     
                     <li class="nav-item current active">
                       <a class="nav-link nav-internal" href="GINCCO_lib.html">
-                        GINCCO_lib
+                        List of functions
                       </a>
                     </li>
                 
@@ -290,16 +290,20 @@ document.write(`
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="GINCCO_lib.geostrophic_current.html">geostrophic_current</a></li>
-<li class="toctree-l1"><a class="reference internal" href="GINCCO_lib.heatmap_plot.html">heatmap_plot</a></li>
-<li class="toctree-l1"><a class="reference internal" href="GINCCO_lib.image_to_video.html">image_to_video</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">import_daily</a></li>
 <li class="toctree-l1"><a class="reference internal" href="GINCCO_lib.import_series_daily.html">import_series_daily</a></li>
-<li class="toctree-l1"><a class="reference internal" href="GINCCO_lib.interpolate_to_t.html">interpolate_to_t</a></li>
+</ul>
+<ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="GINCCO_lib.map_plot.html">map_plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="GINCCO_lib.heatmap_plot.html">heatmap_plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="GINCCO_lib.time_series_plot.html">time_series_plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="GINCCO_lib.image_to_video.html">image_to_video</a></li>
+</ul>
+<ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="GINCCO_lib.spatial_average.html">spatial_average</a></li>
 <li class="toctree-l1"><a class="reference internal" href="GINCCO_lib.temporal_mean.html">temporal_mean</a></li>
-<li class="toctree-l1"><a class="reference internal" href="GINCCO_lib.time_series_plot.html">time_series_plot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="GINCCO_lib.geostrophic_current.html">geostrophic_current</a></li>
+<li class="toctree-l1"><a class="reference internal" href="GINCCO_lib.interpolate_to_t.html">interpolate_to_t</a></li>
 </ul>
 </div>
 </nav></div>
@@ -338,7 +342,7 @@ document.write(`
       </a>
     </li>
     
-    <li class="breadcrumb-item"><a href="GINCCO_lib.html" class="nav-link">GINCCO_lib</a></li>
+    <li class="breadcrumb-item"><a href="GINCCO_lib.html" class="nav-link">List of functions</a></li>
     
     <li class="breadcrumb-item active" aria-current="page">import_daily</li>
   </ul>
@@ -362,26 +366,26 @@ document.write(`
 <dl class="py function">
 <dt class="sig sig-object py" id="GINCCO_lib.import_daily.import_section">
 <span class="sig-name descname"><span class="pre">import_section</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">M</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth_interval</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/GINCCO_lib/import_daily.html#import_section"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#GINCCO_lib.import_daily.import_section" title="Permalink to this definition">#</a></dt>
-<dd><p>Import a vertical section from a file. Support all kind of section: along lat, along lon, and diagonal line.
-This is the control for the whole function</p>
+<dd><p>Import a vertical section from a file. Supports all kinds of sections: along latitude, longitude, or diagonal line.
+This function serves as the main controller.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>path</strong> (<em>str</em>) – Path to file. This path should contain the grid.nc as well</p></li>
-<li><p><strong>file_name</strong> (<em>str</em>) – Name of the file</p></li>
-<li><p><strong>var</strong> (<em>str</em>) – Name of the variable</p></li>
-<li><p><strong>lon_min</strong> (<em>float</em>) – limit of the line: if lon_min = lon_max, it will understand it as a line along the longitude, and vice versa.</p></li>
-<li><p><strong>lon_max</strong> (<em>float</em>) – limit of the line: if lon_min = lon_max, it will understand it as a line along the longitude, and vice versa.</p></li>
-<li><p><strong>lat_min</strong> (<em>float</em>) – limit of the line: if lon_min = lon_max, it will understand it as a line along the longitude, and vice versa.</p></li>
-<li><p><strong>lat_max</strong> (<em>float</em>) – limit of the line: if lon_min = lon_max, it will understand it as a line along the longitude, and vice versa.</p></li>
-<li><p><strong>M</strong> (<em>int</em>) – the number of point in the section following its direction from A to B</p></li>
-<li><p><strong>depth_interval</strong> (<em>float</em>) – the interval of Z.</p></li>
+<li><p><strong>path</strong> (<em>str</em>) – Path to the file. This path should contain the grid.nc as well.</p></li>
+<li><p><strong>file_name</strong> (<em>str</em>) – Name of the file.</p></li>
+<li><p><strong>var</strong> (<em>str</em>) – Name of the variable.</p></li>
+<li><p><strong>lon_min</strong> (<em>float</em>) – Limits of the line. If lon_min = lon_max, it is treated as a line along longitude, and vice versa.</p></li>
+<li><p><strong>lon_max</strong> (<em>float</em>) – Limits of the line. If lon_min = lon_max, it is treated as a line along longitude, and vice versa.</p></li>
+<li><p><strong>lat_min</strong> (<em>float</em>) – Limits of the line. If lon_min = lon_max, it is treated as a line along longitude, and vice versa.</p></li>
+<li><p><strong>lat_max</strong> (<em>float</em>) – Limits of the line. If lon_min = lon_max, it is treated as a line along longitude, and vice versa.</p></li>
+<li><p><strong>M</strong> (<em>int</em>) – Number of points in the section following its direction from A to B.</p></li>
+<li><p><strong>depth_interval</strong> (<em>float</em>) – Interval of Z.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><ul class="simple">
-<li><p><strong>new_depth</strong> (<em>ndarray, shape (K, M)</em>) – Shared regular depth grid replicated across columns.</p></li>
-<li><p><strong>data_out</strong> (<em>ndarray, shape (K, M)</em>) – Interpolated data on new_depth.</p></li>
+<li><p><strong>new_depth</strong> (<em>ndarray of shape (K, M)</em>) – Shared regular depth grid replicated across columns.</p></li>
+<li><p><strong>data_out</strong> (<em>ndarray of shape (K, M)</em>) – Interpolated data on new_depth.</p></li>
 </ul>
 </p>
 </dd>
