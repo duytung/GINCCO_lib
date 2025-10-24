@@ -59,7 +59,7 @@ gc.map_draw_point(
     lat_point=lat_p,
     lon_point=lon_p,
     path_save="/prod/projects/data/tungnd/figure/",
-    name_save="demo_7"
+    name_save="example5.1"
 )
 
 # Step 3: Import section data
@@ -69,7 +69,7 @@ depth_out, data_out = gc.import_section(
     var='sal',
     lon_min=lon_p[0], lon_max=lon_p[1],
     lat_min=lat_p[0], lat_max=lat_p[1],
-    M=200,
+    M=80,
     depth_interval=0.5
 )
 
@@ -81,7 +81,7 @@ gc.plot_section(
     lon_min=lon_p[0], lon_max=lon_p[1],
     lat_min=lat_p[0], lat_max=lat_p[1],
     path_save="/prod/projects/data/tungnd/figure/",
-    name_save="section",
+    name_save="example5.2",
     n_colors=100,   # number of discrete color bins
     n_ticks=5
 )
@@ -97,7 +97,7 @@ gc.plot_section_contourf(
     lon_min=lon_p[0], lon_max=lon_p[1],
     lat_min=lat_p[0], lat_max=lat_p[1],
     path_save="/prod/projects/data/tungnd/figure/",
-    name_save="section",
+    name_save="example5.3",
     n_colors=250,   # number of discrete color bins
     n_ticks=5
 )
