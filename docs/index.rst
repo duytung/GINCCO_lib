@@ -12,4 +12,5 @@ Welcome to GINCCO_lib's documentation!
 
    GINCCO_lib
    examples/index
+   utils/index
 
