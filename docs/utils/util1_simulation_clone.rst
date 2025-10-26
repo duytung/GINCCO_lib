@@ -27,19 +27,13 @@ For example, if your folder tree is organized like this:
     │       ├── CDIR_IFORT
     │       ├── configbox
     │       ├── RDIR
-    │       ├── S271
     │       ├── SOURCES
     │       └── UDIR
 
 So, in this example, inside the ``GOT271`` folder you have the list of simulations (``GOT_REF2``, ``GOT_REF3``, ...) and the ``SYMPHONIE`` model.  
 The file ``simulation_clone.sh`` should be saved in the ``GOT271`` folder.
 
-Then, run it by:
-
-.. code-block:: bash
-
-   . simulation_clone.sh
-
+Here is the content of ``simulation_clone.sh``. 
 
 .. code-block:: bash
 
@@ -47,9 +41,9 @@ Then, run it by:
    set -euo pipefail
 
    # === User settings ===
-   model_name="SYMPHONIE"
-   ori="GOT_REF2"
-   new="GOT_REF5"
+   model_name="SYMPHONIE"       # name of SYMPHONIE model
+   ori="GOT_REF2"               # Copy from this folder
+   new="GOT_REF5"               # To this folder
    path="$PWD"
 
    # === Sanity checks ===
@@ -100,3 +94,12 @@ Then, run it by:
    fi
 
    echo "Done. Created new simulation: '$new'"
+
+
+Then, save the file. Then, run it by:
+
+.. code-block:: bash
+
+   . simulation_clone.sh
+
+

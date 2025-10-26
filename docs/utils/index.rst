@@ -1,10 +1,11 @@
 Utilities
 =========
 
-Below are worked examples demonstrating how to use key functions
-from **GINCCO_lib**.
+Here are a few small utilities to help you work more efficiently with SYMPHONIE.
+From **GINCCO_lib** with love <3.
 
 .. toctree::
    :maxdepth: 1
 
    util1_simulation_clone
+   util2_copy_restart
