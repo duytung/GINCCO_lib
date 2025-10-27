@@ -5,7 +5,25 @@ This example demonstrates how to clone a simulation.
 Code Example
 ------------
 
-Create a new file called ``simulation_clone.sh`` and place it in the folder that contains the list of simulations.
+The ``simulation_clone.sh`` script has been **embedded into the GINCCO_lib** package and can now be executed directly through the command-line interface.
+
+To use it, simply navigate to the directory that contains your list of SYMPHONIE simulations and run:
+
+
+.. code-block:: bash
+
+    gincco clone --model SYMPHONIE --from GOT_REF2 --to GOT_REF5
+
+
+With: 
+.. code-block:: bash
+    --model SYMPHONIE       # name of the SYMPHONIE folder
+    --from GOT_REF2         # from this model
+    --to GOT_REF5           # to this model
+
+
+This command automatically creates a new simulation setup (``GOT_REF5``) cloned from the existing one (``GOT_REF2``), updating all relevant configuration references.
+
 
 For example, if your folder tree is organized like this:
 
@@ -31,75 +49,6 @@ For example, if your folder tree is organized like this:
     │       └── UDIR
 
 So, in this example, inside the ``GOT271`` folder you have the list of simulations (``GOT_REF2``, ``GOT_REF3``, ...) and the ``SYMPHONIE`` model.  
-The file ``simulation_clone.sh`` should be saved in the ``GOT271`` folder.
 
-Here is the content of ``simulation_clone.sh``. 
-
-.. code-block:: bash
-
-   #!/usr/bin/env bash
-   set -euo pipefail
-
-   # === User settings ===
-   model_name="SYMPHONIE"       # name of SYMPHONIE model
-   ori="GOT_REF2"               # Copy from this folder
-   new="GOT_REF5"               # To this folder
-   path="$PWD"
-
-   # === Sanity checks ===
-   if [[ "$ori" == "$new" ]]; then
-       echo "Duplicate simulation name: '$ori' == '$new'. Exiting..."
-       exit 1
-   fi
-
-   if [[ ! -d "$model_name" ]]; then
-       echo "Model directory '$model_name' not found. Exiting..."
-       exit 1
-   fi
-
-   # === Create new configuration ===
-   echo "Creating configuration directory..."
-   (
-       cd "$model_name"
-       configbox/mkconfdir "$new"
-   )
-
-   # === Copy and replace content in UDIR ===
-   echo "Copying UDIR..."
-   cp -r "$model_name/UDIR/$ori" "$model_name/UDIR/$new"
-   find "$model_name/UDIR/$new" -type f -exec sed -i "s|$ori|$new|g" {} +
-
-   # === Copy and replace content in RDIR ===
-   echo "Copying RDIR..."
-   mkdir -p "$model_name/RDIR/$new"
-   cp "$model_name/RDIR/$ori"/{s26*,submit*,note*,mask*} "$model_name/RDIR/$new" 2>/dev/null || true
-   find "$model_name/RDIR/$new" -type f -exec sed -i "s|$ori|$new|g" {} +
-
-   # === Prepare new simulation directory ===
-   echo "Creating simulation directory structure..."
-   mkdir -p "$new"/{OFFLINE,GRAPHIQUES,TIDES,LIST}
-
-   for dir in RIVERS NOTEBOOK BATHYMASK LIST; do
-       if [[ -d "$ori/$dir" ]]; then
-           cp -r "$ori/$dir" "$new/"
-       else
-           echo "Warning: $dir not found in $ori"
-       fi
-   done
-
-   # === Update NOTEBOOK references ===
-   if [[ -d "$new/NOTEBOOK" ]]; then
-       echo "Updating NOTEBOOK references..."
-       find "$new/NOTEBOOK" -type f -exec sed -i "s|$ori|$new|g" {} +
-   fi
-
-   echo "Done. Created new simulation: '$new'"
-
-
-Then, save the file. Then, run it by:
-
-.. code-block:: bash
-
-   . simulation_clone.sh
-
+Please run the command from the ``GOT271`` folder.
 

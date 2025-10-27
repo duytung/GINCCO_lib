@@ -17,5 +17,15 @@ dependencies = [
   "matplotlib>=2.2.2",
   "basemap>=1.2"
 ]
+
+[project.scripts]
+gincco = "GINCCO_lib.cli:main"
+
+
 [tool.hatch.build.targets.wheel]
 packages = ["src/GINCCO_lib"]
+include = ["src/GINCCO_lib/scripts/**"]
+
+
+[tool.hatch.build.targets.sdist]
+include = ["src/GINCCO_lib/scripts/**"]
