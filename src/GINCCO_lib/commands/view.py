@@ -1,93 +1,72 @@
 """
-GINCCO_lib.commands.view
-------------------------
-Open ncview-style GUI viewer for NetCDF files.
-
+GINCCO_lib.commands.view (Tkinter version)
+------------------------------------------
+A lightweight NetCDF viewer that works over SSH.
 Usage:
     gincco view <filename.nc>
 """
 
-import sys
+import tkinter as tk
+from tkinter import messagebox, Listbox, END
 import numpy as np
 from netCDF4 import Dataset
-from PyQt5.QtWidgets import (
-    QApplication, QMainWindow, QListWidget,
-    QVBoxLayout, QWidget, QMessageBox, QLabel
-)
-from PyQt5.QtCore import Qt
+import matplotlib
+matplotlib.use("TkAgg")  # Use Tk backend
 import matplotlib.pyplot as plt
 
 
-class NcViewer(QMainWindow):
-    def __init__(self, filename):
-        super().__init__()
-        self.setWindowTitle(f"GINCCO Viewer - {filename}")
-        self.resize(600, 600)
+def open_file(filename):
+    """Main window: list variables and handle clicks."""
+    root = tk.Tk()
+    root.title(f"GINCCO Viewer - {filename}")
+    root.geometry("400x500")
 
-        try:
-            self.dataset = Dataset(filename)
-        except Exception as e:
-            QMessageBox.critical(self, "Error", f"Cannot open file:\n{e}")
-            sys.exit(1)
+    try:
+        ds = Dataset(filename)
+    except Exception as e:
+        messagebox.showerror("Error", f"Cannot open file:\n{e}")
+        root.destroy()
+        return
 
-        self.var_list = QListWidget()
-        self.info_label = QLabel("Select a variable to plot")
-        self.info_label.setAlignment(Qt.AlignCenter)
+    tk.Label(root, text="Select a variable to plot").pack(pady=10)
 
-        layout = QVBoxLayout()
-        layout.addWidget(self.info_label)
-        layout.addWidget(self.var_list)
-        container = QWidget()
-        container.setLayout(layout)
-        self.setCentralWidget(container)
+    listbox = Listbox(root)
+    for v in ds.variables.keys():
+        listbox.insert(END, v)
+    listbox.pack(fill="both", expand=True, padx=10, pady=10)
 
-        self.var_list.addItems(list(self.dataset.variables.keys()))
-        self.var_list.itemClicked.connect(self.show_variable)
-
-    def show_variable(self, item):
-        varname = item.text()
-        var = self.dataset.variables[varname]
+    def plot_var(event):
+        varname = listbox.get(listbox.curselection())
+        var = ds.variables[varname]
         data = np.squeeze(var[:])
-        dims = getattr(var, "dimensions", ())
         nd = data.ndim
 
         plt.figure()
         if nd == 1:
             plt.plot(data)
-            plt.xlabel(dims[0] if dims else "")
+            plt.xlabel(var.dimensions[0])
         elif nd == 2:
             plt.pcolormesh(data)
             plt.colorbar(label=getattr(var, "units", ""))
         else:
-            QMessageBox.information(
-                self, "Unsupported variable",
-                f"'{varname}' has {nd} dimensions (only 1D or 2D supported)."
-            )
+            messagebox.showinfo("Unsupported", f"{varname} has {nd} dimensions")
             plt.close()
             return
-
-        plt.title(f"{varname} ({', '.join(dims)})")
+        plt.title(f"{varname} ({', '.join(var.dimensions)})")
         plt.tight_layout()
         plt.show()
 
+    listbox.bind("<Double-Button-1>", plot_var)
 
-# -----------------------------
-# CLI registration functions
-# -----------------------------
+    root.mainloop()
 
+
+# === CLI interface ===
 def register_subparser(subparser):
-    """Called by cli.py to add arguments for this command."""
-    subparser.add_argument(
-        "filename",
-        help="Path to NetCDF file to open in the viewer"
-    )
+    subparser.add_argument("filename", help="Path to NetCDF file")
     subparser.set_defaults(func=main)
 
 
 def main(args):
-    """Entry point when 'gincco view' is called."""
     filename = args.filename
-    app = QApplication(sys.argv)
-    viewer = NcViewer(filename)
-    viewer.show()
-    sys.exit(app.exec_())
+    open_file(filename)
