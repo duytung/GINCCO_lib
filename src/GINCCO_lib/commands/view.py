@@ -50,15 +50,15 @@ def plot_with_basemap(lon, lat, data, title, units=None):
         urcrnrlon=lon_max,
         llcrnrlat=lat_min,
         urcrnrlat=lat_max,
-        resolution="l",
+        resolution="i",
         ax=ax
     )
 
     # Plot data
     cs = m.pcolormesh(lon, lat, data, latlon=True, shading="auto")
     m.drawcoastlines()
-    m.drawparallels(np.arange(-90, 91, 5), labels=[1, 0, 0, 0], fontsize=8)
-    m.drawmeridians(np.arange(0, 361, 5), labels=[0, 0, 0, 1], fontsize=8)
+    m.drawparallels(np.arange(-90, 91, 1), labels=[1, 0, 0, 0], fontsize=8)
+    m.drawmeridians(np.arange(0, 361, 1), labels=[0, 0, 0, 1], fontsize=8)
     plt.colorbar(cs, label=units or "")
     plt.title(title)
     plt.tight_layout()
