@@ -1,0 +1,43 @@
+/* === Level 1: tiêu đề chính (List of functions) === */
+.bd-sidebar .nav .toctree-l1 > a {
+    text-transform: uppercase;       /* in HOA */
+    font-weight: 800 !important;     /* đậm nhất */
+    font-size: 1.05rem !important;   /* to nhẹ */
+    color: #111 !important;          /* màu đen rõ */
+    letter-spacing: 0.5px;           /* giãn chữ nhẹ */
+    transition: color 0.2s ease-in-out;
+}
+
+.bd-sidebar .nav .toctree-l1 > a:hover {
+    color: #0066cc !important;       /* xanh nhạt khi hover */
+}
+
+/* === Level 2: nhóm chức năng (Import utilities, Visualization...) === */
+.bd-sidebar .nav .toctree-l2 > a {
+    font-weight: 700 !important;     /* đậm vừa */
+    font-size: 1.0rem !important;
+    color: #222 !important;
+    transition: color 0.2s ease-in-out;
+}
+
+.bd-sidebar .nav .toctree-l2 > a:hover {
+    color: #007acc !important;       /* xanh sáng hơn khi hover */
+}
+
+/* === Level 3: function con (map_plot, heatmap_plot, etc.) === */
+.bd-sidebar .nav .toctree-l3 > a {
+    font-weight: 400 !important;     /* bình thường */
+    font-size: 0.95rem !important;
+    color: #333 !important;
+    transition: color 0.2s ease-in-out;
+}
+
+.bd-sidebar .nav .toctree-l3 > a:hover {
+    color: #1a73e8 !important;       /* xanh Google-style */
+}
+
+/* === Hiệu ứng cho item đang được chọn (active page) === */
+.bd-sidebar .nav a.current {
+    color: #0055aa !important;
+    font-weight: 700 !important;
+}
