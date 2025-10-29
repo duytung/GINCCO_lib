@@ -98,7 +98,7 @@ def open_file(datafile, gridfile=None):
 # === CLI interface ===
 def register_subparser(subparser):
     subparser.add_argument("filename", help="Path to NetCDF data file")
-    subparser.add_argument("--grid", dest="gridfile", help="Path to grid NetCDF file", default=None)
+    subparser.add_argument("--grid", dest="gridfile", help="Path to grid NetCDF file", default='grid.nc')
     subparser.set_defaults(func=main)
 
 
