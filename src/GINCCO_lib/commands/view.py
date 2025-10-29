@@ -1,7 +1,8 @@
 """
 GINCCO_lib.commands.view
 ------------------------
-NetCDF viewer GUI (PyQt5), similar to ncview.
+Open ncview-style GUI viewer for NetCDF files.
+
 Usage:
     gincco view <filename.nc>
 """
@@ -21,7 +22,7 @@ class NcViewer(QMainWindow):
     def __init__(self, filename):
         super().__init__()
         self.setWindowTitle(f"GINCCO Viewer - {filename}")
-        self.resize(500, 600)
+        self.resize(600, 600)
 
         try:
             self.dataset = Dataset(filename)
@@ -59,8 +60,8 @@ class NcViewer(QMainWindow):
             plt.colorbar(label=getattr(var, "units", ""))
         else:
             QMessageBox.information(
-                self, "Unsupported",
-                f"Variable '{varname}' has {nd} dimensions (only 1D/2D supported)."
+                self, "Unsupported variable",
+                f"'{varname}' has {nd} dimensions (only 1D or 2D supported)."
             )
             plt.close()
             return
@@ -70,13 +71,22 @@ class NcViewer(QMainWindow):
         plt.show()
 
 
-def run(args):
-    """Entry function for `gincco view` command."""
-    if len(args) < 1:
-        print("Usage: gincco view <filename.nc>")
-        return
+# -----------------------------
+# CLI registration functions
+# -----------------------------
 
-    filename = args[0]
+def register_subparser(subparser):
+    """Called by cli.py to add arguments for this command."""
+    subparser.add_argument(
+        "filename",
+        help="Path to NetCDF file to open in the viewer"
+    )
+    subparser.set_defaults(func=main)
+
+
+def main(args):
+    """Entry point when 'gincco view' is called."""
+    filename = args.filename
     app = QApplication(sys.argv)
     viewer = NcViewer(filename)
     viewer.show()
