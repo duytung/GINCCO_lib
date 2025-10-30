@@ -17,6 +17,18 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap
 from GINCCO_lib.commands.view_plot import draw_plot, draw_vector_plot
 
+
+APP_BG = "#f3f4f6"       # nền chính
+FRAME_BG = "#ffffff"      # nền khung
+LABEL_BG = "#f3f4f6"
+TEXT_BG = "#ffffff"
+TEXT_FG = "#333333"
+ACCENT = "#0078d7"        # xanh dịu
+
+
+
+
+
 def get_grid_coords(grid_file, suffix):
     """Return (lon, lat) arrays from grid file, depending on suffix."""
     if not grid_file or not os.path.exists(grid_file):
@@ -52,7 +64,6 @@ def open_file(datafile, gridfile=None):
         root.destroy()    #  đóng cửa sổ chính của Tkinter
 
     root.protocol("WM_DELETE_WINDOW", on_close)
-
 
 
 
@@ -182,10 +193,17 @@ def open_file(datafile, gridfile=None):
     # === Left: variable list ===
     #############################
     tk.Label(left_frame, text="Variables").pack(pady=5)
-    listbox = Listbox(left_frame, borderwidth=2, relief="groove")
+    listbox = tk.Listbox(
+        left_frame,
+        borderwidth=2,
+        relief="groove",
+        highlightthickness=4,   # viền trắng giữa chữ và khung
+        highlightbackground="#d0d0d0",  # màu khung nhẹ
+        selectbackground="#cce6ff",     # màu khi chọn
+        selectforeground="black",       # màu chữ khi chọn
+        font=("DejaVu Sans Mono", 10),
+    )
     listbox.pack(fill="both", expand=True, padx=10, pady=8)
-
-
 
 
     #############################
@@ -408,6 +426,12 @@ def open_file(datafile, gridfile=None):
 
 
 
+    root.configure(bg=APP_BG)
+    left_frame.config(bg=FRAME_BG)
+    right_frame.config(bg=FRAME_BG)
+    notebook.configure(bg=FRAME_BG)
+    scalar_tab.config(bg=FRAME_BG)
+    vector_tab.config(bg=FRAME_BG)
 
 
     ########################################################################
@@ -485,10 +509,10 @@ def open_file(datafile, gridfile=None):
         menu.delete(0, "end")
         if nd == 3:
             for i in range(data.shape[0]):
-                menu.add_command(label=str(i), command=lambda v=i: layer_var.set(str(v)))
+                menu.add_command(label=str(i), command=tk._setit(layer_var, str(i)))
             layer_var.set("0")
         else:
-            menu.add_command(label="0", command=lambda: layer_var.set("0"))
+            menu.add_command(label="0", command=tk._setit(layer_var, "0"))
             layer_var.set("0")
 
         log_box.insert("end", f"Selected variable: {varname} ({nd}D)\n")
@@ -503,6 +527,7 @@ def open_file(datafile, gridfile=None):
         draw_plot(state["varname"], state["var"], state["lon"], state["lat"], opts, log_box, state)
 
 
+    
     listbox.bind("<Double-Button-1>", on_var_select)
     redraw_btn.config(command=redraw)
     root.mainloop()
