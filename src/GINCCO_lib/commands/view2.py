@@ -491,13 +491,16 @@ def open_file(datafile, gridfile=None):
         if "layer_menu_scalar" in locals() or "layer_menu_scalar" in globals():
             menu = layer_menu_scalar["menu"]
             menu.delete(0, "end")
+
             if nd == 3:
+                layer_var.set("0")  # đặt trước khi thêm menu
                 for i in range(data.shape[0]):
                     menu.add_command(label=str(i), command=tk._setit(layer_var, str(i)))
-                layer_var.set("0")
             else:
                 menu.add_command(label="0", command=tk._setit(layer_var, "0"))
                 layer_var.set("0")
+
+
 
         log_box.insert("end", f"Selected variable: {varname} ({nd}D)\n")
         log_box.see("end")
