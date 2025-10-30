@@ -3,7 +3,17 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap
 from tkinter import messagebox
 from GINCCO_lib.commands.interpolate_to_t import interpolate_to_t
+import matplotlib.colors as mcolors
 
+
+def _truncate_colormap(cmap, minval=0.0, maxval=1.0, n=256):
+    if isinstance(cmap, str):
+        cmap = plt.get_cmap(cmap)
+    new_cmap = mcolors.LinearSegmentedColormap.from_list(
+        f"trunc({cmap.name},{minval:.2f},{maxval:.2f})",
+        cmap(np.linspace(minval, maxval, n))
+    )
+    return new_cmap
 
 
 def _nice_ticks(lon_min, lon_max, n=4):
@@ -16,99 +26,78 @@ def _nice_ticks(lon_min, lon_max, n=4):
 
 
 
-
 def draw_plot(varname, var, lon, lat, options, log_box, state=None, is_redraw=False):
-    """
-    Draw map or line depending on variable dimension and user options.
-    options: dict with keys ('vmin', 'vmax', 'cmap', 'lon_min', 'lon_max', 'lat_min', 'lat_max', 'layer')
-    """
+    import matplotlib.pyplot as plt
+    from mpl_toolkits.basemap import Basemap
+    import numpy as np
 
-    #  Chỉ đóng figure cũ nếu là redraw
+    def safe_float(x):
+        try:
+            return float(x)
+        except Exception:
+            return None
+
     if is_redraw and state and state.get("fig") is not None:
         plt.close(state["fig"])
         state["fig"] = None
 
-    #  Ghi log "đang vẽ"
     log_box.insert("end", f"Drawing {varname}... please wait\n")
     log_box.see("end")
-    log_box.update_idletasks()  #  cập nhật GUI ngay lập tức
+    log_box.update_idletasks()
 
     try:
         data = np.squeeze(var[:])
         nd = data.ndim
 
-        # If 3D → pick selected layer
         if nd == 3:
-            layer = options.get("layer", 0)
+            layer = int(options.get("layer", 0))
             data = data[layer, :, :]
 
         cmap = options.get("cmap", "jet")
-        vmin = options.get("vmin", None)
-        vmax = options.get("vmax", None)
-        lon_min = options.get("lon_min", None)
-        lon_max = options.get("lon_max", None)
-        lat_min = options.get("lat_min", None)
-        lat_max = options.get("lat_max", None)
-        dpi=options.get("dpi", 100)
+        vmin = safe_float(options.get("vmin"))
+        vmax = safe_float(options.get("vmax"))
+        lon_min = safe_float(options.get("lon_min")) or np.nanmin(lon)
+        lon_max = safe_float(options.get("lon_max")) or np.nanmax(lon)
+        lat_min = safe_float(options.get("lat_min")) or np.nanmin(lat)
+        lat_max = safe_float(options.get("lat_max")) or np.nanmax(lat)
+        dpi = int(options.get("dpi", 100))
+
+
+        print (options)
+
+
 
         if nd == 1:
             plt.figure()
             plt.plot(data)
             plt.title(varname)
-            log_box.insert("end", f"Done drawing {varname} \n")
-            log_box.see("end")
-            log_box.update_idletasks()
             plt.show()
+            log_box.insert("end", f"Done drawing {varname}\n")
 
         elif nd >= 2:
-            if lon is not None and lat is not None and lon.shape == data.shape:
-                fig, ax = plt.subplots(figsize=(7, 6), dpi=dpi)
-                state["fig"] = fig
-                lon_min = lon_min or np.nanmin(lon)
-                lon_max = lon_max or np.nanmax(lon)
-                lat_min = lat_min or np.nanmin(lat)
-                lat_max = lat_max or np.nanmax(lat)
+            fig, ax = plt.subplots(figsize=(7, 6), dpi=dpi)
+            state["fig"] = fig
 
-                m = Basemap(
-                    projection="cyl",
-                    llcrnrlon=lon_min,
-                    urcrnrlon=lon_max,
-                    llcrnrlat=lat_min,
-                    urcrnrlat=lat_max,
-                    resolution=options.get("resolution", "i"),
-                    ax=ax
-                )
+            m = Basemap(
+                projection="cyl",
+                llcrnrlon=lon_min, urcrnrlon=lon_max,
+                llcrnrlat=lat_min, urcrnrlat=lat_max,
+                resolution=options.get("resolution", "i"), ax=ax
+            )
 
-                cs = m.pcolormesh(
-                    lon, lat, data,
-                    latlon=True, shading="auto",
-                    cmap=cmap, vmin=vmin, vmax=vmax
-                )
-                m.drawcoastlines()
+            cs = m.pcolormesh(lon, lat, data, latlon=True, cmap=cmap, shading="auto", vmin=vmin, vmax=vmax)
+            m.drawcoastlines()
 
-                parallels = _nice_ticks(lat_min, lat_max, n=4)
-                meridians = _nice_ticks(lon_min, lon_max, n=4)
+            parallels = np.linspace(lat_min, lat_max, 4)
+            meridians = np.linspace(lon_min, lon_max, 4)
+            m.drawparallels(parallels, labels=[1,0,0,0], fontsize=8, linewidth=0.5, dashes=[2,4], ax=ax)
+            m.drawmeridians(meridians, labels=[0,0,0,1], fontsize=8, linewidth=0.5, dashes=[2,4], ax=ax)
 
-                m.drawparallels(parallels, labels=[1, 0, 0, 0], fontsize=8, linewidth=0.5, dashes=[2, 4])
-                m.drawmeridians(meridians, labels=[0, 0, 0, 1], fontsize=8, linewidth=0.5, dashes=[2, 4])
-
-
-                plt.colorbar(cs, label=getattr(var, "units", ""))
-                plt.title(varname)
-                plt.tight_layout()
-                log_box.insert("end", f"Done drawing {varname} \n")
-                log_box.see("end")
-                log_box.update_idletasks()
-                plt.show()
-            else:
-                plt.figure()
-                plt.pcolormesh(data, cmap=cmap, vmin=vmin, vmax=vmax)
-                plt.colorbar(label=getattr(var, "units", ""))
-                plt.title(varname)
-                log_box.insert("end", f"Done drawing {varname} \n")
-                log_box.see("end")
-                log_box.update_idletasks()
-                plt.show()
+            plt.colorbar(cs, label=getattr(var, "units", ""))
+            plt.title(varname)
+            plt.tight_layout()
+            plt.show()
+            state["fig"] = fig
 
         log_box.insert("end", f"Plot complete: {varname}\n")
         log_box.see("end")
@@ -117,6 +106,13 @@ def draw_plot(varname, var, lon, lat, options, log_box, state=None, is_redraw=Fa
         log_box.insert("end", f"Error plotting variable {varname}: {e}\n")
         log_box.see("end")
         messagebox.showerror("Plot Error", str(e))
+
+
+
+
+
+
+
 
 
 def draw_vector_plot(u, v, lon, lat, opts, log_box, state, quiver_max_n=10):
@@ -131,7 +127,11 @@ def draw_vector_plot(u, v, lon, lat, opts, log_box, state, quiver_max_n=10):
     # --- Extract options from opts ---
     vmin = opts.get("vmin", None)
     vmax = opts.get("vmax", None)
-    cmap = opts.get("cmap", "jet")
+
+    cmap = opts.get("cmap", "YlOrBr")
+    cmap_min = opts.get("cmap_min", 0)
+    cmap_max = opts.get("cmap_max", 0.6)
+
     dpi = opts.get("dpi", 100)
     resolution = opts.get("resolution", "i")
     scale = opts.get("scale", 400)
@@ -139,6 +139,9 @@ def draw_vector_plot(u, v, lon, lat, opts, log_box, state, quiver_max_n=10):
     lon_max = opts.get("lon_max")
     lat_min = opts.get("lat_min")
     lat_max = opts.get("lat_max")
+    need_rotate = opts.get("need_rotate")
+
+    print (opts)
 
     # --- Convert to 2D if 3D ---
     if u.ndim == 3:
@@ -170,12 +173,24 @@ def draw_vector_plot(u, v, lon, lat, opts, log_box, state, quiver_max_n=10):
     if lon.ndim == 1 and lat.ndim == 1:
         lon, lat = np.meshgrid(lon, lat)
 
-    u = np.where(mask_t == 0, np.nan, u)
-    v = np.where(mask_t == 0, np.nan, v)
+ 
+    if need_rotate:
+        print (need_rotate, 'Rotating...')
+        sin_t = state.get("sin_t")
+        cos_t = state.get("cos_t")
+        U1 =  u * cos_t + v * sin_t
+        V1 = -u * sin_t + v * cos_t
+    else: 
+        U1 = np.copy(u)
+        V1 = np.copy(v)
 
-    speed = np.hypot(u, v)
+    U1 = np.where(mask_t == 0, np.nan, U1)
+    V1 = np.where(mask_t == 0, np.nan, V1)
 
-    log_box.insert("end", f"Drawing with DPI={dpi}, scale={scale}\n")
+
+    speed = np.hypot(U1, V1)
+
+    log_box.insert("end", f"Drawing, please wait...\n")
     log_box.see("end")
 
     plt.close('all')
@@ -201,6 +216,11 @@ def draw_vector_plot(u, v, lon, lat, opts, log_box, state, quiver_max_n=10):
     m.drawmeridians(meridians, labels=[0, 0, 0, 1], fontsize=8, linewidth=0.5, dashes=[2, 4])
 
 
+    # Colormap
+    cmap = _truncate_colormap(cmap, cmap_min, cmap_max)
+    cmap.set_bad(color='white')
+    #norm = colors.Normalize(vmin=ticks[0], vmax=ticks[-1])
+
     cs = m.pcolormesh(lon, lat, speed, latlon=True, cmap=cmap, shading="auto", vmin=vmin, vmax=vmax)
 
     # --- Downsample quiver grid ---
@@ -216,7 +236,7 @@ def draw_vector_plot(u, v, lon, lat, opts, log_box, state, quiver_max_n=10):
             dist2 = (lon - lon_small[j, i])**2 + (lat - lat_small[j, i])**2
             idx = np.unravel_index(np.nanargmin(dist2), dist2.shape)
             if mask_t[idx] == 1:
-                u_q[j, i], v_q[j, i] = u[idx], v[idx]
+                u_q[j, i], v_q[j, i] = U1[idx], V1[idx]
                 lon_small[j, i], lat_small[j, i] = lon[idx], lat[idx]
 
     m.quiver(
