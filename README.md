@@ -33,5 +33,6 @@ pip install --force-reinstall --no-deps "git+https://github.com/duytung/GINCCO_l
 
 ```
 
-#Documentation
+## Documentation
+
 https://gincco-lib.readthedocs.io/
