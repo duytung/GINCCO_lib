@@ -36,6 +36,7 @@ def draw_plot(varname, var, lon, lat, options, log_box, state=None, is_redraw=Fa
         lon_max = options.get("lon_max", None)
         lat_min = options.get("lat_min", None)
         lat_max = options.get("lat_max", None)
+        dpi=options.get("dpi", 150)
 
         if nd == 1:
             plt.figure()
@@ -48,7 +49,7 @@ def draw_plot(varname, var, lon, lat, options, log_box, state=None, is_redraw=Fa
 
         elif nd >= 2:
             if lon is not None and lat is not None and lon.shape == data.shape:
-                fig, ax = plt.subplots(figsize=(7, 6), dpi=opts.get("dpi", 150))
+                fig, ax = plt.subplots(figsize=(7, 6), dpi=dpi)
                 state["fig"] = fig
                 lon_min = lon_min or np.nanmin(lon)
                 lon_max = lon_max or np.nanmax(lon)
