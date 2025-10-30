@@ -4,7 +4,7 @@ Utilities for:
 - Reading SYMPHONIE output model
 - Opening multiple files along time  
 - Post-processing
-- Data visulization
+- Data visualization
 
 ---
 
