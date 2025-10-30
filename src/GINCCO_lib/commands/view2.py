@@ -53,6 +53,100 @@ def open_file(datafile, gridfile=None):
 
     root.protocol("WM_DELETE_WINDOW", on_close)
 
+
+
+
+    def redraw():
+        current_tab = notebook.tab(notebook.select(), "text")
+
+        # --- Tạo trước opts cho cả Scalar và Vector ---
+        opts = {
+            "vmin": float(entry_min.get()) if entry_min.get() else None,
+            "vmax": float(entry_max.get()) if entry_max.get() else None,
+            "cmap": cmap_var.get(),
+            "layer": int(layer_var.get()),
+            "lon_min": float(lon_min_e.get()) if lon_min_e.get() else None,
+            "lon_max": float(lon_max_e.get()) if lon_max_e.get() else None,
+            "lat_min": float(lat_min_e.get()) if lat_min_e.get() else None,
+            "lat_max": float(lat_max_e.get()) if lat_max_e.get() else None,
+            "resolution": res_map[res_display_var.get()],
+            "dpi": int(dpi_entry.get()) if dpi_entry.get() else 150,
+            "scale": int(scale_entry.get()) if scale_entry.get() else 400,
+
+        }
+
+
+
+        ################
+        # In scalar tab
+        ################
+        if current_tab == "Scalar":
+            # Kiểm tra variable
+            if not state["var"]:
+                messagebox.showinfo("Info", "Please select a variable first.")
+                return
+
+            log_box.insert("end", f"Redrawing {state['varname']} (Scalar mode)...\n")
+            log_box.see("end")
+
+            draw_plot(
+                state["varname"], state["var"], state["lon"], state["lat"],
+                opts, log_box, state, is_redraw=True
+            )
+
+
+        ################
+        # In vector tab
+        ################
+ 
+        else:  # Vector tab
+            u_name = u_var_var.get()
+            v_name = v_var_var.get()
+            if not u_name or not v_name:
+                messagebox.showinfo("Info", "Please select both U and V variables for vector mode.")
+                return
+
+            var_u = np.squeeze(ds.variables[u_name][:])
+            var_v = np.squeeze(ds.variables[v_name][:])
+
+            # --- Nếu 3D, lấy layer được chọn hoặc layer 0 ---
+            if var_u.ndim == 3:
+                layer = int(layer_var.get()) if layer_var.get().isdigit() else 0
+                var_u = var_u[layer, :, :]
+            if var_v.ndim == 3:
+                layer = int(layer_var.get()) if layer_var.get().isdigit() else 0
+                var_v = var_v[layer, :, :]
+
+            quiver_max_n = int(quiver_entry.get())
+
+            # --- Load grid for U/V ---
+            fgrid = Dataset(gridfile)
+            lon_u = fgrid.variables.get("longitude_u")[:]
+            lat_u = fgrid.variables.get("latitude_u")[:]
+            lon_v = fgrid.variables.get("longitude_v")[:]
+            lat_v = fgrid.variables.get("latitude_v")[:]
+            mask_t_var = fgrid.variables.get("mask_t")
+            if mask_t_var is not None:
+                mask_t = mask_t_var[:] if mask_t_var.ndim == 2 else mask_t_var[0,:,:]
+                state["mask_t"] = mask_t
+
+            lon_t, lat_t = state.get("lon"), state.get("lat")
+            if lon_t is None or lat_t is None:
+                lon_t, lat_t = get_grid_coords(gridfile, "t")
+                state["lon"], state["lat"] = lon_t, lat_t
+            
+            draw_vector_plot(var_u, var_v, state["lon"], state["lat"], opts, log_box, state, quiver_max_n)
+
+
+
+
+
+
+
+
+
+
+
     # === Layout ===
     top_frame = tk.Frame(root)
     top_frame.pack(side="top", fill="both", expand=True)
@@ -369,87 +463,6 @@ def open_file(datafile, gridfile=None):
             "lat_min": None, "lat_max": None
         }
         draw_plot(state["varname"], state["var"], state["lon"], state["lat"], opts, log_box, state)
-
-    def redraw():
-        current_tab = notebook.tab(notebook.select(), "text")
-
-        # --- Tạo trước opts cho cả Scalar và Vector ---
-        opts = {
-            "vmin": float(entry_min.get()) if entry_min.get() else None,
-            "vmax": float(entry_max.get()) if entry_max.get() else None,
-            "cmap": cmap_var.get(),
-            "layer": int(layer_var.get()),
-            "lon_min": float(lon_min_e.get()) if lon_min_e.get() else None,
-            "lon_max": float(lon_max_e.get()) if lon_max_e.get() else None,
-            "lat_min": float(lat_min_e.get()) if lat_min_e.get() else None,
-            "lat_max": float(lat_max_e.get()) if lat_max_e.get() else None,
-            "resolution": res_map[res_display_var.get()],
-            "dpi": int(dpi_entry.get()) if dpi_entry.get() else 150,
-            "scale": int(scale_entry.get()) if scale_entry.get() else 400,
-
-        }
-
-
-
-        ################
-        # In scalar tab
-        ################
-        if current_tab == "Scalar":
-            # Kiểm tra variable
-            if not state["var"]:
-                messagebox.showinfo("Info", "Please select a variable first.")
-                return
-
-            log_box.insert("end", f"Redrawing {state['varname']} (Scalar mode)...\n")
-            log_box.see("end")
-
-            draw_plot(
-                state["varname"], state["var"], state["lon"], state["lat"],
-                opts, log_box, state, is_redraw=True
-            )
-
-
-        ################
-        # In vector tab
-        ################
- 
-        else:  # Vector tab
-            u_name = u_var_var.get()
-            v_name = v_var_var.get()
-            if not u_name or not v_name:
-                messagebox.showinfo("Info", "Please select both U and V variables for vector mode.")
-                return
-
-            var_u = np.squeeze(ds.variables[u_name][:])
-            var_v = np.squeeze(ds.variables[v_name][:])
-
-            # --- Nếu 3D, lấy layer được chọn hoặc layer 0 ---
-            if var_u.ndim == 3:
-                layer = int(layer_var.get()) if layer_var.get().isdigit() else 0
-                var_u = var_u[layer, :, :]
-            if var_v.ndim == 3:
-                layer = int(layer_var.get()) if layer_var.get().isdigit() else 0
-                var_v = var_v[layer, :, :]
-
-            quiver_max_n = int(quiver_entry.get())
-
-            # --- Load grid for U/V ---
-            fgrid = Dataset(gridfile)
-            lon_u = fgrid.variables.get("longitude_u")[:]
-            lat_u = fgrid.variables.get("latitude_u")[:]
-            lon_v = fgrid.variables.get("longitude_v")[:]
-            lat_v = fgrid.variables.get("latitude_v")[:]
-            mask_t_var = fgrid.variables.get("mask_t")
-            if mask_t_var is not None:
-                mask_t = mask_t_var[:] if mask_t_var.ndim == 2 else mask_t_var[0,:,:]
-                state["mask_t"] = mask_t
-
-            lon_t, lat_t = state.get("lon"), state.get("lat")
-            if lon_t is None or lat_t is None:
-                lon_t, lat_t = get_grid_coords(gridfile, "t")
-                state["lon"], state["lat"] = lon_t, lat_t
-            
-            draw_vector_plot(var_u, var_v, state["lon"], state["lat"], opts, log_box, state, quiver_max_n)
 
 
     listbox.bind("<Double-Button-1>", on_var_select)
