@@ -41,15 +41,15 @@ def draw_plot(varname, var, lon, lat, options, log_box, state=None, is_redraw=Fa
     options: dict with keys ('vmin', 'vmax', 'cmap', 'lon_min', 'lon_max', 'lat_min', 'lat_max', 'layer')
     """
 
-    # 🔹 Chỉ đóng figure cũ nếu là redraw
+    #  Chỉ đóng figure cũ nếu là redraw
     if is_redraw and state and state.get("fig") is not None:
         plt.close(state["fig"])
         state["fig"] = None
 
-    # 🔹 Ghi log "đang vẽ"
+    #  Ghi log "đang vẽ"
     log_box.insert("end", f"Drawing {varname}... please wait\n")
     log_box.see("end")
-    log_box.update_idletasks()  # 🔹 cập nhật GUI ngay lập tức
+    log_box.update_idletasks()  #  cập nhật GUI ngay lập tức
 
     try:
         data = np.squeeze(var[:])
@@ -72,7 +72,7 @@ def draw_plot(varname, var, lon, lat, options, log_box, state=None, is_redraw=Fa
             plt.figure()
             plt.plot(data)
             plt.title(varname)
-            log_box.insert("end", f"Done drawing {varname} ✅\n")
+            log_box.insert("end", f"Done drawing {varname} \n")
             log_box.see("end")
             log_box.update_idletasks()
             plt.show()
@@ -107,7 +107,7 @@ def draw_plot(varname, var, lon, lat, options, log_box, state=None, is_redraw=Fa
                 plt.colorbar(cs, label=getattr(var, "units", ""))
                 plt.title(varname)
                 plt.tight_layout()
-                log_box.insert("end", f"Done drawing {varname} ✅\n")
+                log_box.insert("end", f"Done drawing {varname} \n")
                 log_box.see("end")
                 log_box.update_idletasks()
                 plt.show()
@@ -116,7 +116,7 @@ def draw_plot(varname, var, lon, lat, options, log_box, state=None, is_redraw=Fa
                 plt.pcolormesh(data, cmap=cmap, vmin=vmin, vmax=vmax)
                 plt.colorbar(label=getattr(var, "units", ""))
                 plt.title(varname)
-                log_box.insert("end", f"Done drawing {varname} ✅\n")
+                log_box.insert("end", f"Done drawing {varname} \n")
                 log_box.see("end")
                 log_box.update_idletasks()
                 plt.show()
@@ -137,8 +137,8 @@ def open_file(datafile, gridfile=None):
 
     def on_close():
         import matplotlib.pyplot as plt
-        plt.close('all')  # 🔹 đóng toàn bộ cửa sổ plot đang mở
-        root.destroy()    # 🔹 đóng cửa sổ chính của Tkinter
+        plt.close('all')  #  đóng toàn bộ cửa sổ plot đang mở
+        root.destroy()    #  đóng cửa sổ chính của Tkinter
 
     root.protocol("WM_DELETE_WINDOW", on_close)
 
