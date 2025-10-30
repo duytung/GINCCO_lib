@@ -98,21 +98,27 @@ def open_file(datafile, gridfile=None):
     #############################
     # === Right: controls, scalar tab ===
     #############################
-    tk.Label(scalar_tab, text="Map Customization", font=("DejaVu Sans Mono", 12, "bold")).pack(pady=5)
+    scalar_tab.grid_columnconfigure(1, weight=1)
 
-    entry_min = tk.Entry(scalar_tab); entry_max = tk.Entry(scalar_tab)
-    tk.Label(scalar_tab, text="Min value").pack(); entry_min.pack()
-    tk.Label(scalar_tab, text="Max value").pack(); entry_max.pack()
+    tk.Label(scalar_tab, text="Map Customization",
+             font=("DejaVu Sans Mono", 12, "bold")).grid(row=0, column=0, columnspan=2, pady=8)
 
+    # --- Min/Max ---
+    tk.Label(scalar_tab, text="Min value:").grid(row=1, column=0, sticky="e", padx=5, pady=2)
+    entry_min = tk.Entry(scalar_tab, width=12)
+    entry_min.grid(row=1, column=1, sticky="w", padx=5, pady=2)
+
+    tk.Label(scalar_tab, text="Max value:").grid(row=2, column=0, sticky="e", padx=5, pady=2)
+    entry_max = tk.Entry(scalar_tab, width=12)
+    entry_max.grid(row=2, column=1, sticky="w", padx=5, pady=2)
+
+    # --- Color palette ---
+    tk.Label(scalar_tab, text="Color palette:").grid(row=3, column=0, sticky="e", padx=5, pady=2)
     cmap_var = tk.StringVar(value="jet")
-    tk.Label(scalar_tab, text="Color palette").pack()
-    tk.OptionMenu(scalar_tab, cmap_var, "jet", "viridis", "plasma", "coolwarm").pack()
+    tk.OptionMenu(scalar_tab, cmap_var, "jet", "viridis", "plasma", "coolwarm").grid(row=3, column=1, sticky="w")
 
     # --- Map resolution ---
-
-    tk.Label(scalar_tab, text="Map resolution").pack()
-
-    # mapping hiển thị ⇄ giá trị thực
+    tk.Label(scalar_tab, text="Map resolution:").grid(row=4, column=0, sticky="e", padx=5, pady=2)
     res_map = {
         "Crude": "c",
         "Low": "l",
@@ -120,37 +126,35 @@ def open_file(datafile, gridfile=None):
         "High": "h",
         "Full": "f"
     }
-
-
-    # biến lưu chữ hiển thị
     res_display_var = tk.StringVar(value="Intermediate")
+    tk.OptionMenu(scalar_tab, res_display_var, *res_map.keys()).grid(row=4, column=1, sticky="w")
 
-    # menu hiển thị
-    res_menu = tk.OptionMenu(scalar_tab, res_display_var, *res_map.keys())
-    res_menu.pack()
-
-    # khi cần lấy giá trị thật để vẽ:
-    selected_res = res_map[res_display_var.get()]
-
-
-    # Layer select
-    tk.Label(scalar_tab, text="Layer select").pack()
+    # --- Layer select ---
+    tk.Label(scalar_tab, text="Layer:").grid(row=5, column=0, sticky="e", padx=5, pady=2)
     layer_var = tk.StringVar(value="0")
-    layer_menu = tk.OptionMenu(scalar_tab, layer_var, "0")  # default
-    layer_menu.pack()
+    layer_menu = tk.OptionMenu(scalar_tab, layer_var, "0")
+    layer_menu.grid(row=5, column=1, sticky="w")
 
-    # lon/lat bounds
-    tk.Label(scalar_tab, text="Lon/Lat bounds").pack(pady=5)
-    lon_min_e = tk.Entry(scalar_tab); lon_max_e = tk.Entry(scalar_tab)
-    lat_min_e = tk.Entry(scalar_tab); lat_max_e = tk.Entry(scalar_tab)
-    for w, lbl in [(lon_min_e, "Lon min"), (lon_max_e, "Lon max"),
-                   (lat_min_e, "Lat min"), (lat_max_e, "Lat max")]:
-        tk.Label(scalar_tab, text=lbl).pack()
-        w.pack()
+    # --- Lon/Lat bounds ---
+    tk.Label(scalar_tab, text="Lon min:").grid(row=6, column=0, sticky="e", padx=5, pady=2)
+    lon_min_e = tk.Entry(scalar_tab, width=12)
+    lon_min_e.grid(row=6, column=1, sticky="w", padx=5, pady=2)
 
-    # Redraw button
+    tk.Label(scalar_tab, text="Lon max:").grid(row=7, column=0, sticky="e", padx=5, pady=2)
+    lon_max_e = tk.Entry(scalar_tab, width=12)
+    lon_max_e.grid(row=7, column=1, sticky="w", padx=5, pady=2)
+
+    tk.Label(scalar_tab, text="Lat min:").grid(row=8, column=0, sticky="e", padx=5, pady=2)
+    lat_min_e = tk.Entry(scalar_tab, width=12)
+    lat_min_e.grid(row=8, column=1, sticky="w", padx=5, pady=2)
+
+    tk.Label(scalar_tab, text="Lat max:").grid(row=9, column=0, sticky="e", padx=5, pady=2)
+    lat_max_e = tk.Entry(scalar_tab, width=12)
+    lat_max_e.grid(row=9, column=1, sticky="w", padx=5, pady=2)
+
+    # --- Redraw button ---
     redraw_btn = tk.Button(scalar_tab, text="Redraw Map", bg="lightblue")
-    redraw_btn.pack(pady=10)
+    redraw_btn.grid(row=10, column=0, columnspan=2, pady=10)
 
 
 
@@ -158,40 +162,49 @@ def open_file(datafile, gridfile=None):
     # === Right: controls, vector tab ===
     #############################
 
+    vector_tab.grid_columnconfigure(1, weight=1)
 
-    tk.Label(vector_tab, text="U variable").pack()
+    # --- Title ---
+    tk.Label(vector_tab, text="Vector Field Settings",
+             font=("DejaVu Sans Mono", 12, "bold")).grid(row=0, column=0, columnspan=2, pady=8)
+
+    # --- U / V variable selection ---
+    tk.Label(vector_tab, text="U variable:").grid(row=1, column=0, sticky="e", padx=5, pady=2)
     u_var_var = tk.StringVar(value="")
     u_menu = tk.OptionMenu(vector_tab, u_var_var, "")
-    u_menu.pack()
+    u_menu.grid(row=1, column=1, sticky="w", padx=5, pady=2)
 
-    tk.Label(vector_tab, text="V variable").pack()
+    tk.Label(vector_tab, text="V variable:").grid(row=2, column=0, sticky="e", padx=5, pady=2)
     v_var_var = tk.StringVar(value="")
     v_menu = tk.OptionMenu(vector_tab, v_var_var, "")
-    v_menu.pack()
+    v_menu.grid(row=2, column=1, sticky="w", padx=5, pady=2)
 
-    tk.Label(vector_tab, text="Subsampling step").pack()
-    subsample_entry = tk.Entry(vector_tab)
-    subsample_entry.insert(0, "5")  # default step
-    subsample_entry.pack()
+    # --- Subsampling step ---
+    tk.Label(vector_tab, text="Subsampling step:").grid(row=3, column=0, sticky="e", padx=5, pady=2)
+    subsample_entry = tk.Entry(vector_tab, width=10)
+    subsample_entry.insert(0, "5")
+    subsample_entry.grid(row=3, column=1, sticky="w", padx=5, pady=2)
 
+    # --- Section title for map ---
+    tk.Label(vector_tab, text="Map Customization",
+             font=("DejaVu Sans Mono", 12, "bold")).grid(row=4, column=0, columnspan=2, pady=8)
 
+    # --- Min / Max ---
+    tk.Label(vector_tab, text="Min value:").grid(row=5, column=0, sticky="e", padx=5, pady=2)
+    entry_min = tk.Entry(vector_tab, width=12)
+    entry_min.grid(row=5, column=1, sticky="w", padx=5, pady=2)
 
+    tk.Label(vector_tab, text="Max value:").grid(row=6, column=0, sticky="e", padx=5, pady=2)
+    entry_max = tk.Entry(vector_tab, width=12)
+    entry_max.grid(row=6, column=1, sticky="w", padx=5, pady=2)
 
-    tk.Label(vector_tab, text="Map Customization", font=("DejaVu Sans Mono", 12, "bold")).pack(pady=5)
-
-    entry_min = tk.Entry(vector_tab); entry_max = tk.Entry(vector_tab)
-    tk.Label(vector_tab, text="Min value").pack(); entry_min.pack()
-    tk.Label(vector_tab, text="Max value").pack(); entry_max.pack()
-
+    # --- Color palette ---
+    tk.Label(vector_tab, text="Color palette:").grid(row=7, column=0, sticky="e", padx=5, pady=2)
     cmap_var = tk.StringVar(value="jet")
-    tk.Label(vector_tab, text="Color palette").pack()
-    tk.OptionMenu(vector_tab, cmap_var, "jet", "viridis", "plasma", "coolwarm").pack()
+    tk.OptionMenu(vector_tab, cmap_var, "jet", "viridis", "plasma", "coolwarm").grid(row=7, column=1, sticky="w")
 
     # --- Map resolution ---
-
-    tk.Label(vector_tab, text="Map resolution").pack()
-
-    # mapping hiển thị ⇄ giá trị thực
+    tk.Label(vector_tab, text="Map resolution:").grid(row=8, column=0, sticky="e", padx=5, pady=2)
     res_map = {
         "Crude": "c",
         "Low": "l",
@@ -199,43 +212,43 @@ def open_file(datafile, gridfile=None):
         "High": "h",
         "Full": "f"
     }
-
-
-    # biến lưu chữ hiển thị
     res_display_var = tk.StringVar(value="Intermediate")
+    tk.OptionMenu(vector_tab, res_display_var, *res_map.keys()).grid(row=8, column=1, sticky="w")
 
-    # menu hiển thị
-    res_menu = tk.OptionMenu(vector_tab, res_display_var, *res_map.keys())
-    res_menu.pack()
-
-    # khi cần lấy giá trị thật để vẽ:
-    selected_res = res_map[res_display_var.get()]
-
-
-    # Layer select
-    tk.Label(vector_tab, text="Layer select").pack()
+    # --- Layer select ---
+    tk.Label(vector_tab, text="Layer:").grid(row=9, column=0, sticky="e", padx=5, pady=2)
     layer_var = tk.StringVar(value="0")
-    layer_menu = tk.OptionMenu(vector_tab, layer_var, "0")  # default
-    layer_menu.pack()
+    layer_menu = tk.OptionMenu(vector_tab, layer_var, "0")
+    layer_menu.grid(row=9, column=1, sticky="w")
 
-    # lon/lat bounds
-    tk.Label(vector_tab, text="Lon/Lat bounds").pack(pady=5)
-    lon_min_e = tk.Entry(vector_tab); lon_max_e = tk.Entry(vector_tab)
-    lat_min_e = tk.Entry(vector_tab); lat_max_e = tk.Entry(vector_tab)
-    for w, lbl in [(lon_min_e, "Lon min"), (lon_max_e, "Lon max"),
-                   (lat_min_e, "Lat min"), (lat_max_e, "Lat max")]:
-        tk.Label(vector_tab, text=lbl).pack()
-        w.pack()
+    # --- Lon/Lat bounds ---
+    tk.Label(vector_tab, text="Lon min:").grid(row=10, column=0, sticky="e", padx=5, pady=2)
+    lon_min_e = tk.Entry(vector_tab, width=12)
+    lon_min_e.grid(row=10, column=1, sticky="w", padx=5, pady=2)
 
-    # Redraw button
+    tk.Label(vector_tab, text="Lon max:").grid(row=11, column=0, sticky="e", padx=5, pady=2)
+    lon_max_e = tk.Entry(vector_tab, width=12)
+    lon_max_e.grid(row=11, column=1, sticky="w", padx=5, pady=2)
+
+    tk.Label(vector_tab, text="Lat min:").grid(row=12, column=0, sticky="e", padx=5, pady=2)
+    lat_min_e = tk.Entry(vector_tab, width=12)
+    lat_min_e.grid(row=12, column=1, sticky="w", padx=5, pady=2)
+
+    tk.Label(vector_tab, text="Lat max:").grid(row=13, column=0, sticky="e", padx=5, pady=2)
+    lat_max_e = tk.Entry(vector_tab, width=12)
+    lat_max_e.grid(row=13, column=1, sticky="w", padx=5, pady=2)
+
+    # --- Redraw button ---
     redraw_btn = tk.Button(vector_tab, text="Redraw Map", bg="lightblue")
-    redraw_btn.pack(pady=10)
+    redraw_btn.grid(row=14, column=0, columnspan=2, pady=10)
 
 
 
 
-
+    ########################################################################
     # === Bottom: log ===
+    ########################################################################
+
     tk.Label(bottom_frame, text="Log Output").pack()
     log_box = tk.Text(bottom_frame, height=8, bg="black", fg="white",
             font= tkfont.Font(family="DejaVu Sans Mono", size=10)   )  
