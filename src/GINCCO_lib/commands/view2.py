@@ -390,6 +390,15 @@ def open_file(datafile, gridfile=None):
 
             var_u = ds.variables[u_name][:]
             var_v = ds.variables[v_name][:]
+
+            # --- Nếu 3D, lấy layer được chọn hoặc layer 0 ---
+            if var_u.ndim == 3:
+                layer = int(layer_var.get()) if layer_var.get().isdigit() else 0
+                var_u = var_u[layer, :, :]
+            if var_v.ndim == 3:
+                layer = int(layer_var.get()) if layer_var.get().isdigit() else 0
+                var_v = var_v[layer, :, :]
+
             step = int(subsample_entry.get())
 
             # --- Determine suffix automatically ---
