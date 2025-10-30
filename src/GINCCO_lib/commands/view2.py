@@ -55,7 +55,7 @@ def open_file(datafile, gridfile=None):
 
     # === Layout ===
     top_frame = tk.Frame(root)
-    top_frame.pack(fill="both", expand=True)
+    top_frame.pack(side="top", fill="both", expand=True)
 
     left_frame = tk.Frame(top_frame, width=300)
     left_frame.pack(side="left", fill="y")
@@ -78,11 +78,10 @@ def open_file(datafile, gridfile=None):
     notebook.add(vector_tab, text="Vector")
 
 
-
-
     bottom_frame = tk.Frame(root, height=150)
     bottom_frame.pack(fill="x", side="bottom")
-
+    bottom_frame.configure(height=150)
+    root.update()
     #############################
     # === Left: variable list ===
     #############################
