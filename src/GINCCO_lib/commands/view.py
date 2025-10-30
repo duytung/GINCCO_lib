@@ -35,52 +35,139 @@ def get_grid_coords(grid_file, suffix):
     return lon, lat
 
 
+def draw_plot(varname, var, lon, lat, options, log_box):
+    """
+    Draw map or line depending on variable dimension and user options.
+    options: dict with keys ('vmin', 'vmax', 'cmap', 'lon_min', 'lon_max', 'lat_min', 'lat_max', 'layer')
+    """
+    try:
+        data = np.squeeze(var[:])
+        nd = data.ndim
+
+        # If 3D → pick selected layer
+        if nd == 3:
+            layer = options.get("layer", 0)
+            data = data[layer, :, :]
+
+        cmap = options.get("cmap", "jet")
+        vmin = options.get("vmin", None)
+        vmax = options.get("vmax", None)
+        lon_min = options.get("lon_min", None)
+        lon_max = options.get("lon_max", None)
+        lat_min = options.get("lat_min", None)
+        lat_max = options.get("lat_max", None)
+
+        if nd == 1:
+            plt.figure()
+            plt.plot(data)
+            plt.title(varname)
+            plt.show()
+
+        elif nd >= 2:
+            if lon is not None and lat is not None and lon.shape == data.shape:
+                fig, ax = plt.subplots(figsize=(7, 6))
+                lon_min = lon_min or np.nanmin(lon)
+                lon_max = lon_max or np.nanmax(lon)
+                lat_min = lat_min or np.nanmin(lat)
+                lat_max = lat_max or np.nanmax(lat)
+
+                m = Basemap(
+                    projection="cyl",
+                    llcrnrlon=lon_min,
+                    urcrnrlon=lon_max,
+                    llcrnrlat=lat_min,
+                    urcrnrlat=lat_max,
+                    resolution="i",
+                    ax=ax
+                )
+
+                cs = m.pcolormesh(
+                    lon, lat, data,
+                    latlon=True, shading="auto",
+                    cmap=cmap, vmin=vmin, vmax=vmax
+                )
+                m.drawcoastlines()
+                m.drawparallels(np.arange(-90, 91, 1), labels=[1, 0, 0, 0], fontsize=8)
+                m.drawmeridians(np.arange(0, 361, 1), labels=[0, 0, 0, 1], fontsize=8)
+                plt.colorbar(cs, label=getattr(var, "units", ""))
+                plt.title(varname)
+                plt.tight_layout()
+                plt.show()
+            else:
+                plt.figure()
+                plt.pcolormesh(data, cmap=cmap, vmin=vmin, vmax=vmax)
+                plt.colorbar(label=getattr(var, "units", ""))
+                plt.title(varname)
+                plt.show()
+
+        log_box.insert("end", f"Plot complete: {varname}\n")
+        log_box.see("end")
+
+    except Exception as e:
+        log_box.insert("end", f"Error plotting variable {varname}: {e}\n")
+        log_box.see("end")
+        messagebox.showerror("Plot Error", str(e))
+
+
 def open_file(datafile, gridfile=None):
     root = tk.Tk()
     root.title(f"GINCCO Viewer - {datafile}")
-    root.geometry("1000x700")
+    root.geometry("1050x750")
 
-    # === Layout setup ===
-    # Top frame (3/4)
+    # === Layout ===
     top_frame = tk.Frame(root)
     top_frame.pack(fill="both", expand=True)
 
-    # Left: variable list
     left_frame = tk.Frame(top_frame, width=300)
     left_frame.pack(side="left", fill="y")
 
+    right_frame = tk.Frame(top_frame, bg="#f0f0f0", width=750)
+    right_frame.pack(side="right", fill="both", expand=True)
+
+    bottom_frame = tk.Frame(root, height=150)
+    bottom_frame.pack(fill="x", side="bottom")
+
+    # === Left: variable list ===
     tk.Label(left_frame, text="Variables").pack(pady=5)
     listbox = Listbox(left_frame)
     listbox.pack(fill="both", expand=True, padx=5, pady=5)
 
-    # Right: map customization
-    right_frame = tk.Frame(top_frame, bg="#f0f0f0", width=700)
-    right_frame.pack(side="right", fill="both", expand=True)
+    # === Right: controls ===
+    tk.Label(right_frame, text="Map Customization", font=("Arial", 12, "bold")).pack(pady=5)
 
-    tk.Label(right_frame, text="Map Customization").pack(pady=5)
+    entry_min = tk.Entry(right_frame); entry_max = tk.Entry(right_frame)
+    tk.Label(right_frame, text="Min value").pack(); entry_min.pack()
+    tk.Label(right_frame, text="Max value").pack(); entry_max.pack()
 
-    # --- Controls ---
-    tk.Label(right_frame, text="Min value:").pack()
-    entry_min = tk.Entry(right_frame)
-    entry_min.pack()
-
-    tk.Label(right_frame, text="Max value:").pack()
-    entry_max = tk.Entry(right_frame)
-    entry_max.pack()
-
-    tk.Label(right_frame, text="Color palette:").pack()
     cmap_var = tk.StringVar(value="jet")
+    tk.Label(right_frame, text="Color palette").pack()
     tk.OptionMenu(right_frame, cmap_var, "jet", "viridis", "plasma", "coolwarm").pack()
 
-    # --- Bottom frame for log (1/4) ---
-    bottom_frame = tk.Frame(root, height=150)
-    bottom_frame.pack(fill="x", side="bottom")
+    # Layer select
+    tk.Label(right_frame, text="Layer select").pack()
+    layer_var = tk.StringVar(value="0")
+    layer_menu = tk.OptionMenu(right_frame, layer_var, "0")  # default
+    layer_menu.pack()
 
+    # lon/lat bounds
+    tk.Label(right_frame, text="Lon/Lat bounds").pack(pady=5)
+    lon_min_e = tk.Entry(right_frame); lon_max_e = tk.Entry(right_frame)
+    lat_min_e = tk.Entry(right_frame); lat_max_e = tk.Entry(right_frame)
+    for w, lbl in [(lon_min_e, "Lon min"), (lon_max_e, "Lon max"),
+                   (lat_min_e, "Lat min"), (lat_max_e, "Lat max")]:
+        tk.Label(right_frame, text=lbl).pack()
+        w.pack()
+
+    # Redraw button
+    redraw_btn = tk.Button(right_frame, text="Redraw Map", bg="lightblue")
+    redraw_btn.pack(pady=10)
+
+    # === Bottom: log ===
     tk.Label(bottom_frame, text="Log Output").pack()
     log_box = tk.Text(bottom_frame, height=8, bg="black", fg="white")
     log_box.pack(fill="both", expand=True, padx=5, pady=5)
 
-    # === Load file ===
+    # === Load NetCDF ===
     try:
         log_box.insert("end", f"Opening file: {datafile}\n")
         ds = Dataset(datafile)
@@ -92,83 +179,62 @@ def open_file(datafile, gridfile=None):
         root.destroy()
         return
 
-    # === Plot function ===
-    def plot_var(event):
+    # === Handlers ===
+    state = {"varname": None, "var": None, "lon": None, "lat": None, "suffix": "t"}
+
+    def on_var_select(event):
         varname = listbox.get(listbox.curselection())
-        log_box.insert("end", f"Plotting variable: {varname}\n")
+        state["varname"] = varname
+        var = ds.variables[varname]
+        state["var"] = var
+        data = np.squeeze(var[:])
+        nd = data.ndim
+
+        suffix = "t"
+        for s in ["u", "v", "f", "t"]:
+            if varname.lower().endswith(s):
+                suffix = s
+                break
+        state["suffix"] = suffix
+        lon, lat = get_grid_coords(gridfile, suffix)
+        state["lon"], state["lat"] = lon, lat
+
+        # Update layer menu if 3D
+        menu = layer_menu["menu"]
+        menu.delete(0, "end")
+        if nd == 3:
+            for i in range(data.shape[0]):
+                menu.add_command(label=str(i), command=lambda v=i: layer_var.set(str(v)))
+            layer_var.set("0")
+        else:
+            menu.add_command(label="0", command=lambda: layer_var.set("0"))
+            layer_var.set("0")
+
+        log_box.insert("end", f"Selected variable: {varname} ({nd}D)\n")
         log_box.see("end")
 
-        try:
-            var = ds.variables[varname]
-            data = np.squeeze(var[:])
-            nd = data.ndim
+    def redraw():
+        if not state["var"]:
+            messagebox.showinfo("Info", "Please select a variable first.")
+            return
 
-            # Detect suffix (_u, _v, _t, _f)
-            suffix = "t"
-            for s in ["u", "v", "f", "t"]:
-                if varname.lower().endswith(s):
-                    suffix = s
-                    break
+        opts = {
+            "vmin": float(entry_min.get()) if entry_min.get() else None,
+            "vmax": float(entry_max.get()) if entry_max.get() else None,
+            "cmap": cmap_var.get(),
+            "layer": int(layer_var.get()),
+            "lon_min": float(lon_min_e.get()) if lon_min_e.get() else None,
+            "lon_max": float(lon_max_e.get()) if lon_max_e.get() else None,
+            "lat_min": float(lat_min_e.get()) if lat_min_e.get() else None,
+            "lat_max": float(lat_max_e.get()) if lat_max_e.get() else None,
+        }
 
-            lon, lat = get_grid_coords(gridfile, suffix)
+        log_box.insert("end", f"Redrawing {state['varname']}...\n")
+        log_box.see("end")
+        draw_plot(state["varname"], state["var"], state["lon"], state["lat"], opts, log_box)
 
-            # Read map options
-            vmin = entry_min.get()
-            vmax = entry_max.get()
-            cmap = cmap_var.get()
-
-            vmin = float(vmin) if vmin else None
-            vmax = float(vmax) if vmax else None
-
-            if nd == 1:
-                plt.figure()
-                plt.plot(data)
-                plt.title(varname)
-                plt.show()
-
-            elif nd == 2:
-                if lon is not None and lat is not None and lon.shape == data.shape:
-                    # Geographic plot with Basemap
-                    fig, ax = plt.subplots(figsize=(7, 6))
-                    lon_min, lon_max = np.nanmin(lon), np.nanmax(lon)
-                    lat_min, lat_max = np.nanmin(lat), np.nanmax(lat)
-                    m = Basemap(
-                        projection="cyl",
-                        llcrnrlon=lon_min,
-                        urcrnrlon=lon_max,
-                        llcrnrlat=lat_min,
-                        urcrnrlat=lat_max,
-                        resolution="i",
-                        ax=ax
-                    )
-                    cs = m.pcolormesh(lon, lat, data, latlon=True, shading="auto",
-                                      cmap=cmap, vmin=vmin, vmax=vmax)
-                    m.drawcoastlines()
-                    m.drawparallels(np.arange(-90, 91, 1), labels=[1,0,0,0], fontsize=8)
-                    m.drawmeridians(np.arange(0, 361, 1), labels=[0,0,0,1], fontsize=8)
-                    plt.colorbar(cs, label=getattr(var, "units", ""))
-                    plt.title(varname)
-                    plt.tight_layout()
-                    plt.show()
-                else:
-                    # Fallback simple plot
-                    plt.figure()
-                    plt.pcolormesh(data, cmap=cmap, vmin=vmin, vmax=vmax)
-                    plt.colorbar(label=getattr(var, "units", ""))
-                    plt.title(varname)
-                    plt.show()
-            else:
-                messagebox.showinfo("Unsupported", f"{varname} has {nd} dimensions")
-
-            log_box.insert("end", "Plot complete.\n")
-            log_box.see("end")
-
-        except Exception as e:
-            messagebox.showerror("Error", f"Cannot plot variable:\n{e}")
-            log_box.insert("end", f"Error plotting variable {varname}: {e}\n")
-            log_box.see("end")
-
-    listbox.bind("<Double-Button-1>", plot_var)
+    listbox.bind("<Double-Button-1>", on_var_select)
+    redraw_btn.config(command=redraw)
     root.mainloop()
 
 
