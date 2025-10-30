@@ -150,6 +150,10 @@ def open_file(datafile, gridfile=None):
                 lat_u = fgrid.variables.get("latitude_u")
                 lon_v = fgrid.variables.get("longitude_v")
                 lat_v = fgrid.variables.get("latitude_v")
+
+                sin_t = fgrid.variables.get("gridrotsin_t")
+                cos_t = fgrid.variables.get("gridrotcos_t")
+
                 mask_t_var = fgrid.variables.get("mask_t")
 
                 if mask_t_var is not None:
