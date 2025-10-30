@@ -254,6 +254,18 @@ def open_file(datafile, gridfile=None):
             font= tkfont.Font(family="DejaVu Sans Mono", size=10)   )  
     log_box.pack(fill="both", expand=True, padx=5, pady=5)
 
+
+
+
+
+
+    ########################################################################
+    # === netcdf loading ===
+    ########################################################################
+
+
+
+
     # === Load NetCDF ===
     try:
         log_box.insert("end", f"Opening file: {datafile}\n")
@@ -261,6 +273,36 @@ def open_file(datafile, gridfile=None):
         for v in ds.variables.keys():
             listbox.insert(END, v)
         log_box.insert("end", "File loaded successfully.\n")
+    
+        # === Update U/V variable dropdowns in vector tab ===
+        u_menu["menu"].delete(0, "end")
+        v_menu["menu"].delete(0, "end")
+
+        # Lọc biến có chữ 'u' hoặc 'v' trong tên (không phân biệt hoa/thường)
+        u_list = [var for var in ds.variables.keys() if "u" in var.lower()]
+        v_list = [var for var in ds.variables.keys() if "v" in var.lower()]
+
+        # Nếu không có biến nào chứa 'u'/'v', fallback về toàn bộ danh sách
+        if not u_list:
+            u_list = list(ds.variables.keys())
+        if not v_list:
+            v_list = list(ds.variables.keys())
+
+        # Thêm các lựa chọn vào menu
+        for varname in u_list:
+            u_menu["menu"].add_command(label=varname, command=tk._setit(u_var_var, varname))
+        for varname in v_list:
+            v_menu["menu"].add_command(label=varname, command=tk._setit(v_var_var, varname))
+
+        # Gán giá trị mặc định
+        if u_list:
+            u_var_var.set(u_list[0])
+        if v_list:
+            v_var_var.set(v_list[0])
+
+
+
+
     except Exception as e:
         messagebox.showerror("Error", f"Cannot open file:\n{e}")
         root.destroy()
