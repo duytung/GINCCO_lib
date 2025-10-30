@@ -31,5 +31,7 @@ pip install imageio[ffmpeg] imageio[pyav] pillow
 # To update the library
 pip install --force-reinstall --no-deps "git+https://github.com/duytung/GINCCO_lib.git"
 
+```
+
 #Documentation
-https://gincco-lib.readthedocs.io/en/latest/
+https://gincco-lib.readthedocs.io/
