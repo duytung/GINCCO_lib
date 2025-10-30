@@ -388,8 +388,8 @@ def open_file(datafile, gridfile=None):
                 messagebox.showinfo("Info", "Please select both U and V variables for vector mode.")
                 return
 
-            var_u = ds.variables[u_name][:]
-            var_v = ds.variables[v_name][:]
+            var_u = np.squeeze(ds.variables[u_name][:])
+            var_v = np.squeeze(ds.variables[v_name][:])
 
             # --- Nếu 3D, lấy layer được chọn hoặc layer 0 ---
             if var_u.ndim == 3:
