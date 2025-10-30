@@ -158,7 +158,7 @@ def open_file(datafile, gridfile=None):
     dpi_entry.grid(row=10, column=1, sticky="w", padx=5, pady=2)
 
     # --- Redraw button ---
-    redraw_btn = tk.Button(scalar_tab, text="Redraw Map", bg="lightblue")
+    redraw_btn = tk.Button(scalar_tab, text="Redraw Map", bg="lightblue", command=redraw )
     redraw_btn.grid(row=11, column=0, columnspan=2, pady=10)
 
 
@@ -258,7 +258,7 @@ def open_file(datafile, gridfile=None):
 
     
     # --- Redraw button ---
-    redraw_btn = tk.Button(vector_tab, text="Draw Map", bg="lightblue")
+    redraw_btn = tk.Button(vector_tab, text="Draw Map", bg="lightblue", command=redraw)
     redraw_btn.grid(row=16, column=0, columnspan=2, pady=10)
 
 
@@ -389,6 +389,11 @@ def open_file(datafile, gridfile=None):
 
         }
 
+
+
+        ################
+        # In scalar tab
+        ################
         if current_tab == "Scalar":
             # Kiểm tra variable
             if not state["var"]:
@@ -403,6 +408,11 @@ def open_file(datafile, gridfile=None):
                 opts, log_box, state, is_redraw=True
             )
 
+
+        ################
+        # In vector tab
+        ################
+ 
         else:  # Vector tab
             u_name = u_var_var.get()
             v_name = v_var_var.get()
