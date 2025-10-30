@@ -359,11 +359,35 @@ def open_file(datafile, gridfile=None):
             if not state["var"]:
                 messagebox.showinfo("Info", "Please select a variable first.")
                 return
+
         else:
-            # Nếu đang ở Vector tab, kiểm tra U/V variable
-            if not u_var_var.get() or not v_var_var.get():
+            u_name = u_var_var.get()
+            v_name = v_var_var.get()
+            if not u_name or not v_name:
                 messagebox.showinfo("Info", "Please select both U and V variables for vector mode.")
                 return
+
+            var_u = ds.variables[u_name][:]
+            var_v = ds.variables[v_name][:]
+            step = int(subsample_entry.get())
+
+            # --- Determine suffix automatically ---
+            suffix = "t"
+            for s in ["u", "v", "f", "t"]:
+                if u_name.lower().endswith(s) or v_name.lower().endswith(s):
+                    suffix = s
+                    break
+
+            # --- Load lon/lat if missing ---
+            if state.get("lon") is None or state.get("lat") is None:
+                lon, lat = get_grid_coords(gridfile, suffix)
+                state["lon"], state["lat"] = lon, lat
+                if lon is None or lat is None:
+                    messagebox.showerror("Error", "Cannot load grid coordinates. Please check your grid file.")
+                    return
+
+            draw_vector_plot(var_u, var_v, state["lon"], state["lat"], opts, log_box, state, step)
+
 
         opts = {
             "vmin": float(entry_min.get()) if entry_min.get() else None,
