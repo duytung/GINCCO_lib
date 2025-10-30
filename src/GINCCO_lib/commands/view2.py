@@ -423,15 +423,38 @@ def open_file(datafile, gridfile=None):
             font= tkfont.Font(family="DejaVu Sans Mono", size=10)   )  
     log_box.pack(fill="both", expand=True, padx=5, pady=5)
 
+    ########################################################################
+    # === Theme ===
+    ########################################################################
 
 
+    APP_BG = "#f3f4f6"
+    FRAME_BG = "#ffffff"
+    LABEL_BG = "#f3f4f6"
+    TEXT_BG = "#ffffff"
+    TEXT_FG = "#333333"
 
     root.configure(bg=APP_BG)
-    left_frame.config(bg=FRAME_BG)
-    right_frame.config(bg=FRAME_BG)
-    notebook.configure(bg=FRAME_BG)
-    scalar_tab.config(bg=FRAME_BG)
-    vector_tab.config(bg=FRAME_BG)
+    for frame in [left_frame, right_frame, scalar_tab, vector_tab]:
+        frame.config(bg=FRAME_BG)
+
+    style = ttk.Style()
+    style.configure("TNotebook", background=FRAME_BG)
+    style.configure("TNotebook.Tab", background=FRAME_BG, padding=[8, 4])
+    style.map("TNotebook.Tab",
+        background=[("selected", "#e0e0e0")],
+        foreground=[("selected", "#000000")]
+    )
+
+    tk.Label(left_frame, text="Variables", bg=LABEL_BG, fg="#222222",
+             font=("DejaVu Sans Mono", 11, "bold")).pack(pady=5)
+
+    listbox.config(
+        bg=TEXT_BG, fg=TEXT_FG,
+        selectbackground="#cce6ff", selectforeground="black",
+        highlightbackground="#d0d0d0", highlightthickness=3, relief="groove"
+    )
+    log_box.config(bg=TEXT_BG, fg=TEXT_FG, insertbackground=TEXT_FG)
 
 
     ########################################################################
@@ -527,7 +550,7 @@ def open_file(datafile, gridfile=None):
         draw_plot(state["varname"], state["var"], state["lon"], state["lat"], opts, log_box, state)
 
 
-    
+
     listbox.bind("<Double-Button-1>", on_var_select)
     redraw_btn.config(command=redraw)
     root.mainloop()
