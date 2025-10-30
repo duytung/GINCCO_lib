@@ -35,7 +35,7 @@ def get_grid_coords(grid_file, suffix):
     return lon, lat
 
 
-def draw_plot(varname, var, lon, lat, options, log_box):
+def draw_plot(varname, var, lon, lat, options, log_box, state=None):
     """
     Draw map or line depending on variable dimension and user options.
     options: dict with keys ('vmin', 'vmax', 'cmap', 'lon_min', 'lon_max', 'lat_min', 'lat_max', 'layer')
@@ -232,7 +232,7 @@ def open_file(datafile, gridfile=None):
             "layer": int(layer_var.get()), "lon_min": None, "lon_max": None,
             "lat_min": None, "lat_max": None
         }
-        draw_plot(varname, var, lon, lat, opts, log_box)
+        draw_plot(state["varname"], state["var"], state["lon"], state["lat"], opts, log_box, state)
 
     def redraw():
         if not state["var"]:
@@ -252,7 +252,7 @@ def open_file(datafile, gridfile=None):
 
         log_box.insert("end", f"Redrawing {state['varname']}...\n")
         log_box.see("end")
-        draw_plot(state["varname"], state["var"], state["lon"], state["lat"], opts, log_box)
+        draw_plot(state["varname"], state["var"], state["lon"], state["lat"], opts, log_box, state)
 
     listbox.bind("<Double-Button-1>", on_var_select)
     redraw_btn.config(command=redraw)
