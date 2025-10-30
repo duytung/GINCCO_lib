@@ -93,7 +93,7 @@ def draw_plot(varname, var, lon, lat, options, log_box, state=None, is_redraw=Fa
                     urcrnrlon=lon_max,
                     llcrnrlat=lat_min,
                     urcrnrlat=lat_max,
-                    resolution=options.get("resolution", "c"),
+                    resolution=options.get("resolution", "i"),
                     ax=ax
                 )
 
@@ -176,9 +176,33 @@ def open_file(datafile, gridfile=None):
     tk.OptionMenu(right_frame, cmap_var, "jet", "viridis", "plasma", "coolwarm").pack()
 
     # --- Map resolution ---
+
     tk.Label(right_frame, text="Map resolution").pack()
-    resolution_var = tk.StringVar(value="c")
-    tk.OptionMenu(right_frame, resolution_var, "c", "l", "i", "h", "f").pack()
+
+    # mapping hiển thị ⇄ giá trị thực
+    res_map = {
+        "Crude": "c",
+        "Low": "l",
+        "Intermediate": "i",
+        "High": "h",
+        "Full": "f"
+    }
+
+
+    # biến lưu chữ hiển thị
+    res_display_var = tk.StringVar(value="Intermediate")
+
+    # menu hiển thị
+    res_menu = tk.OptionMenu(right_frame, res_display_var, *res_map.keys())
+    res_menu.pack()
+
+    # khi cần lấy giá trị thật để vẽ:
+    selected_res = res_map[res_display_var.get()]
+
+
+
+
+
 
 
     # Layer select
@@ -275,7 +299,7 @@ def open_file(datafile, gridfile=None):
             "lon_max": float(lon_max_e.get()) if lon_max_e.get() else None,
             "lat_min": float(lat_min_e.get()) if lat_min_e.get() else None,
             "lat_max": float(lat_max_e.get()) if lat_max_e.get() else None,
-            "resolution": resolution_var.get(),  
+            "resolution": res_map[res_display_var.get()], 
         }
 
         log_box.insert("end", f"Redrawing {state['varname']}...\n")
