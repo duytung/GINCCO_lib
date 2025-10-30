@@ -112,7 +112,7 @@ def draw_plot(varname, var, lon, lat, options, log_box):
 def open_file(datafile, gridfile=None):
     root = tk.Tk()
     root.title(f"GINCCO Viewer - {datafile}")
-    root.geometry("1050x750")
+    root.geometry("450x500")
 
     # === Layout ===
     top_frame = tk.Frame(root)
@@ -212,6 +212,14 @@ def open_file(datafile, gridfile=None):
 
         log_box.insert("end", f"Selected variable: {varname} ({nd}D)\n")
         log_box.see("end")
+
+        # --- Auto-plot immediately on first double-click ---
+        opts = {
+            "vmin": None, "vmax": None, "cmap": cmap_var.get(),
+            "layer": int(layer_var.get()), "lon_min": None, "lon_max": None,
+            "lat_min": None, "lat_max": None
+        }
+        draw_plot(varname, var, lon, lat, opts, log_box)
 
     def redraw():
         if not state["var"]:
