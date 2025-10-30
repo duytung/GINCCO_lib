@@ -401,26 +401,33 @@ def open_file(datafile, gridfile=None):
 
             step = int(subsample_entry.get())
 
-            # --- Determine suffix automatically ---
-            suffix = "t"
-            for s in ["u", "v", "f", "t"]:
-                if u_name.lower().endswith(s) or v_name.lower().endswith(s):
-                    suffix = s
-                    break
+            # --- Load grid for U/V ---
+            fgrid = Dataset(gridfile)
+            lon_u = fgrid.variables.get("longitude_u")[:]
+            lat_u = fgrid.variables.get("latitude_u")[:]
+            lon_v = fgrid.variables.get("longitude_v")[:]
+            lat_v = fgrid.variables.get("latitude_v")[:]
+            mask_t_var = fgrid.variables.get("mask_t")
+            if mask_t_var is not None:
+                mask_t = mask_t_var[:] if mask_t_var.ndim == 2 else mask_t_var[0,:,:]
+                state["mask_t"] = mask_t
 
-            # --- Load lon/lat if missing ---
-            if state.get("lon") is None or state.get("lat") is None:
-                lon, lat = get_grid_coords(gridfile, suffix)
-                state["lon"], state["lat"] = lon, lat
-                if lon is None or lat is None:
-                    messagebox.showerror("Error", "Cannot load grid coordinates. Please check your grid file.")
-                    return
+            lon_t, lat_t = state.get("lon"), state.get("lat")
+            if lon_t is None or lat_t is None:
+                lon_t, lat_t = get_grid_coords(gridfile, "t")
+                state["lon"], state["lat"] = lon_t, lat_t
 
+            # --- Interpolate to T grid ---
+            from GINCCO_lib.commands.interpolate_to_t import interpolate_to_t
+            u_t = interpolate_to_t(var_u, stagger="u", mask_t=mask_t)
+            v_t = interpolate_to_t(var_v, stagger="v", mask_t=mask_t)
+
+            log_box.insert("end", f"Interpolated U/V to T-grid ({u_t.shape}).\n")
             log_box.insert("end", f"Redrawing vector field ({u_name}, {v_name})...\n")
             log_box.see("end")
 
             draw_vector_plot(
-                var_u, var_v, state["lon"], state["lat"],
+                u_t, v_t, lon_t, lat_t,
                 opts, log_box, state, step
             )
 

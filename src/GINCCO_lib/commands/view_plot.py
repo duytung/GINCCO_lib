@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap
 from tkinter import messagebox
-
+from GINCCO_lib.commands.interpolate_to_t import interpolate_to_t
 
 def draw_plot(varname, var, lon, lat, options, log_box, state=None, is_redraw=False):
     """
@@ -100,43 +100,77 @@ def draw_plot(varname, var, lon, lat, options, log_box, state=None, is_redraw=Fa
 
 
 
+def draw_vector_plot(u, v, lon, lat, opts, log_box, state, step=5):
+    import matplotlib.pyplot as plt
+    from mpl_toolkits.basemap import Basemap
+    import numpy as np
 
-def draw_vector_plot(u, v, lon, lat, options, log_box, state=None, step=5):
-    plt.close('all')
-    log_box.insert("end", "Drawing vector field...\n")
+    log_box.insert("end", "Preparing vector field...\n")
     log_box.see("end")
-    log_box.update_idletasks()
 
-    lon_min = options.get("lon_min", np.nanmin(lon))
-    lon_max = options.get("lon_max", np.nanmax(lon))
-    lat_min = options.get("lat_min", np.nanmin(lat))
-    lat_max = options.get("lat_max", np.nanmax(lat))
-    res = options.get("resolution", "c")
+    # Convert to 2D if 3D (choose layer)
+    if u.ndim == 3:
+        layer = int(opts.get("layer", 0))
+        u = u[layer, :, :]
+    if v.ndim == 3:
+        layer = int(opts.get("layer", 0))
+        v = v[layer, :, :]
 
+    # Mask: if mask_t available, use it
+    mask_t = state.get("mask_t")
+    if mask_t is None:
+        mask_t = np.ones_like(u)
+
+    # Interpolate staggered U/V to T grid if needed
+    try:
+        if u.shape != mask_t.shape:
+            log_box.insert("end", f"Interpolating U ({u.shape}) to T grid {mask_t.shape}\n")
+            u = interpolate_to_t(u, stagger="u", mask_t=mask_t)
+        if v.shape != mask_t.shape:
+            log_box.insert("end", f"Interpolating V ({v.shape}) to T grid {mask_t.shape}\n")
+            v = interpolate_to_t(v, stagger="v", mask_t=mask_t)
+    except Exception as e:
+        log_box.insert("end", f"Interpolation error: {e}\n")
+        log_box.see("end")
+        return
+
+    # Ensure lon/lat are 2D
+    if lon.ndim == 1 and lat.ndim == 1:
+        lon, lat = np.meshgrid(lon, lat)
+
+    # Subsample for clarity
+    u_plot = u[::step, ::step]
+    v_plot = v[::step, ::step]
+    lon_p = lon[::step, ::step]
+    lat_p = lat[::step, ::step]
+
+    log_box.insert("end", "Drawing vector map...\n")
+    log_box.see("end")
+
+    plt.close('all')
     fig, ax = plt.subplots(figsize=(7, 6))
-    state["fig"] = fig
-    m = Basemap(projection="cyl", llcrnrlon=lon_min, urcrnrlon=lon_max,
-                llcrnrlat=lat_min, urcrnrlat=lat_max, resolution=res, ax=ax)
 
+    lon_min, lon_max = np.nanmin(lon), np.nanmax(lon)
+    lat_min, lat_max = np.nanmin(lat), np.nanmax(lat)
 
+    m = Basemap(
+        projection="cyl",
+        llcrnrlon=lon_min, urcrnrlon=lon_max,
+        llcrnrlat=lat_min, urcrnrlat=lat_max,
+        resolution=opts.get("resolution", "i"),
+        ax=ax
+    )
 
-    print("=== DEBUG VECTOR PLOT SHAPES ===")
-    print("lon:", None if lon is None else lon.shape)
-    print("lat:", None if lat is None else lat.shape)
-    print("u:", None if u is None else u.shape)
-    print("v:", None if v is None else v.shape)
-    print("===============================")
-
-
+    speed = np.hypot(u, v)
+    cs = m.pcolormesh(lon, lat, speed, latlon=True, cmap=opts.get("cmap", "jet"), shading="auto")
+    m.quiver(lon_p, lat_p, u_plot, v_plot, latlon=True, scale=opts.get("scale", 400), color="black")
     m.drawcoastlines()
-    cs = m.quiver(lon[::step, ::step], lat[::step, ::step],
-                  u[::step, ::step], v[::step, ::step],
-                  latlon=True, scale=400, color="blue")
+
+    plt.colorbar(cs, ax=ax, label="Speed")
     plt.title("Vector field")
     plt.tight_layout()
     plt.show()
 
-    log_box.insert("end", "Done drawing vector field ✓\n")
+    log_box.insert("end", "Done.\n")
     log_box.see("end")
-
 
