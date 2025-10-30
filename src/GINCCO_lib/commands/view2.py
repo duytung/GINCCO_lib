@@ -241,7 +241,7 @@ def open_file(datafile, gridfile=None):
     lat_max_e.grid(row=13, column=1, sticky="w", padx=5, pady=2)
 
     # --- Redraw button ---
-    redraw_btn = tk.Button(vector_tab, text="Redraw Map", bg="lightblue")
+    redraw_btn = tk.Button(vector_tab, text="Draw Map", bg="lightblue")
     redraw_btn.grid(row=14, column=0, columnspan=2, pady=10)
 
 
@@ -401,7 +401,7 @@ def open_file(datafile, gridfile=None):
                 layer = int(layer_var.get()) if layer_var.get().isdigit() else 0
                 var_v = var_v[layer, :, :]
 
-            step = int(subsample_entry.get())
+            quiver_max_n = int(quiver_entry.get())
 
             # --- Load grid for U/V ---
             fgrid = Dataset(gridfile)
@@ -426,7 +426,7 @@ def open_file(datafile, gridfile=None):
 
             log_box.insert("end", f"Interpolated U/V to T-grid ({u_t.shape}).\n")
             log_box.see("end")
-            quiver_max_n = int(quiver_entry.get())
+            
             draw_vector_plot(var_u, var_v, state["lon"], state["lat"], opts, log_box, state, quiver_max_n)
 
 
