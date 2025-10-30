@@ -154,7 +154,7 @@ def draw_vector_plot(u, v, lon, lat, opts, log_box, state, quiver_max_n=10):
 
     speed = np.hypot(u, v)
 
-    log_box.insert("end", f"Drawing with DPI={dpi}, scale={scale}\n")
+    log_box.insert("end", f"Drawing, please wait...\n")
     log_box.see("end")
 
     plt.close('all')
