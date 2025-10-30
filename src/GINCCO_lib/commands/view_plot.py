@@ -4,6 +4,19 @@ from mpl_toolkits.basemap import Basemap
 from tkinter import messagebox
 from GINCCO_lib.commands.interpolate_to_t import interpolate_to_t
 
+
+
+def _nice_ticks(lon_min, lon_max, n=4):
+    """Generate exactly n 'nice' tick values between lon_min and lon_max."""
+    ticks = np.linspace(lon_min, lon_max, n)
+    # Làm tròn tick cho đẹp
+    step = (lon_max - lon_min) / (n - 1)
+    digits = max(0, 2 - int(np.log10(step)))  # làm tròn hợp lý
+    return np.round(ticks, digits)
+
+
+
+
 def draw_plot(varname, var, lon, lat, options, log_box, state=None, is_redraw=False):
     """
     Draw map or line depending on variable dimension and user options.
@@ -36,7 +49,7 @@ def draw_plot(varname, var, lon, lat, options, log_box, state=None, is_redraw=Fa
         lon_max = options.get("lon_max", None)
         lat_min = options.get("lat_min", None)
         lat_max = options.get("lat_max", None)
-        dpi=options.get("dpi", 150)
+        dpi=options.get("dpi", 100)
 
         if nd == 1:
             plt.figure()
@@ -72,8 +85,14 @@ def draw_plot(varname, var, lon, lat, options, log_box, state=None, is_redraw=Fa
                     cmap=cmap, vmin=vmin, vmax=vmax
                 )
                 m.drawcoastlines()
-                m.drawparallels(np.arange(-90, 91, 1), labels=[1, 0, 0, 0], fontsize=8)
-                m.drawmeridians(np.arange(0, 361, 1), labels=[0, 0, 0, 1], fontsize=8)
+
+                parallels = _nice_ticks(lat_min, lat_max, n=4)
+                meridians = _nice_ticks(lon_min, lon_max, n=4)
+
+                m.drawparallels(parallels, labels=[1, 0, 0, 0], fontsize=8, linewidth=0.5, dashes=[2, 4])
+                m.drawmeridians(meridians, labels=[0, 0, 0, 1], fontsize=8, linewidth=0.5, dashes=[2, 4])
+
+
                 plt.colorbar(cs, label=getattr(var, "units", ""))
                 plt.title(varname)
                 plt.tight_layout()
@@ -113,7 +132,7 @@ def draw_vector_plot(u, v, lon, lat, opts, log_box, state, quiver_max_n=10):
     vmin = opts.get("vmin", None)
     vmax = opts.get("vmax", None)
     cmap = opts.get("cmap", "jet")
-    dpi = opts.get("dpi", 150)
+    dpi = opts.get("dpi", 100)
     resolution = opts.get("resolution", "i")
     scale = opts.get("scale", 400)
     lon_min = opts.get("lon_min")
@@ -174,6 +193,13 @@ def draw_vector_plot(u, v, lon, lat, opts, log_box, state, quiver_max_n=10):
         llcrnrlat=lat_min, urcrnrlat=lat_max,
         resolution=resolution, ax=ax
     )
+    m.drawcoastlines()
+    parallels = _nice_ticks(lat_min, lat_max, n=4)
+    meridians = _nice_ticks(lon_min, lon_max, n=4)
+
+    m.drawparallels(parallels, labels=[1, 0, 0, 0], fontsize=8, linewidth=0.5, dashes=[2, 4])
+    m.drawmeridians(meridians, labels=[0, 0, 0, 1], fontsize=8, linewidth=0.5, dashes=[2, 4])
+
 
     cs = m.pcolormesh(lon, lat, speed, latlon=True, cmap=cmap, shading="auto", vmin=vmin, vmax=vmax)
 

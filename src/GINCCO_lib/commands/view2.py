@@ -70,7 +70,7 @@ def open_file(datafile, gridfile=None):
             "lat_min": float(lat_min_e.get()) if lat_min_e.get() else None,
             "lat_max": float(lat_max_e.get()) if lat_max_e.get() else None,
             "resolution": res_map[res_display_var.get()],
-            "dpi": int(dpi_entry.get()) if dpi_entry.get() else 150,
+            "dpi": int(dpi_entry.get()) if dpi_entry.get() else 100,
             "scale": int(scale_entry.get()) if scale_entry.get() else 400,
 
         }
@@ -176,15 +176,14 @@ def open_file(datafile, gridfile=None):
     bottom_frame.pack(fill="x", side="bottom")
     bottom_frame.configure(height=150)
     root.update()
+
+
     #############################
     # === Left: variable list ===
     #############################
     tk.Label(left_frame, text="Variables").pack(pady=5)
-    listbox = Listbox(left_frame)
-    listbox.pack(fill="both", expand=True, padx=5, pady=5)
-
-
-
+    listbox = Listbox(left_frame, borderwidth=2, relief="groove")
+    listbox.pack(fill="both", expand=True, padx=10, pady=8)
 
 
 
@@ -193,26 +192,33 @@ def open_file(datafile, gridfile=None):
     # === Right: controls, scalar tab ===
     #############################
     scalar_tab.grid_columnconfigure(1, weight=1)
+    row_i = 0  # khởi tạo biến đếm hàng
 
+    # --- Tiêu đề ---
     tk.Label(scalar_tab, text="Map Customization",
-             font=("DejaVu Sans Mono", 12, "bold")).grid(row=0, column=0, columnspan=2, pady=8)
+             font=("DejaVu Sans Mono", 12, "bold")).grid(row=row_i, column=0, columnspan=2, pady=8)
+    row_i += 1
 
-    # --- Min/Max ---
-    tk.Label(scalar_tab, text="Min value:").grid(row=1, column=0, sticky="e", padx=5, pady=2)
-    entry_min = tk.Entry(scalar_tab, width=12)
-    entry_min.grid(row=1, column=1, sticky="w", padx=5, pady=2)
-
-    tk.Label(scalar_tab, text="Max value:").grid(row=2, column=0, sticky="e", padx=5, pady=2)
-    entry_max = tk.Entry(scalar_tab, width=12)
-    entry_max.grid(row=2, column=1, sticky="w", padx=5, pady=2)
+    # --- Value range (Min/Max chung dòng) ---
+    tk.Label(scalar_tab, text="Value range:").grid(row=row_i, column=0, sticky="e", padx=5, pady=2)
+    frame_minmax = tk.Frame(scalar_tab)
+    frame_minmax.grid(row=row_i, column=1, sticky="w", padx=5, pady=2)
+    tk.Label(frame_minmax, text="Min").pack(side="left")
+    entry_min = tk.Entry(frame_minmax, width=6)
+    entry_min.pack(side="left", padx=(2,5))
+    tk.Label(frame_minmax, text="Max").pack(side="left")
+    entry_max = tk.Entry(frame_minmax, width=6)
+    entry_max.pack(side="left", padx=(2,0))
+    row_i += 1
 
     # --- Color palette ---
-    tk.Label(scalar_tab, text="Color palette:").grid(row=3, column=0, sticky="e", padx=5, pady=2)
+    tk.Label(scalar_tab, text="Color palette:").grid(row=row_i, column=0, sticky="e", padx=5, pady=2)
     cmap_var = tk.StringVar(value="jet")
-    tk.OptionMenu(scalar_tab, cmap_var, "jet", "viridis", "plasma", "coolwarm").grid(row=3, column=1, sticky="w")
+    tk.OptionMenu(scalar_tab, cmap_var, "jet", "viridis", "plasma", "coolwarm").grid(row=row_i, column=1, sticky="w")
+    row_i += 1
 
     # --- Map resolution ---
-    tk.Label(scalar_tab, text="Map resolution:").grid(row=4, column=0, sticky="e", padx=5, pady=2)
+    tk.Label(scalar_tab, text="Map resolution:").grid(row=row_i, column=0, sticky="e", padx=5, pady=2)
     res_map = {
         "Crude": "c",
         "Low": "l",
@@ -221,91 +227,110 @@ def open_file(datafile, gridfile=None):
         "Full": "f"
     }
     res_display_var = tk.StringVar(value="Intermediate")
-    tk.OptionMenu(scalar_tab, res_display_var, *res_map.keys()).grid(row=4, column=1, sticky="w")
+    tk.OptionMenu(scalar_tab, res_display_var, *res_map.keys()).grid(row=row_i, column=1, sticky="w")
+    row_i += 1
 
     # --- Layer select ---
-    tk.Label(scalar_tab, text="Layer:").grid(row=5, column=0, sticky="e", padx=5, pady=2)
+    tk.Label(scalar_tab, text="Layer:").grid(row=row_i, column=0, sticky="e", padx=5, pady=2)
     layer_var = tk.StringVar(value="0")
     layer_menu = tk.OptionMenu(scalar_tab, layer_var, "0")
-    layer_menu.grid(row=5, column=1, sticky="w")
+    layer_menu.grid(row=row_i, column=1, sticky="w")
+    row_i += 1
 
     # --- Lon/Lat bounds ---
-    tk.Label(scalar_tab, text="Lon min:").grid(row=6, column=0, sticky="e", padx=5, pady=2)
-    lon_min_e = tk.Entry(scalar_tab, width=12)
-    lon_min_e.grid(row=6, column=1, sticky="w", padx=5, pady=2)
+    tk.Label(scalar_tab, text="Longitude bounds:").grid(row=row_i, column=0, sticky="e", padx=5, pady=2)
+    frame_lon = tk.Frame(scalar_tab)
+    frame_lon.grid(row=row_i, column=1, sticky="w", padx=5, pady=2)
+    tk.Label(frame_lon, text="Min").pack(side="left")
+    lon_min_e = tk.Entry(frame_lon, width=6)
+    lon_min_e.pack(side="left", padx=(2,5))
+    tk.Label(frame_lon, text="Max").pack(side="left")
+    lon_max_e = tk.Entry(frame_lon, width=6)
+    lon_max_e.pack(side="left", padx=(2,0))
+    row_i += 1
 
-    tk.Label(scalar_tab, text="Lon max:").grid(row=7, column=0, sticky="e", padx=5, pady=2)
-    lon_max_e = tk.Entry(scalar_tab, width=12)
-    lon_max_e.grid(row=7, column=1, sticky="w", padx=5, pady=2)
+    tk.Label(scalar_tab, text="Latitude bounds:").grid(row=row_i, column=0, sticky="e", padx=5, pady=2)
+    frame_lat = tk.Frame(scalar_tab)
+    frame_lat.grid(row=row_i, column=1, sticky="w", padx=5, pady=2)
+    tk.Label(frame_lat, text="Min").pack(side="left")
+    lat_min_e = tk.Entry(frame_lat, width=6)
+    lat_min_e.pack(side="left", padx=(2,5))
+    tk.Label(frame_lat, text="Max").pack(side="left")
+    lat_max_e = tk.Entry(frame_lat, width=6)
+    lat_max_e.pack(side="left", padx=(2,0))
+    row_i += 1
 
-    tk.Label(scalar_tab, text="Lat min:").grid(row=8, column=0, sticky="e", padx=5, pady=2)
-    lat_min_e = tk.Entry(scalar_tab, width=12)
-    lat_min_e.grid(row=8, column=1, sticky="w", padx=5, pady=2)
-
-    tk.Label(scalar_tab, text="Lat max:").grid(row=9, column=0, sticky="e", padx=5, pady=2)
-    lat_max_e = tk.Entry(scalar_tab, width=12)
-    lat_max_e.grid(row=9, column=1, sticky="w", padx=5, pady=2)
-
-    tk.Label(scalar_tab, text="Figure DPI:").grid(row=10, column=0, sticky="e", padx=5, pady=2)
+    # --- Figure DPI ---
+    tk.Label(scalar_tab, text="Figure DPI:").grid(row=row_i, column=0, sticky="e", padx=5, pady=2)
     dpi_entry = tk.Entry(scalar_tab, width=10)
-    dpi_entry.insert(0, "100")  # giá trị mặc định
-    dpi_entry.grid(row=10, column=1, sticky="w", padx=5, pady=2)
+    dpi_entry.insert(0, "100")
+    dpi_entry.grid(row=row_i, column=1, sticky="w", padx=5, pady=2)
+    row_i += 1
 
     # --- Redraw button ---
-    redraw_btn = tk.Button(scalar_tab, text="Redraw Map", bg="lightblue", command=redraw )
-    redraw_btn.grid(row=11, column=0, columnspan=2, pady=10)
+    redraw_btn = tk.Button(scalar_tab, text="Redraw Map", bg="lightblue", command=redraw)
+    redraw_btn.grid(row=row_i, column=0, columnspan=2, pady=10)
+    row_i += 1
 
 
 
     #############################
     # === Right: controls, vector tab ===
     #############################
-
     vector_tab.grid_columnconfigure(1, weight=1)
+    row_i = 0  # khởi tạo biến đếm hàng
 
     # --- Title ---
     tk.Label(vector_tab, text="Vector Field Settings",
-             font=("DejaVu Sans Mono", 12, "bold")).grid(row=0, column=0, columnspan=2, pady=8)
+             font=("DejaVu Sans Mono", 12, "bold")).grid(row=row_i, column=0, columnspan=2, pady=8)
+    row_i += 1
 
-    # --- U / V variable selection ---
-    tk.Label(vector_tab, text="U variable:").grid(row=1, column=0, sticky="e", padx=5, pady=2)
+    # --- U variable ---
+    tk.Label(vector_tab, text="U variable:").grid(row=row_i, column=0, sticky="e", padx=5, pady=2)
     u_var_var = tk.StringVar(value="")
     u_menu = tk.OptionMenu(vector_tab, u_var_var, "")
-    u_menu.grid(row=1, column=1, sticky="w", padx=5, pady=2)
+    u_menu.grid(row=row_i, column=1, sticky="w", padx=5, pady=2)
+    row_i += 1
 
-    tk.Label(vector_tab, text="V variable:").grid(row=2, column=0, sticky="e", padx=5, pady=2)
+    # --- V variable ---
+    tk.Label(vector_tab, text="V variable:").grid(row=row_i, column=0, sticky="e", padx=5, pady=2)
     v_var_var = tk.StringVar(value="")
     v_menu = tk.OptionMenu(vector_tab, v_var_var, "")
-    v_menu.grid(row=2, column=1, sticky="w", padx=5, pady=2)
+    v_menu.grid(row=row_i, column=1, sticky="w", padx=5, pady=2)
+    row_i += 1
 
-    # --- Subsampling step ---
-
-    tk.Label(vector_tab, text="Max. number of arrows:").grid(row=3, column=0, sticky="e", padx=5, pady=2)
+    # --- Max number of arrows ---
+    tk.Label(vector_tab, text="Max. number of arrows:").grid(row=row_i, column=0, sticky="e", padx=5, pady=2)
     quiver_entry = tk.Entry(vector_tab, width=10)
-    quiver_entry.insert(0, "10")  # giá trị mặc định
-    quiver_entry.grid(row=3, column=1, sticky="w", padx=5, pady=2)
+    quiver_entry.insert(0, "10")
+    quiver_entry.grid(row=row_i, column=1, sticky="w", padx=5, pady=2)
+    row_i += 1
 
-
-    # --- Section title for map ---
+    # --- Map customization section ---
     tk.Label(vector_tab, text="Map Customization",
-             font=("DejaVu Sans Mono", 12, "bold")).grid(row=4, column=0, columnspan=2, pady=8)
+             font=("DejaVu Sans Mono", 12, "bold")).grid(row=row_i, column=0, columnspan=2, pady=8)
+    row_i += 1
 
-    # --- Min / Max ---
-    tk.Label(vector_tab, text="Min value:").grid(row=5, column=0, sticky="e", padx=5, pady=2)
-    entry_min = tk.Entry(vector_tab, width=12)
-    entry_min.grid(row=5, column=1, sticky="w", padx=5, pady=2)
-
-    tk.Label(vector_tab, text="Max value:").grid(row=6, column=0, sticky="e", padx=5, pady=2)
-    entry_max = tk.Entry(vector_tab, width=12)
-    entry_max.grid(row=6, column=1, sticky="w", padx=5, pady=2)
+    # --- Value range ---
+    tk.Label(vector_tab, text="Value range:").grid(row=row_i, column=0, sticky="e", padx=5, pady=2)
+    frame_minmax_v = tk.Frame(vector_tab)
+    frame_minmax_v.grid(row=row_i, column=1, sticky="w", padx=5, pady=2)
+    tk.Label(frame_minmax_v, text="Min").pack(side="left")
+    entry_min = tk.Entry(frame_minmax_v, width=6)
+    entry_min.pack(side="left", padx=(2,5))
+    tk.Label(frame_minmax_v, text="Max").pack(side="left")
+    entry_max = tk.Entry(frame_minmax_v, width=6)
+    entry_max.pack(side="left", padx=(2,0))
+    row_i += 1
 
     # --- Color palette ---
-    tk.Label(vector_tab, text="Color palette:").grid(row=7, column=0, sticky="e", padx=5, pady=2)
+    tk.Label(vector_tab, text="Color palette:").grid(row=row_i, column=0, sticky="e", padx=5, pady=2)
     cmap_var = tk.StringVar(value="jet")
-    tk.OptionMenu(vector_tab, cmap_var, "jet", "viridis", "plasma", "coolwarm").grid(row=7, column=1, sticky="w")
+    tk.OptionMenu(vector_tab, cmap_var, "jet", "viridis", "plasma", "coolwarm").grid(row=row_i, column=1, sticky="w")
+    row_i += 1
 
     # --- Map resolution ---
-    tk.Label(vector_tab, text="Map resolution:").grid(row=8, column=0, sticky="e", padx=5, pady=2)
+    tk.Label(vector_tab, text="Map resolution:").grid(row=row_i, column=0, sticky="e", padx=5, pady=2)
     res_map = {
         "Crude": "c",
         "Low": "l",
@@ -314,46 +339,59 @@ def open_file(datafile, gridfile=None):
         "Full": "f"
     }
     res_display_var = tk.StringVar(value="Intermediate")
-    tk.OptionMenu(vector_tab, res_display_var, *res_map.keys()).grid(row=8, column=1, sticky="w")
+    tk.OptionMenu(vector_tab, res_display_var, *res_map.keys()).grid(row=row_i, column=1, sticky="w")
+    row_i += 1
 
     # --- Layer select ---
-    tk.Label(vector_tab, text="Layer:").grid(row=9, column=0, sticky="e", padx=5, pady=2)
+    tk.Label(vector_tab, text="Layer:").grid(row=row_i, column=0, sticky="e", padx=5, pady=2)
     layer_var = tk.StringVar(value="0")
     layer_menu = tk.OptionMenu(vector_tab, layer_var, "0")
-    layer_menu.grid(row=9, column=1, sticky="w")
+    layer_menu.grid(row=row_i, column=1, sticky="w")
+    row_i += 1
+
 
     # --- Lon/Lat bounds ---
-    tk.Label(vector_tab, text="Lon min:").grid(row=10, column=0, sticky="e", padx=5, pady=2)
-    lon_min_e = tk.Entry(vector_tab, width=12)
-    lon_min_e.grid(row=10, column=1, sticky="w", padx=5, pady=2)
+    tk.Label(vector_tab, text="Longitude bounds:").grid(row=row_i, column=0, sticky="e", padx=5, pady=2)
+    frame_lon = tk.Frame(vector_tab)
+    frame_lon.grid(row=row_i, column=1, sticky="w", padx=5, pady=2)
+    tk.Label(frame_lon, text="Min").pack(side="left")
+    lon_min_e = tk.Entry(frame_lon, width=6)
+    lon_min_e.pack(side="left", padx=(2,5))
+    tk.Label(frame_lon, text="Max").pack(side="left")
+    lon_max_e = tk.Entry(frame_lon, width=6)
+    lon_max_e.pack(side="left", padx=(2,0))
+    row_i += 1
 
-    tk.Label(vector_tab, text="Lon max:").grid(row=11, column=0, sticky="e", padx=5, pady=2)
-    lon_max_e = tk.Entry(vector_tab, width=12)
-    lon_max_e.grid(row=11, column=1, sticky="w", padx=5, pady=2)
+    tk.Label(vector_tab, text="Latitude bounds:").grid(row=row_i, column=0, sticky="e", padx=5, pady=2)
+    frame_lat = tk.Frame(vector_tab)
+    frame_lat.grid(row=row_i, column=1, sticky="w", padx=5, pady=2)
+    tk.Label(frame_lat, text="Min").pack(side="left")
+    lat_min_e = tk.Entry(frame_lat, width=6)
+    lat_min_e.pack(side="left", padx=(2,5))
+    tk.Label(frame_lat, text="Max").pack(side="left")
+    lat_max_e = tk.Entry(frame_lat, width=6)
+    lat_max_e.pack(side="left", padx=(2,0))
+    row_i += 1
 
-    tk.Label(vector_tab, text="Lat min:").grid(row=12, column=0, sticky="e", padx=5, pady=2)
-    lat_min_e = tk.Entry(vector_tab, width=12)
-    lat_min_e.grid(row=12, column=1, sticky="w", padx=5, pady=2)
 
-    tk.Label(vector_tab, text="Lat max:").grid(row=13, column=0, sticky="e", padx=5, pady=2)
-    lat_max_e = tk.Entry(vector_tab, width=12)
-    lat_max_e.grid(row=13, column=1, sticky="w", padx=5, pady=2)
-        
-    tk.Label(vector_tab, text="Figure DPI:").grid(row=14, column=0, sticky="e", padx=5, pady=2)
+    # --- Figure DPI ---
+    tk.Label(vector_tab, text="Figure DPI:").grid(row=row_i, column=0, sticky="e", padx=5, pady=2)
     dpi_entry = tk.Entry(vector_tab, width=10)
-    dpi_entry.insert(0, "100")  # giá trị mặc định
-    dpi_entry.grid(row=14, column=1, sticky="w", padx=5, pady=2)
+    dpi_entry.insert(0, "100")
+    dpi_entry.grid(row=row_i, column=1, sticky="w", padx=5, pady=2)
+    row_i += 1
 
-    tk.Label(vector_tab, text="Scale:").grid(row=15, column=0, sticky="e", padx=5, pady=2)
+    # --- Scale ---
+    tk.Label(vector_tab, text="Scale:").grid(row=row_i, column=0, sticky="e", padx=5, pady=2)
     scale_entry = tk.Entry(vector_tab, width=10)
-    scale_entry.insert(0, "400")  # giá trị mặc định
-    scale_entry.grid(row=15, column=1, sticky="w", padx=5, pady=2)
+    scale_entry.insert(0, "400")
+    scale_entry.grid(row=row_i, column=1, sticky="w", padx=5, pady=2)
+    row_i += 1
 
-
-    
     # --- Redraw button ---
     redraw_btn = tk.Button(vector_tab, text="Draw Map", bg="lightblue", command=redraw)
-    redraw_btn.grid(row=16, column=0, columnspan=2, pady=10)
+    redraw_btn.grid(row=row_i, column=0, columnspan=2, pady=10)
+    row_i += 1
 
 
 
