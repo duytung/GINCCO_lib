@@ -18,14 +18,6 @@ from mpl_toolkits.basemap import Basemap
 from GINCCO_lib.commands.view_plot import draw_plot, draw_vector_plot
 
 
-APP_BG = "#f3f4f6"       # nền chính
-FRAME_BG = "#ffffff"      # nền khung
-LABEL_BG = "#f3f4f6"
-TEXT_BG = "#ffffff"
-TEXT_FG = "#333333"
-ACCENT = "#0078d7"        # xanh dịu
-
-
 
 
 
@@ -57,6 +49,22 @@ def open_file(datafile, gridfile=None):
 
     root.title(f"GINCCO Viewer - {datafile}")
     root.geometry("550x600")
+
+    # === Unified style ===
+    APP_BG = "#f5f5f5"
+    LABEL_FG = "#222222"
+
+    root.configure(bg=APP_BG)
+
+    # Đặt nền mặc định cho tất cả Label, Frame, Button, v.v.
+    root.option_add("*Background", APP_BG)
+    root.option_add("*Foreground", LABEL_FG)
+    root.option_add("*Label.Background", APP_BG)
+    root.option_add("*Frame.Background", APP_BG)
+    root.option_add("*Button.Background", "#e8e8e8")
+    root.option_add("*Button.Foreground", LABEL_FG)
+
+
 
     def on_close():
         import matplotlib.pyplot as plt
@@ -147,13 +155,6 @@ def open_file(datafile, gridfile=None):
                 state["lon"], state["lat"] = lon_t, lat_t
             
             draw_vector_plot(var_u, var_v, state["lon"], state["lat"], opts, log_box, state, quiver_max_n)
-
-
-
-
-
-
-
 
 
 
