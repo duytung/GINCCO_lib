@@ -128,7 +128,7 @@ def open_file(datafile, gridfile=None):
                 layer = int(layer_var_vector.get()) if layer_var_vector.get().isdigit() else 0
                 var_v = var_v[layer, :, :]
 
-            quiver_max_n = int(quiver_entry.get())
+            quiver_max_n = int(quiver_entry_vector.get())
 
             # --- Load grid for U/V ---
             fgrid = Dataset(gridfile)
