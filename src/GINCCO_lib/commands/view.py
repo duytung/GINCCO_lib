@@ -93,7 +93,7 @@ def draw_plot(varname, var, lon, lat, options, log_box, state=None, is_redraw=Fa
                     urcrnrlon=lon_max,
                     llcrnrlat=lat_min,
                     urcrnrlat=lat_max,
-                    resolution="i",
+                    resolution=options.get("resolution", "c"),
                     ax=ax
                 )
 
@@ -175,6 +175,12 @@ def open_file(datafile, gridfile=None):
     tk.Label(right_frame, text="Color palette").pack()
     tk.OptionMenu(right_frame, cmap_var, "jet", "viridis", "plasma", "coolwarm").pack()
 
+    # --- Map resolution ---
+    tk.Label(right_frame, text="Map resolution").pack()
+    resolution_var = tk.StringVar(value="c")
+    tk.OptionMenu(right_frame, resolution_var, "c", "l", "i", "h", "f").pack()
+
+
     # Layer select
     tk.Label(right_frame, text="Layer select").pack()
     layer_var = tk.StringVar(value="0")
@@ -196,7 +202,8 @@ def open_file(datafile, gridfile=None):
 
     # === Bottom: log ===
     tk.Label(bottom_frame, text="Log Output").pack()
-    log_box = tk.Text(bottom_frame, height=8, bg="black", fg="white")
+    log_box = tk.Text(bottom_frame, height=8, bg="black", fg="white",
+            font= tkfont.Font(family="DejaVu Sans Mono", size=10)   )  
     log_box.pack(fill="both", expand=True, padx=5, pady=5)
 
     # === Load NetCDF ===
@@ -268,6 +275,7 @@ def open_file(datafile, gridfile=None):
             "lon_max": float(lon_max_e.get()) if lon_max_e.get() else None,
             "lat_min": float(lat_min_e.get()) if lat_min_e.get() else None,
             "lat_max": float(lat_max_e.get()) if lat_max_e.get() else None,
+            "resolution": resolution_var.get(),  
         }
 
         log_box.insert("end", f"Redrawing {state['varname']}...\n")
