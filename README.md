@@ -4,7 +4,7 @@ Utilities for:
 - Reading SYMPHONIE output model
 - Opening multiple files along time  
 - Post-processing
-- Data visulization
+- Data visualization
 
 ---
 
@@ -33,5 +33,6 @@ pip install --force-reinstall --no-deps "git+https://github.com/duytung/GINCCO_l
 
 ```
 
-#Documentation
+## Documentation
+
 https://gincco-lib.readthedocs.io/
