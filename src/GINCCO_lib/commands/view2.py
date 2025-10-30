@@ -459,6 +459,7 @@ def open_file(datafile, gridfile=None):
     # === Handlers ===
     state = {"varname": None, "var": None, "lon": None, "lat": None, "suffix": "t", "fig": None}
 
+
     def on_var_select(event):
         varname = listbox.get(listbox.curselection())
         state["varname"] = varname
@@ -477,34 +478,36 @@ def open_file(datafile, gridfile=None):
         lon, lat = get_grid_coords(gridfile, suffix)
         state["lon"], state["lat"] = lon, lat
 
-        # --- Update layer menu nếu có ---
-        if "layer_menu_scalar" in locals() or "layer_menu_scalar" in globals():
+        # --- Cập nhật menu Layer của tab Scalar ---
+        try:
             menu = layer_menu_scalar["menu"]
             menu.delete(0, "end")
 
             if nd == 3:
-                layer_var.set("0")  # đặt trước khi thêm menu
                 for i in range(data.shape[0]):
-                    menu.add_command(label=str(i), command=tk._setit(layer_var, str(i)))
+                    menu.add_command(label=str(i), command=tk._setit(layer_var_scalar, str(i)))
+                layer_var_scalar.set("0")
             else:
-                menu.add_command(label="0", command=tk._setit(layer_var, "0"))
-                layer_var.set("0")
+                menu.add_command(label="0", command=tk._setit(layer_var_scalar, "0"))
+                layer_var_scalar.set("0")
+        except Exception as e:
+            log_box.insert("end", f"[WARN] Layer menu not found: {e}\n")
 
-
-
+        # --- Cập nhật log ---
         log_box.insert("end", f"Selected variable: {varname} ({nd}D)\n")
         log_box.see("end")
 
-        # --- Auto plot ---
+        # --- Auto plot ngay khi double-click ---
         opts = {
             "vmin": None,
             "vmax": None,
-            "cmap": cmap_var.get(),
-            "layer": int(layer_var.get()),
+            "cmap": cmap_var_scalar.get(),
+            "layer": int(layer_var_scalar.get()) if layer_var_scalar.get().isdigit() else 0,
             "lon_min": None,
             "lon_max": None,
             "lat_min": None,
-            "lat_max": None
+            "lat_max": None,
+            "dpi": int(dpi_entry_scalar.get()) if dpi_entry_scalar.get() else 100,
         }
 
         draw_plot(
@@ -516,6 +519,7 @@ def open_file(datafile, gridfile=None):
             log_box,
             state
         )
+
 
 
 
