@@ -15,7 +15,7 @@ import matplotlib
 matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap
-from GINCCO_lib.commands.view_plot import draw_plot, draw_vector_plot
+from GINCCO_lib.commands.map_plot import draw_plot, draw_vector_plot
 import matplotlib.cm as cm
 
 
@@ -47,7 +47,7 @@ def open_file(datafile, gridfile=None):
     root.option_add("*Font", font_normal)
 
     root.title(f"GINCCO Viewer - {datafile}")
-    root.geometry("550x600")
+    root.geometry("550x630")
 
 
     def on_close():
@@ -107,9 +107,9 @@ def open_file(datafile, gridfile=None):
         # ===============================
         else:
             opts = {
+                "need_rotate_vector": cmap_var_vector.get(),
                 "vmin": safe_float(entry_min_vector.get()),
                 "vmax": safe_float(entry_max_vector.get()),
-                
                 "cmap": cmap_var_vector.get(),
                 "cmap_min": safe_float(cmap_min_vector.get()),
                 "cmap_max": safe_float(cmap_max_vector.get()),
@@ -351,6 +351,8 @@ def open_file(datafile, gridfile=None):
     #############################
     # === Right: controls, vector tab ===
     #############################
+
+
     vector_tab.grid_columnconfigure(1, weight=1)
     row_v = 0
 
@@ -371,6 +373,12 @@ def open_file(datafile, gridfile=None):
     v_var_var = tk.StringVar(value="")
     v_menu = tk.OptionMenu(vector_tab, v_var_var, "")
     v_menu.grid(row=row_v, column=1, sticky="w", padx=5, pady=2)
+    row_v += 1
+
+    # --- Rotate option ---
+    tk.Label(vector_tab, text="Need rotate:").grid(row=row_v, column=0, sticky="e", padx=5, pady=2)
+    need_rotate_vector = tk.StringVar(value="True")  # default = True
+    tk.OptionMenu(vector_tab, need_rotate_vector, "True", "False").grid(row=row_v, column=1, sticky="w")
     row_v += 1
 
     # --- Max number of arrows ---

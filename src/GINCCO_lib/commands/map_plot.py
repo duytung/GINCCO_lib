@@ -132,6 +132,7 @@ def draw_vector_plot(u, v, lon, lat, opts, log_box, state, quiver_max_n=10):
     lon_max = opts.get("lon_max")
     lat_min = opts.get("lat_min")
     lat_max = opts.get("lat_max")
+    need_rotate = opts.get("need_rotate")
 
     # --- Convert to 2D if 3D ---
     if u.ndim == 3:
@@ -163,10 +164,22 @@ def draw_vector_plot(u, v, lon, lat, opts, log_box, state, quiver_max_n=10):
     if lon.ndim == 1 and lat.ndim == 1:
         lon, lat = np.meshgrid(lon, lat)
 
-    u = np.where(mask_t == 0, np.nan, u)
-    v = np.where(mask_t == 0, np.nan, v)
+ 
+    if need_rotate:
+        sin_t = opts.get("sint_t")
+        cos_t = opts.get("cos_t")
+        
+        U1 =  u * cos_t + v * sin_t
+        V1 = -u * sin_t + v * cos_t
+    else: 
+        U1 = np.copy(u)
+        V1 = np.copy(v)
 
-    speed = np.hypot(u, v)
+    U1 = np.where(mask_t == 0, np.nan, U1)
+    V1 = np.where(mask_t == 0, np.nan, V1)
+
+
+    speed = np.hypot(U1, V1)
 
     log_box.insert("end", f"Drawing, please wait...\n")
     log_box.see("end")
@@ -214,7 +227,7 @@ def draw_vector_plot(u, v, lon, lat, opts, log_box, state, quiver_max_n=10):
             dist2 = (lon - lon_small[j, i])**2 + (lat - lat_small[j, i])**2
             idx = np.unravel_index(np.nanargmin(dist2), dist2.shape)
             if mask_t[idx] == 1:
-                u_q[j, i], v_q[j, i] = u[idx], v[idx]
+                u_q[j, i], v_q[j, i] = U1[idx], V1[idx]
                 lon_small[j, i], lat_small[j, i] = lon[idx], lat[idx]
 
     m.quiver(
