@@ -15,7 +15,7 @@ import matplotlib
 matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap
-from GINCCO_lib.commands.view_plot import draw_plot, draw_vector_plot
+from GINCCO_lib.commands.map_plot import draw_plot, draw_vector_plot
 
 
 
