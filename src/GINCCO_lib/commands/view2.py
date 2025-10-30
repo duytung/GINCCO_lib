@@ -438,24 +438,13 @@ def open_file(datafile, gridfile=None):
             if lon_t is None or lat_t is None:
                 lon_t, lat_t = get_grid_coords(gridfile, "t")
                 state["lon"], state["lat"] = lon_t, lat_t
-
-            # --- Interpolate to T grid ---
-            from GINCCO_lib.commands.interpolate_to_t import interpolate_to_t
-            u_t = interpolate_to_t(var_u, stagger="u", mask_t=mask_t)
-            v_t = interpolate_to_t(var_v, stagger="v", mask_t=mask_t)
-
-            log_box.insert("end", f"Interpolated U/V to T-grid ({u_t.shape}).\n")
-            log_box.see("end")
             
-            draw_vector_plot(u_t, v_t, state["lon"], state["lat"], opts, log_box, state, quiver_max_n)
+            draw_vector_plot(var_u, var_v, state["lon"], state["lat"], opts, log_box, state, quiver_max_n)
 
 
     listbox.bind("<Double-Button-1>", on_var_select)
     redraw_btn.config(command=redraw)
     root.mainloop()
-
-
-
 
 
 
