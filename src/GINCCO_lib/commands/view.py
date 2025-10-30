@@ -40,6 +40,10 @@ def draw_plot(varname, var, lon, lat, options, log_box):
     Draw map or line depending on variable dimension and user options.
     options: dict with keys ('vmin', 'vmax', 'cmap', 'lon_min', 'lon_max', 'lat_min', 'lat_max', 'layer')
     """
+    if state and state.get("fig") is not None:
+        plt.close(state["fig"])
+        state["fig"] = None
+
     try:
         data = np.squeeze(var[:])
         nd = data.ndim
@@ -66,6 +70,7 @@ def draw_plot(varname, var, lon, lat, options, log_box):
         elif nd >= 2:
             if lon is not None and lat is not None and lon.shape == data.shape:
                 fig, ax = plt.subplots(figsize=(7, 6))
+                state["fig"] = fig
                 lon_min = lon_min or np.nanmin(lon)
                 lon_max = lon_max or np.nanmax(lon)
                 lat_min = lat_min or np.nanmin(lat)
@@ -112,7 +117,14 @@ def draw_plot(varname, var, lon, lat, options, log_box):
 def open_file(datafile, gridfile=None):
     root = tk.Tk()
     root.title(f"GINCCO Viewer - {datafile}")
-    root.geometry("450x500")
+    root.geometry("550x600")
+
+    def on_close():
+        import matplotlib.pyplot as plt
+        plt.close('all')  # 🔹 đóng toàn bộ cửa sổ plot đang mở
+        root.destroy()    # 🔹 đóng cửa sổ chính của Tkinter
+
+    root.protocol("WM_DELETE_WINDOW", on_close)
 
     # === Layout ===
     top_frame = tk.Frame(root)
@@ -180,7 +192,8 @@ def open_file(datafile, gridfile=None):
         return
 
     # === Handlers ===
-    state = {"varname": None, "var": None, "lon": None, "lat": None, "suffix": "t"}
+    state = {"varname": None, "var": None, "lon": None, "lat": None, "suffix": "t", "fig": None}
+
 
     def on_var_select(event):
         varname = listbox.get(listbox.curselection())
