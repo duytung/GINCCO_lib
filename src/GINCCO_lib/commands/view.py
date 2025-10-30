@@ -132,6 +132,9 @@ def draw_plot(varname, var, lon, lat, options, log_box, state=None, is_redraw=Fa
 
 def open_file(datafile, gridfile=None):
     root = tk.Tk()
+    font_normal = tkfont.Font(family="DejaVu Sans Mono", size=10)
+    root.option_add("*Font", font_normal)
+
     root.title(f"GINCCO Viewer - {datafile}")
     root.geometry("550x600")
 
@@ -268,7 +271,8 @@ def open_file(datafile, gridfile=None):
 
         log_box.insert("end", f"Redrawing {state['varname']}...\n")
         log_box.see("end")
-        draw_plot(state["varname"], state["var"], state["lon"], state["lat"], opts, log_box, state)
+        draw_plot(state["varname"], state["var"], state["lon"], state["lat"], 
+            opts, log_box, state, is_redraw=True)
 
     listbox.bind("<Double-Button-1>", on_var_select)
     redraw_btn.config(command=redraw)
