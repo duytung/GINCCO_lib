@@ -152,6 +152,11 @@ def open_file(datafile, gridfile=None):
     lat_max_e = tk.Entry(scalar_tab, width=12)
     lat_max_e.grid(row=9, column=1, sticky="w", padx=5, pady=2)
 
+    tk.Label(scalar_tab, text="Figure DPI:").grid(row=4, column=0, sticky="e", padx=5, pady=2)
+    dpi_entry = tk.Entry(vector_tab, width=10)
+    dpi_entry.insert(0, "150")  # giá trị mặc định
+    dpi_entry.grid(row=4, column=1, sticky="w", padx=5, pady=2)
+
     # --- Redraw button ---
     redraw_btn = tk.Button(scalar_tab, text="Redraw Map", bg="lightblue")
     redraw_btn.grid(row=10, column=0, columnspan=2, pady=10)
@@ -239,7 +244,12 @@ def open_file(datafile, gridfile=None):
     tk.Label(vector_tab, text="Lat max:").grid(row=13, column=0, sticky="e", padx=5, pady=2)
     lat_max_e = tk.Entry(vector_tab, width=12)
     lat_max_e.grid(row=13, column=1, sticky="w", padx=5, pady=2)
-
+    
+    tk.Label(vector_tab, text="Figure DPI:").grid(row=4, column=0, sticky="e", padx=5, pady=2)
+    dpi_entry = tk.Entry(vector_tab, width=10)
+    dpi_entry.insert(0, "150")  # giá trị mặc định
+    dpi_entry.grid(row=4, column=1, sticky="w", padx=5, pady=2)
+    
     # --- Redraw button ---
     redraw_btn = tk.Button(vector_tab, text="Draw Map", bg="lightblue")
     redraw_btn.grid(row=14, column=0, columnspan=2, pady=10)
@@ -367,6 +377,8 @@ def open_file(datafile, gridfile=None):
             "lat_min": float(lat_min_e.get()) if lat_min_e.get() else None,
             "lat_max": float(lat_max_e.get()) if lat_max_e.get() else None,
             "resolution": res_map[res_display_var.get()],
+            "dpi": int(dpi_entry.get()) if dpi_entry.get() else 150,
+
         }
 
         if current_tab == "Scalar":
@@ -428,9 +440,6 @@ def open_file(datafile, gridfile=None):
             log_box.see("end")
             
             draw_vector_plot(var_u, var_v, state["lon"], state["lat"], opts, log_box, state, quiver_max_n)
-
-
-
 
 
     listbox.bind("<Double-Button-1>", on_var_select)

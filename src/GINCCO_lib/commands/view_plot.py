@@ -48,7 +48,7 @@ def draw_plot(varname, var, lon, lat, options, log_box, state=None, is_redraw=Fa
 
         elif nd >= 2:
             if lon is not None and lat is not None and lon.shape == data.shape:
-                fig, ax = plt.subplots(figsize=(7, 6))
+                fig, ax = plt.subplots(figsize=(7, 6), dpi=opts.get("dpi", 150))
                 state["fig"] = fig
                 lon_min = lon_min or np.nanmin(lon)
                 lon_max = lon_max or np.nanmax(lon)
@@ -97,7 +97,6 @@ def draw_plot(varname, var, lon, lat, options, log_box, state=None, is_redraw=Fa
         log_box.insert("end", f"Error plotting variable {varname}: {e}\n")
         log_box.see("end")
         messagebox.showerror("Plot Error", str(e))
-
 
 
 def draw_vector_plot(u, v, lon, lat, opts, log_box, state, quiver_max_n=10):
@@ -151,7 +150,7 @@ def draw_vector_plot(u, v, lon, lat, opts, log_box, state, quiver_max_n=10):
     log_box.see("end")
 
     plt.close('all')
-    fig, ax = plt.subplots(figsize=(7, 6))
+    fig, ax = plt.subplots(figsize=(7, 6), dpi=opts.get("dpi", 150))
 
     lon_min, lon_max = np.nanmin(lon), np.nanmax(lon)
     lat_min, lat_max = np.nanmin(lat), np.nanmax(lat)
