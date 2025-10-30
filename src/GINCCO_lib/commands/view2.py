@@ -152,14 +152,14 @@ def open_file(datafile, gridfile=None):
     lat_max_e = tk.Entry(scalar_tab, width=12)
     lat_max_e.grid(row=9, column=1, sticky="w", padx=5, pady=2)
 
-    tk.Label(scalar_tab, text="Figure DPI:").grid(row=4, column=0, sticky="e", padx=5, pady=2)
-    dpi_entry = tk.Entry(vector_tab, width=10)
-    dpi_entry.insert(0, "150")  # giá trị mặc định
-    dpi_entry.grid(row=4, column=1, sticky="w", padx=5, pady=2)
+    tk.Label(scalar_tab, text="Figure DPI:").grid(row=10, column=0, sticky="e", padx=5, pady=2)
+    dpi_entry = tk.Entry(scalar_tab, width=10)
+    dpi_entry.insert(0, "100")  # giá trị mặc định
+    dpi_entry.grid(row=10, column=1, sticky="w", padx=5, pady=2)
 
     # --- Redraw button ---
     redraw_btn = tk.Button(scalar_tab, text="Redraw Map", bg="lightblue")
-    redraw_btn.grid(row=10, column=0, columnspan=2, pady=10)
+    redraw_btn.grid(row=11, column=0, columnspan=2, pady=10)
 
 
 
@@ -244,20 +244,22 @@ def open_file(datafile, gridfile=None):
     tk.Label(vector_tab, text="Lat max:").grid(row=13, column=0, sticky="e", padx=5, pady=2)
     lat_max_e = tk.Entry(vector_tab, width=12)
     lat_max_e.grid(row=13, column=1, sticky="w", padx=5, pady=2)
-    
+        
     tk.Label(vector_tab, text="Figure DPI:").grid(row=14, column=0, sticky="e", padx=5, pady=2)
     dpi_entry = tk.Entry(vector_tab, width=10)
-    dpi_entry.insert(150, "150")  # giá trị mặc định
-    
+    dpi_entry.insert(0, "100")  # giá trị mặc định
+    dpi_entry.grid(row=14, column=1, sticky="w", padx=5, pady=2)
 
     tk.Label(vector_tab, text="Scale:").grid(row=15, column=0, sticky="e", padx=5, pady=2)
     scale_entry = tk.Entry(vector_tab, width=10)
-    scale_entry.insert(400, "400")  # giá trị mặc định
+    scale_entry.insert(0, "400")  # giá trị mặc định
+    scale_entry.grid(row=15, column=1, sticky="w", padx=5, pady=2)
+
 
     
     # --- Redraw button ---
     redraw_btn = tk.Button(vector_tab, text="Draw Map", bg="lightblue")
-    redraw_btn.grid(row=14, column=0, columnspan=2, pady=10)
+    redraw_btn.grid(row=16, column=0, columnspan=2, pady=10)
 
 
 
