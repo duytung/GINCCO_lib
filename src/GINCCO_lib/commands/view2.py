@@ -16,7 +16,7 @@ matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap
 from GINCCO_lib.commands.view_plot import draw_plot, draw_vector_plot
-
+from matplotlib import colormaps
 
 
 
@@ -245,11 +245,45 @@ def open_file(datafile, gridfile=None):
     entry_max_scalar.pack(side="left", padx=(2, 0))
     row_s += 1
 
+
     # --- Color palette ---
     tk.Label(scalar_tab, text="Color palette:").grid(row=row_s, column=0, sticky="e", padx=5, pady=2)
     cmap_var_scalar = tk.StringVar(value="jet")
-    tk.OptionMenu(scalar_tab, cmap_var_scalar, "jet", "viridis", "plasma", "coolwarm").grid(row=row_s, column=1, sticky="w")
+
+    # Dùng Menubutton có chia nhóm
+    menu_button = tk.Menubutton(scalar_tab, textvariable=cmap_var_scalar, relief="raised")
+    menu = tk.Menu(menu_button, tearoff=False)
+    menu_button["menu"] = menu
+
+    # Gom nhóm colormap theo category
+    categories = {
+        "Sequential": [m for m in colormaps if colormaps[m].category == "Sequential"],
+        "Diverging": [m for m in colormaps if colormaps[m].category == "Diverging"],
+        "Qualitative": [m for m in colormaps if colormaps[m].category == "Qualitative"],
+        "Miscellaneous": [m for m in colormaps if colormaps[m].category == "Miscellaneous"],
+    }
+
+    # Tạo submenu cho từng nhóm
+    for cat_name, cmap_list in categories.items():
+        sub = tk.Menu(menu, tearoff=False)
+        for cmap_name in sorted(cmap_list):
+            sub.add_radiobutton(label=cmap_name, variable=cmap_var_scalar, value=cmap_name)
+        menu.add_cascade(label=cat_name, menu=sub)
+
+    menu_button.grid(row=row_s, column=1, sticky="w")
     row_s += 1
+
+
+
+
+
+
+
+
+
+
+
+
 
     # --- Map resolution ---
     tk.Label(scalar_tab, text="Map resolution:").grid(row=row_s, column=0, sticky="e", padx=5, pady=2)
@@ -353,11 +387,42 @@ def open_file(datafile, gridfile=None):
     entry_max_vector.pack(side="left", padx=(2, 0))
     row_v += 1
 
+
     # --- Color palette ---
-    tk.Label(vector_tab, text="Color palette:").grid(row=row_v, column=0, sticky="e", padx=5, pady=2)
-    cmap_var_vector = tk.StringVar(value="jet")
-    tk.OptionMenu(vector_tab, cmap_var_vector, "jet", "viridis", "plasma", "coolwarm").grid(row=row_v, column=1, sticky="w")
-    row_v += 1
+    tk.Label(vector_tab, text="Color palette:").grid(row=row_s, column=0, sticky="e", padx=5, pady=2)
+    cmap_var_scalar = tk.StringVar(value="jet")
+
+    # Dùng Menubutton có chia nhóm
+    menu_button = tk.Menubutton(vector_tab, textvariable=cmap_var_scalar, relief="raised")
+    menu = tk.Menu(menu_button, tearoff=False)
+    menu_button["menu"] = menu
+
+    # Gom nhóm colormap theo category
+    categories = {
+        "Sequential": [m for m in colormaps if colormaps[m].category == "Sequential"],
+        "Diverging": [m for m in colormaps if colormaps[m].category == "Diverging"],
+        "Qualitative": [m for m in colormaps if colormaps[m].category == "Qualitative"],
+        "Miscellaneous": [m for m in colormaps if colormaps[m].category == "Miscellaneous"],
+    }
+
+    # Tạo submenu cho từng nhóm
+    for cat_name, cmap_list in categories.items():
+        sub = tk.Menu(menu, tearoff=False)
+        for cmap_name in sorted(cmap_list):
+            sub.add_radiobutton(label=cmap_name, variable=cmap_var_scalar, value=cmap_name)
+        menu.add_cascade(label=cat_name, menu=sub)
+
+    menu_button.grid(row=row_s, column=1, sticky="w")
+    row_s += 1
+
+
+
+
+
+
+
+
+
 
     # --- Map resolution ---
     tk.Label(vector_tab, text="Map resolution:").grid(row=row_v, column=0, sticky="e", padx=5, pady=2)
