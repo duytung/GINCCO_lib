@@ -176,6 +176,8 @@ def draw_vector_plot(u, v, lon, lat, opts, log_box, state, quiver_max_n=10):
  
     if need_rotate:
         print ('Rotating...')
+        sin_t = state.get("sin_t")
+        cos_t = state.get("cos_t")
         U1 =  u * cos_t + v * sin_t
         V1 = -u * sin_t + v * cos_t
     else: 

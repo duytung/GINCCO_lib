@@ -146,13 +146,8 @@ def open_file(datafile, gridfile=None):
 
             # --- Load grid ---
             with Dataset(gridfile) as fgrid:
-                lon_u = fgrid.variables.get("longitude_u")
-                lat_u = fgrid.variables.get("latitude_u")
-                lon_v = fgrid.variables.get("longitude_v")
-                lat_v = fgrid.variables.get("latitude_v")
-
-                sin_t = fgrid.variables.get("gridrotsin_t")
-                cos_t = fgrid.variables.get("gridrotcos_t")
+                state["sin_t"] = fgrid.variables.get("gridrotsin_t")[:]
+                state["cos_t"] = fgrid.variables.get("gridrotcos_t")[:]
 
                 mask_t_var = fgrid.variables.get("mask_t")
 
@@ -176,8 +171,8 @@ def open_file(datafile, gridfile=None):
                 log_box,
                 state,
                 quiver_max_n   )
-    # ---- Endof function s
-
+    # ---- Endof function redraw-------#
+    ####################################
 
 
     # === Layout ===
