@@ -291,14 +291,6 @@ def open_file(datafile, gridfile=None):
 
 
 
-
-
-
-
-
-
-
-
     # --- Map resolution ---
     tk.Label(scalar_tab, text="Map resolution:").grid(row=row_s, column=0, sticky="e", padx=5, pady=2)
     res_map = {
@@ -406,10 +398,10 @@ def open_file(datafile, gridfile=None):
 
     # --- Color palette ---
     tk.Label(vector_tab, text="Color palette:").grid(row=row_s, column=0, sticky="e", padx=5, pady=2)
-    cmap_var_scalar = tk.StringVar(value="jet")
+    cmap_var_vector = tk.StringVar(value="jet")
 
     # Dùng Menubutton có chia nhóm
-    menu_button = tk.Menubutton(vector_tab, textvariable=cmap_var_scalar, relief="raised")
+    menu_button = tk.Menubutton(vector_tab, textvariable=cmap_var_vector, relief="raised")
     menu = tk.Menu(menu_button, tearoff=False)
     menu_button["menu"] = menu
 
@@ -437,12 +429,14 @@ def open_file(datafile, gridfile=None):
     for cat_name, cmap_list in categories.items():
         sub = tk.Menu(menu, tearoff=False)
         for cmap_name in sorted(cmap_list):
-            sub.add_radiobutton(label=cmap_name, variable=cmap_var_scalar, value=cmap_name)
+            sub.add_radiobutton(label=cmap_name, variable=cmap_var_vector, value=cmap_name)
         menu.add_cascade(label=cat_name, menu=sub)
 
     menu_button.grid(row=row_s, column=1, sticky="w")
     row_s += 1
 
+    def on_cmap_change(*args):
+        print("Color palette changed to:", cmap_var_vector.get())
 
 
 
