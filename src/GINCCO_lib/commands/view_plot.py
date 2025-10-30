@@ -109,7 +109,19 @@ def draw_vector_plot(u, v, lon, lat, opts, log_box, state, quiver_max_n=10):
     log_box.insert("end", "Preparing vector field...\n")
     log_box.see("end")
 
-    # --- Convert to 2D if 3D (choose layer)
+    # --- Extract options from opts ---
+    vmin = opts.get("vmin", None)
+    vmax = opts.get("vmax", None)
+    cmap = opts.get("cmap", "jet")
+    dpi = opts.get("dpi", 150)
+    resolution = opts.get("resolution", "i")
+    scale = opts.get("scale", 400)
+    lon_min = opts.get("lon_min")
+    lon_max = opts.get("lon_max")
+    lat_min = opts.get("lat_min")
+    lat_max = opts.get("lat_max")
+
+    # --- Convert to 2D if 3D ---
     if u.ndim == 3:
         layer = int(opts.get("layer", 0))
         u = u[layer, :, :]
@@ -117,57 +129,55 @@ def draw_vector_plot(u, v, lon, lat, opts, log_box, state, quiver_max_n=10):
         layer = int(opts.get("layer", 0))
         v = v[layer, :, :]
 
-    # --- Get mask_t if available
+    # --- Mask
     mask_t = state.get("mask_t")
     if mask_t is None:
         mask_t = np.ones_like(u)
 
-    # --- Interpolate staggered U/V to T grid if needed
+    # --- Interpolate staggered fields if needed ---
     try:
         if u.shape != mask_t.shape:
-            log_box.insert("end", f"Interpolating U ({u.shape}) to T grid {mask_t.shape}\n")
+            log_box.insert("end", f"Interpolating U ({u.shape}) → T grid {mask_t.shape}\n")
             u = interpolate_to_t(u, stagger="u", mask_t=mask_t)
         if v.shape != mask_t.shape:
-            log_box.insert("end", f"Interpolating V ({v.shape}) to T grid {mask_t.shape}\n")
+            log_box.insert("end", f"Interpolating V ({v.shape}) → T grid {mask_t.shape}\n")
             v = interpolate_to_t(v, stagger="v", mask_t=mask_t)
     except Exception as e:
         log_box.insert("end", f"Interpolation error: {e}\n")
         log_box.see("end")
         return
 
-    # --- Ensure lon/lat are 2D
+    # --- Ensure lon/lat 2D
     if lon.ndim == 1 and lat.ndim == 1:
         lon, lat = np.meshgrid(lon, lat)
 
-    # --- Apply mask (optional)
     u = np.where(mask_t == 0, np.nan, u)
     v = np.where(mask_t == 0, np.nan, v)
 
-    # --- Compute speed for background color
     speed = np.hypot(u, v)
-    cmap = opts.get("cmap", "jet")
 
-    log_box.insert("end", "Drawing vector map...\n")
+    log_box.insert("end", f"Drawing with DPI={dpi}, scale={scale}\n")
     log_box.see("end")
 
     plt.close('all')
-    fig, ax = plt.subplots(figsize=(7, 6), dpi=opts.get("dpi", 150))
+    fig, ax = plt.subplots(figsize=(7, 6), dpi=dpi)
 
-    lon_min, lon_max = np.nanmin(lon), np.nanmax(lon)
-    lat_min, lat_max = np.nanmin(lat), np.nanmax(lat)
+    # Auto range if not provided
+    lon_min = lon_min or np.nanmin(lon)
+    lon_max = lon_max or np.nanmax(lon)
+    lat_min = lat_min or np.nanmin(lat)
+    lat_max = lat_max or np.nanmax(lat)
 
     m = Basemap(
         projection="cyl",
         llcrnrlon=lon_min, urcrnrlon=lon_max,
         llcrnrlat=lat_min, urcrnrlat=lat_max,
-        resolution=opts.get("resolution", "i"),
-        ax=ax
+        resolution=resolution, ax=ax
     )
 
-    # --- Background color mesh
-    cs = m.pcolormesh(lon, lat, speed, latlon=True, cmap=cmap, shading="auto")
+    cs = m.pcolormesh(lon, lat, speed, latlon=True, cmap=cmap, shading="auto", vmin=vmin, vmax=vmax)
 
-    # --- Quiver arrows (fixed max N)
+    # --- Downsample quiver grid ---
     lon_small_1d = np.linspace(np.nanmin(lon), np.nanmax(lon), quiver_max_n)
     lat_small_1d = np.linspace(np.nanmin(lat), np.nanmax(lat), quiver_max_n)
     lon_small, lat_small = np.meshgrid(lon_small_1d, lat_small_1d)
@@ -176,23 +186,17 @@ def draw_vector_plot(u, v, lon, lat, opts, log_box, state, quiver_max_n=10):
     v_q = np.full_like(lon_small, np.nan, dtype=float)
 
     for j in range(lat_small.shape[0]):
-        for i in range(lon_small.shape[1]):
-            # khoảng cách đến grid gốc
+        for i in range(lat_small.shape[1]):
             dist2 = (lon - lon_small[j, i])**2 + (lat - lat_small[j, i])**2
             idx = np.unravel_index(np.nanargmin(dist2), dist2.shape)
             if mask_t[idx] == 1:
-                u_q[j, i] = u[idx]
-                v_q[j, i] = v[idx]
-                lon_small[j, i] = lon[idx]
-                lat_small[j, i] = lat[idx]
+                u_q[j, i], v_q[j, i] = u[idx], v[idx]
+                lon_small[j, i], lat_small[j, i] = lon[idx], lat[idx]
 
     m.quiver(
         lon_small, lat_small, u_q, v_q,
-        latlon=True, zorder=11,
-        scale=opts.get("scale", 400),
-        width=0.004,
-        headwidth=3, headlength=4, headaxislength=3.5,
-        color="black"
+        latlon=True, zorder=11, scale=scale,
+        width=0.004, headwidth=3, headlength=4, headaxislength=3.5, color="black"
     )
 
     m.drawcoastlines()
@@ -203,3 +207,4 @@ def draw_vector_plot(u, v, lon, lat, opts, log_box, state, quiver_max_n=10):
 
     log_box.insert("end", "Done.\n")
     log_box.see("end")
+

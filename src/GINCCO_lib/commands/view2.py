@@ -447,7 +447,7 @@ def open_file(datafile, gridfile=None):
             log_box.insert("end", f"Interpolated U/V to T-grid ({u_t.shape}).\n")
             log_box.see("end")
             
-            draw_vector_plot(var_u, var_v, state["lon"], state["lat"], opts, log_box, state, quiver_max_n)
+            draw_vector_plot(u_t, v_t, state["lon"], state["lat"], opts, log_box, state, quiver_max_n)
 
 
     listbox.bind("<Double-Button-1>", on_var_select)
