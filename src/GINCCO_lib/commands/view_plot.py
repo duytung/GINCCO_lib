@@ -52,6 +52,11 @@ def draw_plot(varname, var, lon, lat, options, log_box, state=None, is_redraw=Fa
         lat_max = safe_float(options.get("lat_max")) or np.nanmax(lat)
         dpi = int(options.get("dpi", 100))
 
+
+        print (options)
+
+
+
         if nd == 1:
             plt.figure()
             plt.plot(data)
