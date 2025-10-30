@@ -133,7 +133,7 @@ def draw_plot(varname, var, lon, lat, options, log_box, state=None, is_redraw=Fa
 
 def open_file(datafile, gridfile=None):
     root = tk.Tk()
-    font_normal = tkfont.Font(family="DejaVu Sans Mono", size=10)
+    font_normal = tkfont.Font(family="DejaVu Sans Mono", size=10, weight="bold")
     root.option_add("*Font", font_normal)
 
     root.title(f"GINCCO Viewer - {datafile}")
@@ -165,7 +165,7 @@ def open_file(datafile, gridfile=None):
     listbox.pack(fill="both", expand=True, padx=5, pady=5)
 
     # === Right: controls ===
-    tk.Label(right_frame, text="Map Customization", font=("Arial", 12, "bold")).pack(pady=5)
+    tk.Label(right_frame, text="Map Customization", font=("DejaVu Sans Mono", 12, "bold")).pack(pady=5)
 
     entry_min = tk.Entry(right_frame); entry_max = tk.Entry(right_frame)
     tk.Label(right_frame, text="Min value").pack(); entry_min.pack()
