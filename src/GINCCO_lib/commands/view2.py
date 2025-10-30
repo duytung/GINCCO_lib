@@ -68,60 +68,6 @@ def redraw():
         except:
             return None
 
-
-
-
-    def on_vector_select(*args):
-        """Cập nhật menu chọn layer khi người dùng thay đổi biến U hoặc V."""
-        try:
-            u_name = u_var_var.get()
-            v_name = v_var_var.get()
-            if not u_name and not v_name:
-                return  # chưa chọn gì cả
-
-            # --- Lấy dữ liệu ---
-            var_u = np.squeeze(ds.variables[u_name][:]) if u_name in ds.variables else None
-            var_v = np.squeeze(ds.variables[v_name][:]) if v_name in ds.variables else None
-
-            # --- Xác định số chiều lớn nhất ---
-            nd = 0
-            if var_u is not None:
-                nd = max(nd, var_u.ndim)
-            if var_v is not None:
-                nd = max(nd, var_v.ndim)
-
-            # --- Cập nhật layer menu ---
-            menu_v = layer_menu_vector["menu"]
-            menu_v.delete(0, "end")
-
-            if nd == 3:
-                for i in range(var_u.shape[0]):
-                    menu_v.add_command(label=str(i), command=tk._setit(layer_var_vector, str(i)))
-                layer_var_vector.set("0")
-                log_box.insert("end", f"U/V selected: {u_name}, {v_name} (3D) — layer menu updated.\n")
-            else:
-                menu_v.add_command(label="0", command=tk._setit(layer_var_vector, "0"))
-                layer_var_vector.set("0")
-                log_box.insert("end", f"U/V selected: {u_name}, {v_name} (2D)\n")
-
-            log_box.see("end")
-
-        except Exception as e:
-            log_box.insert("end", f"[Error] on_vector_select: {e}\n")
-            log_box.see("end")
-
-
-
-
-
-
-
-
-
-
-
-
-
     # ===============================
     # --- SCALAR TAB ---
     # ===============================
@@ -180,7 +126,7 @@ def redraw():
         u_var_var.trace_add("write", on_vector_select)
         v_var_var.trace_add("write", on_vector_select)
 
-
+        
         if not u_name or not v_name:
             messagebox.showinfo("Info", "Please select both U and V variables for vector mode.")
             return
@@ -599,11 +545,63 @@ def redraw():
         )
 
 
+    def on_vector_select(*args):
+        """Cập nhật menu chọn layer khi người dùng thay đổi biến U hoặc V."""
+        try:
+            # --- Chặn lỗi khi chưa load file hoặc chưa có log_box ---
+            if "ds" not in locals() and "ds" not in globals():
+                return
+            if "log_box" not in locals() and "log_box" not in globals():
+                return
+            if "layer_menu_vector" not in locals() and "layer_menu_vector" not in globals():
+                return
+
+            u_name = u_var_var.get()
+            v_name = v_var_var.get()
+            if not u_name and not v_name:
+                return  # chưa chọn gì cả
+
+            # --- Kiểm tra xem biến có trong file không ---
+            if u_name not in ds.variables or v_name not in ds.variables:
+                return
+
+            # --- Lấy dữ liệu ---
+            var_u = np.squeeze(ds.variables[u_name][:])
+            var_v = np.squeeze(ds.variables[v_name][:])
+
+            nd = max(var_u.ndim, var_v.ndim)
+
+            # --- Cập nhật layer menu ---
+            menu_v = layer_menu_vector["menu"]
+            menu_v.delete(0, "end")
+
+            if nd == 3:
+                for i in range(var_u.shape[0]):
+                    menu_v.add_command(label=str(i), command=tk._setit(layer_var_vector, str(i)))
+                layer_var_vector.set("0")
+                if log_box.winfo_exists():
+                    log_box.insert("end", f"[Vector] U/V: {u_name}, {v_name} (3D) — layer menu updated.\n")
+            else:
+                menu_v.add_command(label="0", command=tk._setit(layer_var_vector, "0"))
+                layer_var_vector.set("0")
+                if log_box.winfo_exists():
+                    log_box.insert("end", f"[Vector] U/V: {u_name}, {v_name} (2D)\n")
+
+            if log_box.winfo_exists():
+                log_box.see("end")
+
+        except Exception as e:
+            try:
+                log_box.insert("end", f"[Error] on_vector_select: {e}\n")
+                log_box.see("end")
+            except:
+                print(f"[Error] on_vector_select: {e}")
 
 
 
 
-
+    u_var_var.trace_add("write", on_vector_select)
+    v_var_var.trace_add("write", on_vector_select)
 
 
 
