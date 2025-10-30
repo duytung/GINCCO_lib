@@ -351,77 +351,69 @@ def open_file(datafile, gridfile=None):
         }
         draw_plot(state["varname"], state["var"], state["lon"], state["lat"], opts, log_box, state)
 
-    def redraw():
-        current_tab = notebook.tab(notebook.select(), "text")
+def redraw():
+    current_tab = notebook.tab(notebook.select(), "text")
 
-        if current_tab == "Scalar":
-            # Nếu đang ở Scalar tab, phải có state["var"]
-            if not state["var"]:
-                messagebox.showinfo("Info", "Please select a variable first.")
-                return
+    # --- Tạo trước opts cho cả Scalar và Vector ---
+    opts = {
+        "vmin": float(entry_min.get()) if entry_min.get() else None,
+        "vmax": float(entry_max.get()) if entry_max.get() else None,
+        "cmap": cmap_var.get(),
+        "layer": int(layer_var.get()),
+        "lon_min": float(lon_min_e.get()) if lon_min_e.get() else None,
+        "lon_max": float(lon_max_e.get()) if lon_max_e.get() else None,
+        "lat_min": float(lat_min_e.get()) if lat_min_e.get() else None,
+        "lat_max": float(lat_max_e.get()) if lat_max_e.get() else None,
+        "resolution": res_map[res_display_var.get()],
+    }
 
-        else:
-            u_name = u_var_var.get()
-            v_name = v_var_var.get()
-            if not u_name or not v_name:
-                messagebox.showinfo("Info", "Please select both U and V variables for vector mode.")
-                return
+    if current_tab == "Scalar":
+        # Kiểm tra variable
+        if not state["var"]:
+            messagebox.showinfo("Info", "Please select a variable first.")
+            return
 
-            var_u = ds.variables[u_name][:]
-            var_v = ds.variables[v_name][:]
-            step = int(subsample_entry.get())
-
-            # --- Determine suffix automatically ---
-            suffix = "t"
-            for s in ["u", "v", "f", "t"]:
-                if u_name.lower().endswith(s) or v_name.lower().endswith(s):
-                    suffix = s
-                    break
-
-            # --- Load lon/lat if missing ---
-            if state.get("lon") is None or state.get("lat") is None:
-                lon, lat = get_grid_coords(gridfile, suffix)
-                state["lon"], state["lat"] = lon, lat
-                if lon is None or lat is None:
-                    messagebox.showerror("Error", "Cannot load grid coordinates. Please check your grid file.")
-                    return
-
-            draw_vector_plot(var_u, var_v, state["lon"], state["lat"], opts, log_box, state, step)
-
-
-        opts = {
-            "vmin": float(entry_min.get()) if entry_min.get() else None,
-            "vmax": float(entry_max.get()) if entry_max.get() else None,
-            "cmap": cmap_var.get(),
-            "layer": int(layer_var.get()),
-            "lon_min": float(lon_min_e.get()) if lon_min_e.get() else None,
-            "lon_max": float(lon_max_e.get()) if lon_max_e.get() else None,
-            "lat_min": float(lat_min_e.get()) if lat_min_e.get() else None,
-            "lat_max": float(lat_max_e.get()) if lat_max_e.get() else None,
-            "resolution": res_map[res_display_var.get()], 
-        }
-
-        log_box.insert("end", f"Redrawing {state['varname']}...\n")
+        log_box.insert("end", f"Redrawing {state['varname']} (Scalar mode)...\n")
         log_box.see("end")
 
+        draw_plot(
+            state["varname"], state["var"], state["lon"], state["lat"],
+            opts, log_box, state, is_redraw=True
+        )
 
-        # Tab selection 
-        current_tab = notebook.tab(notebook.select(), "text")
-        if current_tab == "Scalar":
-            draw_plot(state["varname"], state["var"], state["lon"], state["lat"], 
-                opts, log_box, state, is_redraw=True)
-        else: 
-            u_name = u_var_var.get()
-            v_name = v_var_var.get()
-            if not u_name or not v_name:
-                messagebox.showinfo("Info", "Please select both U and V variables for vector mode.")
+    else:  # Vector tab
+        u_name = u_var_var.get()
+        v_name = v_var_var.get()
+        if not u_name or not v_name:
+            messagebox.showinfo("Info", "Please select both U and V variables for vector mode.")
+            return
+
+        var_u = ds.variables[u_name][:]
+        var_v = ds.variables[v_name][:]
+        step = int(subsample_entry.get())
+
+        # --- Determine suffix automatically ---
+        suffix = "t"
+        for s in ["u", "v", "f", "t"]:
+            if u_name.lower().endswith(s) or v_name.lower().endswith(s):
+                suffix = s
+                break
+
+        # --- Load lon/lat if missing ---
+        if state.get("lon") is None or state.get("lat") is None:
+            lon, lat = get_grid_coords(gridfile, suffix)
+            state["lon"], state["lat"] = lon, lat
+            if lon is None or lat is None:
+                messagebox.showerror("Error", "Cannot load grid coordinates. Please check your grid file.")
                 return
 
-            var_u = ds.variables[u_name][:]
-            var_v = ds.variables[v_name][:]
-            step = int(subsample_entry.get())
-            draw_vector_plot(var_u, var_v, state["lon"], state["lat"], opts, log_box, state, step)
+        log_box.insert("end", f"Redrawing vector field ({u_name}, {v_name})...\n")
+        log_box.see("end")
 
+        draw_vector_plot(
+            var_u, var_v, state["lon"], state["lat"],
+            opts, log_box, state, step
+        )
 
 
 
