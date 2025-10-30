@@ -8,6 +8,7 @@ Maintains correct latitude/longitude aspect ratio.
 import os
 import tkinter as tk
 from tkinter import messagebox, Listbox, END
+import tkinter.font as tkfont
 import numpy as np
 from netCDF4 import Dataset
 import matplotlib
