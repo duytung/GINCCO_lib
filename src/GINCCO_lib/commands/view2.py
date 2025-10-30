@@ -122,10 +122,10 @@ def open_file(datafile, gridfile=None):
 
             # --- Nếu 3D, lấy layer được chọn hoặc layer 0 ---
             if var_u.ndim == 3:
-                layer = int(layer_var.get()) if layer_var.get().isdigit() else 0
+                layer = int(layer_var_vector.get()) if layer_var_vector.get().isdigit() else 0
                 var_u = var_u[layer, :, :]
             if var_v.ndim == 3:
-                layer = int(layer_var.get()) if layer_var.get().isdigit() else 0
+                layer = int(layer_var_vector.get()) if layer_var_vector.get().isdigit() else 0
                 var_v = var_v[layer, :, :]
 
             quiver_max_n = int(quiver_entry.get())
