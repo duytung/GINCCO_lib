@@ -35,14 +35,21 @@ def get_grid_coords(grid_file, suffix):
     return lon, lat
 
 
-def draw_plot(varname, var, lon, lat, options, log_box, state=None):
+def draw_plot(varname, var, lon, lat, options, log_box, state=None, is_redraw=False):
     """
     Draw map or line depending on variable dimension and user options.
     options: dict with keys ('vmin', 'vmax', 'cmap', 'lon_min', 'lon_max', 'lat_min', 'lat_max', 'layer')
     """
-    if state and state.get("fig") is not None:
+
+    # 🔹 Chỉ đóng figure cũ nếu là redraw
+    if is_redraw and state and state.get("fig") is not None:
         plt.close(state["fig"])
         state["fig"] = None
+
+    # 🔹 Ghi log "đang vẽ"
+    log_box.insert("end", f"Drawing {varname}... please wait\n")
+    log_box.see("end")
+    log_box.update_idletasks()  # 🔹 cập nhật GUI ngay lập tức
 
     try:
         data = np.squeeze(var[:])
@@ -65,6 +72,9 @@ def draw_plot(varname, var, lon, lat, options, log_box, state=None):
             plt.figure()
             plt.plot(data)
             plt.title(varname)
+            log_box.insert("end", f"Done drawing {varname} ✅\n")
+            log_box.see("end")
+            log_box.update_idletasks()
             plt.show()
 
         elif nd >= 2:
@@ -97,12 +107,18 @@ def draw_plot(varname, var, lon, lat, options, log_box, state=None):
                 plt.colorbar(cs, label=getattr(var, "units", ""))
                 plt.title(varname)
                 plt.tight_layout()
+                log_box.insert("end", f"Done drawing {varname} ✅\n")
+                log_box.see("end")
+                log_box.update_idletasks()
                 plt.show()
             else:
                 plt.figure()
                 plt.pcolormesh(data, cmap=cmap, vmin=vmin, vmax=vmax)
                 plt.colorbar(label=getattr(var, "units", ""))
                 plt.title(varname)
+                log_box.insert("end", f"Done drawing {varname} ✅\n")
+                log_box.see("end")
+                log_box.update_idletasks()
                 plt.show()
 
         log_box.insert("end", f"Plot complete: {varname}\n")
