@@ -399,9 +399,7 @@ def open_file(datafile, gridfile=None):
 
 
     # --- Color palette ---
-
-    # --- Color palette ---
-    tk.Label(vector_tab, text="Color palette:").grid(row=row_s, column=0, sticky="e", padx=5, pady=2)
+    tk.Label(vector_tab, text="Color palette:").grid(row=row_v, column=0, sticky="e", padx=5, pady=2)
     cmap_var_vector = tk.StringVar(value="YlOrBr")
 
     # Dùng Menubutton có chia nhóm
@@ -436,7 +434,7 @@ def open_file(datafile, gridfile=None):
             sub.add_radiobutton(label=cmap_name, variable=cmap_var_vector, value=cmap_name)
         menu.add_cascade(label=cat_name, menu=sub)
 
-    menu_button.grid(row=row_s, column=1, sticky="w")
+    menu_button.grid(row=row_v, column=1, sticky="w")
     row_v += 1
 
     # --- Lon/Lat bounds ---
