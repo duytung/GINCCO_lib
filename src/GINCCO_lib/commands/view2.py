@@ -180,10 +180,20 @@ def open_file(datafile, gridfile=None):
     v_menu.grid(row=2, column=1, sticky="w", padx=5, pady=2)
 
     # --- Subsampling step ---
-    tk.Label(vector_tab, text="Subsampling step:").grid(row=3, column=0, sticky="e", padx=5, pady=2)
-    subsample_entry = tk.Entry(vector_tab, width=10)
-    subsample_entry.insert(0, "5")
-    subsample_entry.grid(row=3, column=1, sticky="w", padx=5, pady=2)
+
+    tk.Label(vector_tab, text="Max. number of arrows:").grid(row=3, column=0, sticky="e", padx=5, pady=2)
+    quiver_entry = tk.Entry(vector_tab, width=10)
+    quiver_entry.insert(0, "10")  # giá trị mặc định
+    quiver_entry.grid(row=3, column=1, sticky="w", padx=5, pady=2)
+
+
+    tk.Label(vector_tab, text="Max. number of arrows").pack()
+    quiver_entry = tk.Entry(vector_tab)
+    quiver_entry.insert(0, "10")
+    quiver_entry.pack()
+
+
+
 
     # --- Section title for map ---
     tk.Label(vector_tab, text="Map Customization",
@@ -423,13 +433,9 @@ def open_file(datafile, gridfile=None):
             v_t = interpolate_to_t(var_v, stagger="v", mask_t=mask_t)
 
             log_box.insert("end", f"Interpolated U/V to T-grid ({u_t.shape}).\n")
-            log_box.insert("end", f"Redrawing vector field ({u_name}, {v_name})...\n")
             log_box.see("end")
-
-            draw_vector_plot(
-                u_t, v_t, lon_t, lat_t,
-                opts, log_box, state, step
-            )
+            quiver_max_n = int(quiver_entry.get())
+            draw_vector_plot(var_u, var_v, state["lon"], state["lat"], opts, log_box, state, quiver_max_n)
 
 
 

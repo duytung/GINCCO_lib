@@ -100,15 +100,16 @@ def draw_plot(varname, var, lon, lat, options, log_box, state=None, is_redraw=Fa
 
 
 
-def draw_vector_plot(u, v, lon, lat, opts, log_box, state, step=5):
+def draw_vector_plot(u, v, lon, lat, opts, log_box, state, quiver_max_n=10):
+    import numpy as np
     import matplotlib.pyplot as plt
     from mpl_toolkits.basemap import Basemap
-    import numpy as np
+    from GINCCO_lib.commands.interpolate_to_t import interpolate_to_t
 
     log_box.insert("end", "Preparing vector field...\n")
     log_box.see("end")
 
-    # Convert to 2D if 3D (choose layer)
+    # --- Convert to 2D if 3D (choose layer)
     if u.ndim == 3:
         layer = int(opts.get("layer", 0))
         u = u[layer, :, :]
@@ -116,12 +117,12 @@ def draw_vector_plot(u, v, lon, lat, opts, log_box, state, step=5):
         layer = int(opts.get("layer", 0))
         v = v[layer, :, :]
 
-    # Mask: if mask_t available, use it
+    # --- Get mask_t if available
     mask_t = state.get("mask_t")
     if mask_t is None:
         mask_t = np.ones_like(u)
 
-    # Interpolate staggered U/V to T grid if needed
+    # --- Interpolate staggered U/V to T grid if needed
     try:
         if u.shape != mask_t.shape:
             log_box.insert("end", f"Interpolating U ({u.shape}) to T grid {mask_t.shape}\n")
@@ -134,15 +135,17 @@ def draw_vector_plot(u, v, lon, lat, opts, log_box, state, step=5):
         log_box.see("end")
         return
 
-    # Ensure lon/lat are 2D
+    # --- Ensure lon/lat are 2D
     if lon.ndim == 1 and lat.ndim == 1:
         lon, lat = np.meshgrid(lon, lat)
 
-    # Subsample for clarity
-    u_plot = u[::step, ::step]
-    v_plot = v[::step, ::step]
-    lon_p = lon[::step, ::step]
-    lat_p = lat[::step, ::step]
+    # --- Apply mask (optional)
+    u = np.where(mask_t == 0, np.nan, u)
+    v = np.where(mask_t == 0, np.nan, v)
+
+    # --- Compute speed for background color
+    speed = np.hypot(u, v)
+    cmap = opts.get("cmap", "jet")
 
     log_box.insert("end", "Drawing vector map...\n")
     log_box.see("end")
@@ -161,11 +164,38 @@ def draw_vector_plot(u, v, lon, lat, opts, log_box, state, step=5):
         ax=ax
     )
 
-    speed = np.hypot(u, v)
-    cs = m.pcolormesh(lon, lat, speed, latlon=True, cmap=opts.get("cmap", "jet"), shading="auto")
-    m.quiver(lon_p, lat_p, u_plot, v_plot, latlon=True, scale=opts.get("scale", 400), color="black")
-    m.drawcoastlines()
+    # --- Background color mesh
+    cs = m.pcolormesh(lon, lat, speed, latlon=True, cmap=cmap, shading="auto")
 
+    # --- Quiver arrows (fixed max N)
+    lon_small_1d = np.linspace(np.nanmin(lon), np.nanmax(lon), quiver_max_n)
+    lat_small_1d = np.linspace(np.nanmin(lat), np.nanmax(lat), quiver_max_n)
+    lon_small, lat_small = np.meshgrid(lon_small_1d, lat_small_1d)
+
+    u_q = np.full_like(lon_small, np.nan, dtype=float)
+    v_q = np.full_like(lon_small, np.nan, dtype=float)
+
+    for j in range(lat_small.shape[0]):
+        for i in range(lon_small.shape[1]):
+            # khoảng cách đến grid gốc
+            dist2 = (lon - lon_small[j, i])**2 + (lat - lat_small[j, i])**2
+            idx = np.unravel_index(np.nanargmin(dist2), dist2.shape)
+            if mask_t[idx] == 1:
+                u_q[j, i] = u[idx]
+                v_q[j, i] = v[idx]
+                lon_small[j, i] = lon[idx]
+                lat_small[j, i] = lat[idx]
+
+    m.quiver(
+        lon_small, lat_small, u_q, v_q,
+        latlon=True, zorder=11,
+        scale=opts.get("scale", 400),
+        width=0.004,
+        headwidth=3, headlength=4, headaxislength=3.5,
+        color="black"
+    )
+
+    m.drawcoastlines()
     plt.colorbar(cs, ax=ax, label="Speed")
     plt.title("Vector field")
     plt.tight_layout()
@@ -173,4 +203,3 @@ def draw_vector_plot(u, v, lon, lat, opts, log_box, state, step=5):
 
     log_box.insert("end", "Done.\n")
     log_box.see("end")
-
