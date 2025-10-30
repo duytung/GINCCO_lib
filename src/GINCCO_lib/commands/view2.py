@@ -50,21 +50,6 @@ def open_file(datafile, gridfile=None):
     root.title(f"GINCCO Viewer - {datafile}")
     root.geometry("550x600")
 
-    # === Unified style ===
-    APP_BG = "#f5f5f5"
-    LABEL_FG = "#222222"
-
-    root.configure(bg=APP_BG)
-
-    # Đặt nền mặc định cho tất cả Label, Frame, Button, v.v.
-    root.option_add("*Background", APP_BG)
-    root.option_add("*Foreground", LABEL_FG)
-    root.option_add("*Label.Background", APP_BG)
-    root.option_add("*Frame.Background", APP_BG)
-    root.option_add("*Button.Background", "#e8e8e8")
-    root.option_add("*Button.Foreground", LABEL_FG)
-
-
 
     def on_close():
         import matplotlib.pyplot as plt
@@ -252,9 +237,12 @@ def open_file(datafile, gridfile=None):
     # --- Layer select ---
     tk.Label(scalar_tab, text="Layer:").grid(row=row_i, column=0, sticky="e", padx=5, pady=2)
     layer_var = tk.StringVar(value="0")
-    layer_menu = tk.OptionMenu(scalar_tab, layer_var, "0")
-    layer_menu.grid(row=row_i, column=1, sticky="w")
+    layer_menu_scalar = tk.OptionMenu(scalar_tab, layer_var, "0")
+    layer_menu_scalar.grid(row=row_i, column=1, sticky="w")
     row_i += 1
+
+
+
 
     # --- Lon/Lat bounds ---
     tk.Label(scalar_tab, text="Longitude bounds:").grid(row=row_i, column=0, sticky="e", padx=5, pady=2)
@@ -364,8 +352,8 @@ def open_file(datafile, gridfile=None):
     # --- Layer select ---
     tk.Label(vector_tab, text="Layer:").grid(row=row_i, column=0, sticky="e", padx=5, pady=2)
     layer_var = tk.StringVar(value="0")
-    layer_menu = tk.OptionMenu(vector_tab, layer_var, "0")
-    layer_menu.grid(row=row_i, column=1, sticky="w")
+    layer_menu_vector = tk.OptionMenu(vector_tab, layer_var, "0")
+    layer_menu_vector.grid(row=row_i, column=1, sticky="w")
     row_i += 1
 
 
@@ -481,7 +469,6 @@ def open_file(datafile, gridfile=None):
     # === Handlers ===
     state = {"varname": None, "var": None, "lon": None, "lat": None, "suffix": "t", "fig": None}
 
-
     def on_var_select(event):
         varname = listbox.get(listbox.curselection())
         state["varname"] = varname
@@ -490,6 +477,7 @@ def open_file(datafile, gridfile=None):
         data = np.squeeze(var[:])
         nd = data.ndim
 
+        # --- Xác định grid suffix ---
         suffix = "t"
         for s in ["u", "v", "f", "t"]:
             if varname.lower().endswith(s):
@@ -499,27 +487,42 @@ def open_file(datafile, gridfile=None):
         lon, lat = get_grid_coords(gridfile, suffix)
         state["lon"], state["lat"] = lon, lat
 
-        # Update layer menu if 3D
-        menu = layer_menu["menu"]
-        menu.delete(0, "end")
-        if nd == 3:
-            for i in range(data.shape[0]):
-                menu.add_command(label=str(i), command=tk._setit(layer_var, str(i)))
-            layer_var.set("0")
-        else:
-            menu.add_command(label="0", command=tk._setit(layer_var, "0"))
-            layer_var.set("0")
+        # --- Update layer menu nếu có ---
+        if "layer_menu_scalar" in locals() or "layer_menu_scalar" in globals():
+            menu = layer_menu_scalar["menu"]
+            menu.delete(0, "end")
+            if nd == 3:
+                for i in range(data.shape[0]):
+                    menu.add_command(label=str(i), command=tk._setit(layer_var, str(i)))
+                layer_var.set("0")
+            else:
+                menu.add_command(label="0", command=tk._setit(layer_var, "0"))
+                layer_var.set("0")
 
         log_box.insert("end", f"Selected variable: {varname} ({nd}D)\n")
         log_box.see("end")
 
-        # --- Auto-plot immediately on first double-click ---
+        # --- Auto plot ---
         opts = {
-            "vmin": None, "vmax": None, "cmap": cmap_var.get(),
-            "layer": int(layer_var.get()), "lon_min": None, "lon_max": None,
-            "lat_min": None, "lat_max": None
+            "vmin": None,
+            "vmax": None,
+            "cmap": cmap_var.get(),
+            "layer": int(layer_var.get()),
+            "lon_min": None,
+            "lon_max": None,
+            "lat_min": None,
+            "lat_max": None
         }
-        draw_plot(state["varname"], state["var"], state["lon"], state["lat"], opts, log_box, state)
+
+        draw_plot(
+            state["varname"],
+            state["var"],
+            state["lon"],
+            state["lat"],
+            opts,
+            log_box,
+            state
+        )
 
 
 

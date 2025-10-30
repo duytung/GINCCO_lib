@@ -16,99 +16,73 @@ def _nice_ticks(lon_min, lon_max, n=4):
 
 
 
-
 def draw_plot(varname, var, lon, lat, options, log_box, state=None, is_redraw=False):
-    """
-    Draw map or line depending on variable dimension and user options.
-    options: dict with keys ('vmin', 'vmax', 'cmap', 'lon_min', 'lon_max', 'lat_min', 'lat_max', 'layer')
-    """
+    import matplotlib.pyplot as plt
+    from mpl_toolkits.basemap import Basemap
+    import numpy as np
 
-    #  Chỉ đóng figure cũ nếu là redraw
+    def safe_float(x):
+        try:
+            return float(x)
+        except Exception:
+            return None
+
     if is_redraw and state and state.get("fig") is not None:
         plt.close(state["fig"])
         state["fig"] = None
 
-    #  Ghi log "đang vẽ"
     log_box.insert("end", f"Drawing {varname}... please wait\n")
     log_box.see("end")
-    log_box.update_idletasks()  #  cập nhật GUI ngay lập tức
+    log_box.update_idletasks()
 
     try:
         data = np.squeeze(var[:])
         nd = data.ndim
 
-        # If 3D → pick selected layer
         if nd == 3:
-            layer = options.get("layer", 0)
+            layer = int(options.get("layer", 0))
             data = data[layer, :, :]
 
         cmap = options.get("cmap", "jet")
-        vmin = options.get("vmin", None)
-        vmax = options.get("vmax", None)
-        lon_min = options.get("lon_min", None)
-        lon_max = options.get("lon_max", None)
-        lat_min = options.get("lat_min", None)
-        lat_max = options.get("lat_max", None)
-        dpi=options.get("dpi", 100)
+        vmin = safe_float(options.get("vmin"))
+        vmax = safe_float(options.get("vmax"))
+        lon_min = safe_float(options.get("lon_min")) or np.nanmin(lon)
+        lon_max = safe_float(options.get("lon_max")) or np.nanmax(lon)
+        lat_min = safe_float(options.get("lat_min")) or np.nanmin(lat)
+        lat_max = safe_float(options.get("lat_max")) or np.nanmax(lat)
+        dpi = int(options.get("dpi", 100))
 
         if nd == 1:
             plt.figure()
             plt.plot(data)
             plt.title(varname)
-            log_box.insert("end", f"Done drawing {varname} \n")
-            log_box.see("end")
-            log_box.update_idletasks()
             plt.show()
+            log_box.insert("end", f"Done drawing {varname}\n")
 
         elif nd >= 2:
-            if lon is not None and lat is not None and lon.shape == data.shape:
-                fig, ax = plt.subplots(figsize=(7, 6), dpi=dpi)
-                state["fig"] = fig
-                lon_min = lon_min or np.nanmin(lon)
-                lon_max = lon_max or np.nanmax(lon)
-                lat_min = lat_min or np.nanmin(lat)
-                lat_max = lat_max or np.nanmax(lat)
+            fig, ax = plt.subplots(figsize=(7, 6), dpi=dpi)
+            state["fig"] = fig
 
-                m = Basemap(
-                    projection="cyl",
-                    llcrnrlon=lon_min,
-                    urcrnrlon=lon_max,
-                    llcrnrlat=lat_min,
-                    urcrnrlat=lat_max,
-                    resolution=options.get("resolution", "i"),
-                    ax=ax
-                )
+            m = Basemap(
+                projection="cyl",
+                llcrnrlon=lon_min, urcrnrlon=lon_max,
+                llcrnrlat=lat_min, urcrnrlat=lat_max,
+                resolution=options.get("resolution", "i"), ax=ax
+            )
 
-                cs = m.pcolormesh(
-                    lon, lat, data,
-                    latlon=True, shading="auto",
-                    cmap=cmap, vmin=vmin, vmax=vmax
-                )
-                m.drawcoastlines()
+            cs = m.pcolormesh(lon, lat, data, latlon=True, cmap=cmap, shading="auto", vmin=vmin, vmax=vmax)
+            m.drawcoastlines()
 
-                parallels = _nice_ticks(lat_min, lat_max, n=4)
-                meridians = _nice_ticks(lon_min, lon_max, n=4)
+            parallels = np.linspace(lat_min, lat_max, 4)
+            meridians = np.linspace(lon_min, lon_max, 4)
+            m.drawparallels(parallels, labels=[1,0,0,0], fontsize=8, linewidth=0.5, dashes=[2,4], ax=ax)
+            m.drawmeridians(meridians, labels=[0,0,0,1], fontsize=8, linewidth=0.5, dashes=[2,4], ax=ax)
 
-                m.drawparallels(parallels, labels=[1, 0, 0, 0], fontsize=8, linewidth=0.5, dashes=[2, 4])
-                m.drawmeridians(meridians, labels=[0, 0, 0, 1], fontsize=8, linewidth=0.5, dashes=[2, 4])
-
-
-                plt.colorbar(cs, label=getattr(var, "units", ""))
-                plt.title(varname)
-                plt.tight_layout()
-                log_box.insert("end", f"Done drawing {varname} \n")
-                log_box.see("end")
-                log_box.update_idletasks()
-                plt.show()
-            else:
-                plt.figure()
-                plt.pcolormesh(data, cmap=cmap, vmin=vmin, vmax=vmax)
-                plt.colorbar(label=getattr(var, "units", ""))
-                plt.title(varname)
-                log_box.insert("end", f"Done drawing {varname} \n")
-                log_box.see("end")
-                log_box.update_idletasks()
-                plt.show()
+            plt.colorbar(cs, label=getattr(var, "units", ""))
+            plt.title(varname)
+            plt.tight_layout()
+            plt.show()
+            state["fig"] = fig
 
         log_box.insert("end", f"Plot complete: {varname}\n")
         log_box.see("end")
