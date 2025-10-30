@@ -108,6 +108,13 @@ def draw_plot(varname, var, lon, lat, options, log_box, state=None, is_redraw=Fa
         messagebox.showerror("Plot Error", str(e))
 
 
+
+
+
+
+
+
+
 def draw_vector_plot(u, v, lon, lat, opts, log_box, state, quiver_max_n=10):
     import numpy as np
     import matplotlib.pyplot as plt
@@ -134,6 +141,8 @@ def draw_vector_plot(u, v, lon, lat, opts, log_box, state, quiver_max_n=10):
     lat_max = opts.get("lat_max")
     need_rotate = opts.get("need_rotate")
 
+    print (opts)
+    
     # --- Convert to 2D if 3D ---
     if u.ndim == 3:
         layer = int(opts.get("layer", 0))
