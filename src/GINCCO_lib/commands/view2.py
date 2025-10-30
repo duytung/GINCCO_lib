@@ -393,8 +393,6 @@ def open_file(datafile, gridfile=None):
     row_v += 1
 
 
-
-
     ########################################################################
     # === Bottom: log ===
     ########################################################################
@@ -522,7 +520,8 @@ def open_file(datafile, gridfile=None):
 
 
     listbox.bind("<Double-Button-1>", on_var_select)
-    redraw_btn.config(command=redraw)
+    redraw_btn_scalar.config(command=redraw)
+    redraw_btn_vector.config(command=redraw)
     root.mainloop()
 
 
