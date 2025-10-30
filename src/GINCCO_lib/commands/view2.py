@@ -109,7 +109,11 @@ def open_file(datafile, gridfile=None):
             opts = {
                 "vmin": safe_float(entry_min_vector.get()),
                 "vmax": safe_float(entry_max_vector.get()),
+                
                 "cmap": cmap_var_vector.get(),
+                "cmap_min": safe_float(cmap_min_vector.get()),
+                "cmap_max": safe_float(cmap_max_vector.get()),
+
                 "layer": int(layer_var_vector.get()) if layer_var_vector.get().isdigit() else 0,
                 "lon_min": safe_float(lon_min_vector.get()),
                 "lon_max": safe_float(lon_max_vector.get()),
@@ -398,7 +402,7 @@ def open_file(datafile, gridfile=None):
 
     # --- Color palette ---
     tk.Label(vector_tab, text="Color palette:").grid(row=row_s, column=0, sticky="e", padx=5, pady=2)
-    cmap_var_vector = tk.StringVar(value="jet")
+    cmap_var_vector = tk.StringVar(value="YlOrBr")
 
     # Dùng Menubutton có chia nhóm
     menu_button = tk.Menubutton(vector_tab, textvariable=cmap_var_vector, relief="raised")
@@ -433,12 +437,23 @@ def open_file(datafile, gridfile=None):
         menu.add_cascade(label=cat_name, menu=sub)
 
     menu_button.grid(row=row_s, column=1, sticky="w")
-    row_s += 1
+    row_v += 1
 
-    def on_cmap_change(*args):
-        print("Color palette changed to:", cmap_var_vector.get())
+    # --- Lon/Lat bounds ---
+    tk.Label(vector_tab, text="Cmap range:").grid(row=row_v, column=0, sticky="e", padx=5, pady=2)
+    frame_cmap_vector = tk.Frame(vector_tab)
+    frame_cmap_vector.grid(row=row_v, column=1, sticky="w", padx=5, pady=2)
 
+    tk.Label(frame_cmap_vector, text="Min").pack(side="left")
+    cmap_min_vector = tk.Entry(frame_cmap_vector, width=6)
+    cmap_min_vector.pack(side="left", padx=(2, 5))
+    cmap_min_vector.insert(0, "0")
 
+    tk.Label(frame_cmap_vector, text="Max").pack(side="left")
+    cmap_max_vector = tk.Entry(frame_cmap_vector, width=6)
+    cmap_max_vector.pack(side="left", padx=(2, 0))
+    cmap_max_vector.insert(0, "0.6")
+    row_v += 1
 
 
 

@@ -3,7 +3,17 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap
 from tkinter import messagebox
 from GINCCO_lib.commands.interpolate_to_t import interpolate_to_t
+import matplotlib.colors as mcolors
 
+
+def _truncate_colormap(cmap, minval=0.0, maxval=1.0, n=256):
+    if isinstance(cmap, str):
+        cmap = plt.get_cmap(cmap)
+    new_cmap = mcolors.LinearSegmentedColormap.from_list(
+        f"trunc({cmap.name},{minval:.2f},{maxval:.2f})",
+        cmap(np.linspace(minval, maxval, n))
+    )
+    return new_cmap
 
 
 def _nice_ticks(lon_min, lon_max, n=4):
@@ -110,7 +120,11 @@ def draw_vector_plot(u, v, lon, lat, opts, log_box, state, quiver_max_n=10):
     # --- Extract options from opts ---
     vmin = opts.get("vmin", None)
     vmax = opts.get("vmax", None)
-    cmap = opts.get("cmap", "jet")
+
+    cmap = opts.get("cmap", "YlOrBr")
+    cmap_min = opts.get("cmap_min", 0)
+    cmap_max = opts.get("cmap_max", 0.6)
+
     dpi = opts.get("dpi", 100)
     resolution = opts.get("resolution", "i")
     scale = opts.get("scale", 400)
@@ -179,6 +193,11 @@ def draw_vector_plot(u, v, lon, lat, opts, log_box, state, quiver_max_n=10):
     m.drawparallels(parallels, labels=[1, 0, 0, 0], fontsize=8, linewidth=0.5, dashes=[2, 4])
     m.drawmeridians(meridians, labels=[0, 0, 0, 1], fontsize=8, linewidth=0.5, dashes=[2, 4])
 
+
+    # Colormap
+    cmap = _truncate_colormap(cmap, cmap_min, cmap_max)
+    cmap.set_bad(color='white')
+    #norm = colors.Normalize(vmin=ticks[0], vmax=ticks[-1])
 
     cs = m.pcolormesh(lon, lat, speed, latlon=True, cmap=cmap, shading="auto", vmin=vmin, vmax=vmax)
 
