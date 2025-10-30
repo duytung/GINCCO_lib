@@ -187,14 +187,6 @@ def open_file(datafile, gridfile=None):
     quiver_entry.grid(row=3, column=1, sticky="w", padx=5, pady=2)
 
 
-    tk.Label(vector_tab, text="Max. number of arrows").pack()
-    quiver_entry = tk.Entry(vector_tab)
-    quiver_entry.insert(0, "10")
-    quiver_entry.pack()
-
-
-
-
     # --- Section title for map ---
     tk.Label(vector_tab, text="Map Customization",
              font=("DejaVu Sans Mono", 12, "bold")).grid(row=4, column=0, columnspan=2, pady=8)
