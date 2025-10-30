@@ -107,7 +107,7 @@ def open_file(datafile, gridfile=None):
         # ===============================
         else:
             opts = {
-                "need_rotate_vector": cmap_var_vector.get(),
+                "need_rotate": need_rotate_vector.get(),
                 "vmin": safe_float(entry_min_vector.get()),
                 "vmax": safe_float(entry_max_vector.get()),
                 "cmap": cmap_var_vector.get(),
