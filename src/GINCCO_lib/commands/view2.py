@@ -352,9 +352,18 @@ def open_file(datafile, gridfile=None):
         draw_plot(state["varname"], state["var"], state["lon"], state["lat"], opts, log_box, state)
 
     def redraw():
-        if not state["var"]:
-            messagebox.showinfo("Info", "Please select a variable first.")
-            return
+        current_tab = notebook.tab(notebook.select(), "text")
+
+        if current_tab == "Scalar":
+            # Nếu đang ở Scalar tab, phải có state["var"]
+            if not state["var"]:
+                messagebox.showinfo("Info", "Please select a variable first.")
+                return
+        else:
+            # Nếu đang ở Vector tab, kiểm tra U/V variable
+            if not u_var_var.get() or not v_var_var.get():
+                messagebox.showinfo("Info", "Please select both U and V variables for vector mode.")
+                return
 
         opts = {
             "vmin": float(entry_min.get()) if entry_min.get() else None,
