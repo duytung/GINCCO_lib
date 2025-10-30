@@ -121,7 +121,7 @@ def open_file(datafile, gridfile=None):
                 "lat_max": safe_float(lat_max_vector.get()),
                 "resolution": res_map[res_display_var_vector.get()],
                 "dpi": int(dpi_entry_vector.get()) if dpi_entry_vector.get() else 100,
-                "scale": int(scale_entry_vector.get()) if scale_entry_vector.get() else 400,
+                "scale": int(scale_entry_vector.get()) if scale_entry_vector.get() else 3,
             }
 
             u_name = u_var_var.get()
@@ -376,7 +376,7 @@ def open_file(datafile, gridfile=None):
     # --- Max number of arrows ---
     tk.Label(vector_tab, text="Max. number of arrows:").grid(row=row_v, column=0, sticky="e", padx=5, pady=2)
     quiver_entry_vector = tk.Entry(vector_tab, width=10)
-    quiver_entry_vector.insert(0, "10")
+    quiver_entry_vector.insert(0, "20")
     quiver_entry_vector.grid(row=row_v, column=1, sticky="w", padx=5, pady=2)
     row_v += 1
 
@@ -450,7 +450,7 @@ def open_file(datafile, gridfile=None):
     tk.Label(frame_cmap_vector, text="Max").pack(side="left")
     cmap_max_vector = tk.Entry(frame_cmap_vector, width=6)
     cmap_max_vector.pack(side="left", padx=(2, 0))
-    cmap_max_vector.insert(0, "0.6")
+    cmap_max_vector.insert(0, "0.7")
     row_v += 1
 
 
@@ -505,7 +505,7 @@ def open_file(datafile, gridfile=None):
     # --- Scale ---
     tk.Label(vector_tab, text="Scale:").grid(row=row_v, column=0, sticky="e", padx=5, pady=2)
     scale_entry_vector = tk.Entry(vector_tab, width=10)
-    scale_entry_vector.insert(0, "400")
+    scale_entry_vector.insert(0, "3")
     scale_entry_vector.grid(row=row_v, column=1, sticky="w", padx=5, pady=2)
     row_v += 1
 
