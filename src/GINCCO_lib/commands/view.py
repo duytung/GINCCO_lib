@@ -16,8 +16,7 @@ matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap
 from GINCCO_lib.commands.map_plot import draw_plot, draw_vector_plot
-
-
+import matplotlib.cm as cm
 
 
 
@@ -48,7 +47,7 @@ def open_file(datafile, gridfile=None):
     root.option_add("*Font", font_normal)
 
     root.title(f"GINCCO Viewer - {datafile}")
-    root.geometry("550x600")
+    root.geometry("550x630")
 
 
     def on_close():
@@ -108,9 +107,13 @@ def open_file(datafile, gridfile=None):
         # ===============================
         else:
             opts = {
+                "need_rotate": (need_rotate_vector.get() == "True"),
                 "vmin": safe_float(entry_min_vector.get()),
                 "vmax": safe_float(entry_max_vector.get()),
                 "cmap": cmap_var_vector.get(),
+                "cmap_min": safe_float(cmap_min_vector.get()),
+                "cmap_max": safe_float(cmap_max_vector.get()),
+
                 "layer": int(layer_var_vector.get()) if layer_var_vector.get().isdigit() else 0,
                 "lon_min": safe_float(lon_min_vector.get()),
                 "lon_max": safe_float(lon_max_vector.get()),
@@ -118,7 +121,7 @@ def open_file(datafile, gridfile=None):
                 "lat_max": safe_float(lat_max_vector.get()),
                 "resolution": res_map[res_display_var_vector.get()],
                 "dpi": int(dpi_entry_vector.get()) if dpi_entry_vector.get() else 100,
-                "scale": int(scale_entry_vector.get()) if scale_entry_vector.get() else 400,
+                "scale": int(scale_entry_vector.get()) if scale_entry_vector.get() else 3,
             }
 
             u_name = u_var_var.get()
@@ -143,10 +146,9 @@ def open_file(datafile, gridfile=None):
 
             # --- Load grid ---
             with Dataset(gridfile) as fgrid:
-                lon_u = fgrid.variables.get("longitude_u")
-                lat_u = fgrid.variables.get("latitude_u")
-                lon_v = fgrid.variables.get("longitude_v")
-                lat_v = fgrid.variables.get("latitude_v")
+                state["sin_t"] = fgrid.variables.get("gridrotsin_t")[:]
+                state["cos_t"] = fgrid.variables.get("gridrotcos_t")[:]
+
                 mask_t_var = fgrid.variables.get("mask_t")
 
                 if mask_t_var is not None:
@@ -169,8 +171,8 @@ def open_file(datafile, gridfile=None):
                 log_box,
                 state,
                 quiver_max_n   )
-    # ---- Endof function s
-
+    # ---- Endof function redraw-------#
+    ####################################
 
 
     # === Layout ===
@@ -245,11 +247,52 @@ def open_file(datafile, gridfile=None):
     entry_max_scalar.pack(side="left", padx=(2, 0))
     row_s += 1
 
+
+    # --- Color palette ---
+
     # --- Color palette ---
     tk.Label(scalar_tab, text="Color palette:").grid(row=row_s, column=0, sticky="e", padx=5, pady=2)
     cmap_var_scalar = tk.StringVar(value="jet")
-    tk.OptionMenu(scalar_tab, cmap_var_scalar, "jet", "viridis", "plasma", "coolwarm").grid(row=row_s, column=1, sticky="w")
+
+    # Dùng Menubutton có chia nhóm
+    menu_button = tk.Menubutton(scalar_tab, textvariable=cmap_var_scalar, relief="raised")
+    menu = tk.Menu(menu_button, tearoff=False)
+    menu_button["menu"] = menu
+
+    # Nhóm thủ công dựa vào tên (vì bản cũ chưa có thuộc tính category)
+    def classify_cmap(name):
+        name_lower = name.lower()
+        if any(x in name_lower for x in ["_r"]):
+            name_lower = name_lower.replace("_r", "")
+        if name_lower in ["jet", "viridis", "plasma", "inferno", "magma", "cividis", "Greens", "Blues"]:
+            return "Sequential"
+        elif name_lower in ["coolwarm", "bwr", "RdBu", "PiYG", "PRGn", "BrBG"]:
+            return "Diverging"
+        elif name_lower in ["Set1", "Set2", "tab10", "tab20", "Pastel1"]:
+            return "Qualitative"
+        else:
+            return "Miscellaneous"
+
+    # Gom nhóm colormap
+    categories = {"Sequential": [], "Diverging": [], "Qualitative": [], "Miscellaneous": []}
+    for name in sorted(cm.cmap_d.keys()):
+        cat = classify_cmap(name)
+        categories[cat].append(name)
+
+    # Tạo submenu cho từng nhóm
+    for cat_name, cmap_list in categories.items():
+        sub = tk.Menu(menu, tearoff=False)
+        for cmap_name in sorted(cmap_list):
+            sub.add_radiobutton(label=cmap_name, variable=cmap_var_scalar, value=cmap_name)
+        menu.add_cascade(label=cat_name, menu=sub)
+
+    menu_button.grid(row=row_s, column=1, sticky="w")
     row_s += 1
+
+
+
+
+
 
     # --- Map resolution ---
     tk.Label(scalar_tab, text="Map resolution:").grid(row=row_s, column=0, sticky="e", padx=5, pady=2)
@@ -307,6 +350,8 @@ def open_file(datafile, gridfile=None):
     #############################
     # === Right: controls, vector tab ===
     #############################
+
+
     vector_tab.grid_columnconfigure(1, weight=1)
     row_v = 0
 
@@ -329,10 +374,16 @@ def open_file(datafile, gridfile=None):
     v_menu.grid(row=row_v, column=1, sticky="w", padx=5, pady=2)
     row_v += 1
 
+    # --- Rotate option ---
+    tk.Label(vector_tab, text="Need rotate:").grid(row=row_v, column=0, sticky="e", padx=5, pady=2)
+    need_rotate_vector = tk.StringVar(value="True")  # default = True
+    tk.OptionMenu(vector_tab, need_rotate_vector, "True", "False").grid(row=row_v, column=1, sticky="w")
+    row_v += 1
+
     # --- Max number of arrows ---
     tk.Label(vector_tab, text="Max. number of arrows:").grid(row=row_v, column=0, sticky="e", padx=5, pady=2)
     quiver_entry_vector = tk.Entry(vector_tab, width=10)
-    quiver_entry_vector.insert(0, "10")
+    quiver_entry_vector.insert(0, "20")
     quiver_entry_vector.grid(row=row_v, column=1, sticky="w", padx=5, pady=2)
     row_v += 1
 
@@ -353,11 +404,67 @@ def open_file(datafile, gridfile=None):
     entry_max_vector.pack(side="left", padx=(2, 0))
     row_v += 1
 
+
     # --- Color palette ---
     tk.Label(vector_tab, text="Color palette:").grid(row=row_v, column=0, sticky="e", padx=5, pady=2)
-    cmap_var_vector = tk.StringVar(value="jet")
-    tk.OptionMenu(vector_tab, cmap_var_vector, "jet", "viridis", "plasma", "coolwarm").grid(row=row_v, column=1, sticky="w")
+    cmap_var_vector = tk.StringVar(value="YlOrBr")
+
+    # Dùng Menubutton có chia nhóm
+    menu_button = tk.Menubutton(vector_tab, textvariable=cmap_var_vector, relief="raised")
+    menu = tk.Menu(menu_button, tearoff=False)
+    menu_button["menu"] = menu
+
+    # Nhóm thủ công dựa vào tên (vì bản cũ chưa có thuộc tính category)
+    def classify_cmap(name):
+        name_lower = name.lower()
+        if any(x in name_lower for x in ["_r"]):
+            name_lower = name_lower.replace("_r", "")
+        if name_lower in ["jet", "viridis", "plasma", "inferno", "magma", "cividis", "Greens", "Blues"]:
+            return "Sequential"
+        elif name_lower in ["coolwarm", "bwr", "RdBu", "PiYG", "PRGn", "BrBG"]:
+            return "Diverging"
+        elif name_lower in ["Set1", "Set2", "tab10", "tab20", "Pastel1"]:
+            return "Qualitative"
+        else:
+            return "Miscellaneous"
+
+    # Gom nhóm colormap
+    categories = {"Sequential": [], "Diverging": [], "Qualitative": [], "Miscellaneous": []}
+    for name in sorted(cm.cmap_d.keys()):
+        cat = classify_cmap(name)
+        categories[cat].append(name)
+
+    # Tạo submenu cho từng nhóm
+    for cat_name, cmap_list in categories.items():
+        sub = tk.Menu(menu, tearoff=False)
+        for cmap_name in sorted(cmap_list):
+            sub.add_radiobutton(label=cmap_name, variable=cmap_var_vector, value=cmap_name)
+        menu.add_cascade(label=cat_name, menu=sub)
+
+    menu_button.grid(row=row_v, column=1, sticky="w")
     row_v += 1
+
+    # --- Lon/Lat bounds ---
+    tk.Label(vector_tab, text="Cmap range:").grid(row=row_v, column=0, sticky="e", padx=5, pady=2)
+    frame_cmap_vector = tk.Frame(vector_tab)
+    frame_cmap_vector.grid(row=row_v, column=1, sticky="w", padx=5, pady=2)
+
+    tk.Label(frame_cmap_vector, text="Min").pack(side="left")
+    cmap_min_vector = tk.Entry(frame_cmap_vector, width=6)
+    cmap_min_vector.pack(side="left", padx=(2, 5))
+    cmap_min_vector.insert(0, "0")
+
+    tk.Label(frame_cmap_vector, text="Max").pack(side="left")
+    cmap_max_vector = tk.Entry(frame_cmap_vector, width=6)
+    cmap_max_vector.pack(side="left", padx=(2, 0))
+    cmap_max_vector.insert(0, "0.7")
+    row_v += 1
+
+
+
+
+
+
 
     # --- Map resolution ---
     tk.Label(vector_tab, text="Map resolution:").grid(row=row_v, column=0, sticky="e", padx=5, pady=2)
@@ -405,7 +512,7 @@ def open_file(datafile, gridfile=None):
     # --- Scale ---
     tk.Label(vector_tab, text="Scale:").grid(row=row_v, column=0, sticky="e", padx=5, pady=2)
     scale_entry_vector = tk.Entry(vector_tab, width=10)
-    scale_entry_vector.insert(0, "400")
+    scale_entry_vector.insert(0, "3")
     scale_entry_vector.grid(row=row_v, column=1, sticky="w", padx=5, pady=2)
     row_v += 1
 
