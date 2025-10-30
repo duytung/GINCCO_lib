@@ -118,6 +118,16 @@ def draw_vector_plot(u, v, lon, lat, options, log_box, state=None, step=5):
     m = Basemap(projection="cyl", llcrnrlon=lon_min, urcrnrlon=lon_max,
                 llcrnrlat=lat_min, urcrnrlat=lat_max, resolution=res, ax=ax)
 
+
+
+    print("=== DEBUG VECTOR PLOT SHAPES ===")
+    print("lon:", None if lon is None else lon.shape)
+    print("lat:", None if lat is None else lat.shape)
+    print("u:", None if u is None else u.shape)
+    print("v:", None if v is None else v.shape)
+    print("===============================")
+
+
     m.drawcoastlines()
     cs = m.quiver(lon[::step, ::step], lat[::step, ::step],
                   u[::step, ::step], v[::step, ::step],
