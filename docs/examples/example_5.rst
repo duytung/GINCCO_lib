@@ -93,21 +93,16 @@ Now import data
 
 .. code-block:: python
 
-    # Step 3: Convert saved PNGs into a video
-    print('Creating video...')
-    gc.pngs_to_video(
-        "/prod/projects/data/tungnd/figure/demo_%s_*.png" % session_id,
-        "/prod/projects/data/tungnd/figure/clip_%s.mp4" % session_id,
-        fps=5
+    # Step 3: Import section data
+    depth_out, data_out = gc.import_section(
+        path=path,
+        file_name=file_name,
+        var='sal',
+        lon_min=lon_p[0], lon_max=lon_p[1],
+        lat_min=lat_p[0], lat_max=lat_p[1],
+        M=80,
+        depth_interval=0.5
     )
-
-    # Step 4: Delete temporary PNG files
-    for path in Path("/prod/projects/data/tungnd/figure").glob("demo_%s_*.png" % session_id):
-        try:
-            path.unlink()
-            print(f"Deleted: {path}")
-        except Exception as e:
-            print(f"Error deleting {path}: {e}")
 
 
 
