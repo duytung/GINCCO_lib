@@ -36,3 +36,8 @@ pip install --force-reinstall --no-deps "git+https://github.com/duytung/GINCCO_l
 ## Documentation
 
 https://gincco-lib.readthedocs.io/
+
+
+## Acknowledgememt
+
+If you publish results for which you have used the GINCCO library, please add a sentence such as the following in the acknowledgments: "GINCCO_lib has been developed by Duy Tung Nguyen (HUS, VNU) with the support of the GINCCO project (https://www.legos.omp.eu/gincco/)
