@@ -75,6 +75,7 @@ def open_file(datafile, gridfile=None):
                 "vmin": safe_float(entry_min_scalar.get()),
                 "vmax": safe_float(entry_max_scalar.get()),
                 "cmap": cmap_var_scalar.get(),
+                "layer": int(layer_var_scalar.get()) if layer_var_scalar.get().isdigit() else 0,
                 "lon_min": safe_float(lon_min_scalar.get()),
                 "lon_max": safe_float(lon_max_scalar.get()),
                 "lat_min": safe_float(lat_min_scalar.get()),
@@ -82,21 +83,6 @@ def open_file(datafile, gridfile=None):
                 "resolution": res_map[res_display_var_scalar.get()],
                 "dpi": int(dpi_entry_scalar.get()) if dpi_entry_scalar.get() else 100,
             }
-
-            # thêm depth hoặc layer tùy mode
-            if mode_var_scalar.get() == "depth":
-                depth_text = depth_var_scalar.get().strip()
-                if depth_text == "":
-                    messagebox.showinfo("Info", "Please enter a depth value or switch to Layer mode.")
-                    return
-                try:
-                    opts["depth"] = float(depth_text)
-                except Exception:
-                    messagebox.showinfo("Info", "Invalid depth value.")
-                    return
-            else:
-                # layer mặc định = 0 nếu không phải số
-                opts["layer"] = int(layer_var_scalar.get()) if layer_var_scalar.get().isdigit() else 0
 
             if not state.get("var"):
                 messagebox.showinfo("Info", "Please select a variable first.")
@@ -189,7 +175,6 @@ def open_file(datafile, gridfile=None):
     ####################################
 
 
-
     # === Layout ===
     top_frame = tk.Frame(root)
     top_frame.pack(side="top", fill="both", expand=True)
@@ -245,129 +230,10 @@ def open_file(datafile, gridfile=None):
     row_s = 0
 
     tk.Label(
-        scalar_tab, text="Data selection",
-        font=("DejaVu Sans Mono", 12, "bold")
-    ).grid(row=row_s, column=0, columnspan=2, pady=8)
-    row_s += 1
-
-
-    # --- Layer / Depth selector (thay cho block cũ) ---
-    # mode: 'layer' hoặc 'depth' dựa vào radiobutton trên
-    mode_var_scalar = tk.StringVar(value="layer")
-
-    # biến layer chung (top + bottom)
-    layer_var_scalar = tk.StringVar(value="0")
-    # biến depth cho ô nhập dưới
-    depth_var_scalar = tk.StringVar(value="")
-
-    # --- Top row: radiobutton Layer / Depth + top layer menu (sync) + readonly depth display ---
-    top_row_frame = tk.Frame(scalar_tab)
-    top_row_frame.grid(row=row_s, column=0, columnspan=2, sticky="we", padx=5)
-    top_row_frame.grid_columnconfigure(0, weight=1)
-    top_row_frame.grid_columnconfigure(1, weight=1)
-
-    # left: Layer (radiobutton + optionmenu)
-    top_left = tk.Frame(top_row_frame)
-    top_left.grid(row=0, column=0, sticky="w")
-    rb_layer_top = tk.Radiobutton(top_left, text="Layer", variable=mode_var_scalar, value="layer")
-    rb_layer_top.pack(side="left")
-    top_layer_menu = tk.OptionMenu(top_left, layer_var_scalar, "0")
-    top_layer_menu.pack(side="left", padx=(4,0))
-
-    # right: Depth (radiobutton) + readonly display (hiển thị giá trị depth hiện tại)
-    top_right = tk.Frame(top_row_frame)
-    top_right.grid(row=0, column=1, sticky="e")
-    rb_depth_top = tk.Radiobutton(top_right, text="Depth", variable=mode_var_scalar, value="depth")
-    rb_depth_top.pack(side="left")
-    top_depth_display = tk.Entry(top_right, textvariable=depth_var_scalar, width=8, state="readonly")
-    top_depth_display.pack(side="left", padx=(4,0))
-
-    row_s += 1
-
-    # --- Bottom row: left = Layer OptionMenu (editable khi mode=layer), right = Depth Entry (editable khi mode=depth) ---
-    bottom_row_frame = tk.Frame(scalar_tab)
-    bottom_row_frame.grid(row=row_s, column=0, columnspan=2, sticky="we", padx=5, pady=(4,0))
-    bottom_row_frame.grid_columnconfigure(0, weight=1)
-    bottom_row_frame.grid_columnconfigure(1, weight=1)
-
-    # bottom left: Layer
-    bottom_left = tk.Frame(bottom_row_frame)
-    bottom_left.grid(row=0, column=0, sticky="w")
-    tk.Label(bottom_left, text="Layer (dưới):").pack(side="left")
-    bottom_layer_menu = tk.OptionMenu(bottom_left, layer_var_scalar, "0")
-    bottom_layer_menu.pack(side="left", padx=(4,0))
-
-    # bottom right: Depth entry
-    bottom_right = tk.Frame(bottom_row_frame)
-    bottom_right.grid(row=0, column=1, sticky="e")
-    tk.Label(bottom_right, text="Depth (dưới):").pack(side="left")
-    bottom_depth_entry = tk.Entry(bottom_right, textvariable=depth_var_scalar, width=10)
-    bottom_depth_entry.pack(side="left", padx=(4,0))
-
-    row_s += 1
-
-
-
-
-
-
-
-    def set_mode_scalar(*_):
-        """Enable/disable bottom widgets theo mode_var_scalar."""
-        mode = mode_var_scalar.get()
-        if mode == "layer":
-            try:
-                bottom_layer_menu.config(state="normal")
-            except Exception:
-                pass
-            try:
-                bottom_depth_entry.config(state="disabled")
-            except Exception:
-                pass
-        else:  # mode == "depth"
-            try:
-                bottom_layer_menu.config(state="disabled")
-            except Exception:
-                pass
-            try:
-                bottom_depth_entry.config(state="normal")
-            except Exception:
-                pass
-
-    # gán command cho radiobutton để gọi set_mode khi người dùng bấm
-    rb_layer_top.config(command=set_mode_scalar)
-    rb_depth_top.config(command=set_mode_scalar)
-
-    # đảm bảo trạng thái khởi tạo đúng
-    set_mode_scalar()
-
-
-
-    def on_bottom_depth_change(*_):
-        val = depth_var_scalar.get().strip()
-        if val:
-            if mode_var_scalar.get() != "depth":
-                mode_var_scalar.set("depth")
-                set_mode_scalar()
-        # nếu xóa hết thì không tự chuyển về layer (theo yêu cầu bạn), nếu muốn auto revert có thể bổ sung.
-
-    depth_var_scalar.trace_add("write", on_bottom_depth_change)
-
-
-
-
-
-
-
-    
-
-    #############################
-    tk.Label(
         scalar_tab, text="Map Customization",
         font=("DejaVu Sans Mono", 12, "bold")
     ).grid(row=row_s, column=0, columnspan=2, pady=8)
     row_s += 1
-
 
     # --- Value range ---
     tk.Label(scalar_tab, text="Value range:").grid(row=row_s, column=0, sticky="e", padx=5, pady=2)
@@ -380,6 +246,9 @@ def open_file(datafile, gridfile=None):
     entry_max_scalar = tk.Entry(frame_minmax_scalar, width=6)
     entry_max_scalar.pack(side="left", padx=(2, 0))
     row_s += 1
+
+
+    # --- Color palette ---
 
     # --- Color palette ---
     tk.Label(scalar_tab, text="Color palette:").grid(row=row_s, column=0, sticky="e", padx=5, pady=2)
@@ -432,6 +301,13 @@ def open_file(datafile, gridfile=None):
     }
     res_display_var_scalar = tk.StringVar(value="Intermediate")
     tk.OptionMenu(scalar_tab, res_display_var_scalar, *res_map.keys()).grid(row=row_s, column=1, sticky="w")
+    row_s += 1
+
+    # --- Layer select ---
+    tk.Label(scalar_tab, text="Layer:").grid(row=row_s, column=0, sticky="e", padx=5, pady=2)
+    layer_var_scalar = tk.StringVar(value="0")
+    layer_menu_scalar = tk.OptionMenu(scalar_tab, layer_var_scalar, "0")
+    layer_menu_scalar.grid(row=row_s, column=1, sticky="w")
     row_s += 1
 
     # --- Lon/Lat bounds ---
@@ -731,32 +607,20 @@ def open_file(datafile, gridfile=None):
         lon, lat = get_grid_coords(gridfile, suffix)
         state["lon"], state["lat"] = lon, lat
 
-
-        # --- Cập nhật menu Layer của tab Scalar (cập nhật cả top và bottom) ---
+        # --- Cập nhật menu Layer của tab Scalar ---
         try:
-            menu_top = top_layer_menu["menu"]
-            menu_bot = bottom_layer_menu["menu"]
-            menu_top.delete(0, "end")
-            menu_bot.delete(0, "end")
+            menu = layer_menu_scalar["menu"]
+            menu.delete(0, "end")
 
             if nd == 3:
                 for i in range(data.shape[0]):
-                    menu_top.add_command(label=str(i), command=tk._setit(layer_var_scalar, str(i)))
-                    menu_bot.add_command(label=str(i), command=tk._setit(layer_var_scalar, str(i)))
+                    menu.add_command(label=str(i), command=tk._setit(layer_var_scalar, str(i)))
                 layer_var_scalar.set("0")
             else:
-                menu_top.add_command(label="0", command=tk._setit(layer_var_scalar, "0"))
-                menu_bot.add_command(label="0", command=tk._setit(layer_var_scalar, "0"))
+                menu.add_command(label="0", command=tk._setit(layer_var_scalar, "0"))
                 layer_var_scalar.set("0")
         except Exception as e:
             log_box.insert("end", f"[WARN] Layer menu not found: {e}\n")
-
-        # đảm bảo trạng thái enable/disable sau khi cập nhật menu
-        try:
-            set_mode_scalar()
-        except Exception:
-            pass
-
 
         # --- Cập nhật log ---
         log_box.insert("end", f"Selected variable: {varname} ({nd}D)\n")
