@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 from GINCCO_lib.commands.interpolate_to_t import interpolate_to_t
+from mpl_toolkits.basemap import Basemap
 
 try:
     from scipy.spatial import cKDTree as KDTree
@@ -153,27 +154,41 @@ def draw_vector_plot(u, v, lon, lat, opts, state, quiver_max_n=10):
     plt.close("all")
     fig, ax = plt.subplots(figsize=(7, 6), dpi=dpi)
 
-    # set axis limits in lon/lat coordinates
-    ax.set_xlim(lon_min, lon_max)
-    ax.set_ylim(lat_min, lat_max)
-    ax.set_xlabel("Longitude")
-    ax.set_ylabel("Latitude")
+    # --- Thiết lập Basemap theo lon/lat ---
+    # (có thể auto-range nếu muốn)
+    lon_min = lon_min if lon_min is not None else float(np.nanmin(lon2d))
+    lon_max = lon_max if lon_max is not None else float(np.nanmax(lon2d))
+    lat_min = lat_min if lat_min is not None else float(np.nanmin(lat2d))
+    lat_max = lat_max if lat_max is not None else float(np.nanmax(lat2d))
 
-    # ticks
+    m = Basemap(
+        projection="merc",
+        llcrnrlon=lon_min, urcrnrlon=lon_max,
+        llcrnrlat=lat_min, urcrnrlat=lat_max,
+        resolution=opts.get("resolution", "i"), ax=ax
+    )
+
+    # vẽ bờ biển + lưới toạ độ
+    m.drawcoastlines()
     parallels = _nice_ticks(lat_min, lat_max, n=4)
     meridians = _nice_ticks(lon_min, lon_max, n=4)
-    ax.set_xticks(meridians)
-    ax.set_yticks(parallels)
-    ax.tick_params(labelsize=8)
+    m.drawparallels(parallels, labels=[1, 0, 0, 0], fontsize=8,
+                    linewidth=0.5, dashes=[2, 4])
+    m.drawmeridians(meridians, labels=[0, 0, 0, 1], fontsize=8,
+                    linewidth=0.5, dashes=[2, 4])
 
-    # colormap
+    # --- Colormap ---
     cmap = _truncate_colormap(cmap_name, cmap_min, cmap_max)
     cmap.set_bad(color="white")
 
-    # pcolormesh: note lon2d/lat2d must be monotonic for good display
-    cs = ax.pcolormesh(lon2d, lat2d, speed, cmap=cmap, shading="auto", vmin=vmin, vmax=vmax)
+    # --- pcolormesh trên Basemap ---
+    cs = m.pcolormesh(
+        lon2d, lat2d, speed,
+        latlon=True, cmap=cmap, shading="auto",
+        vmin=vmin, vmax=vmax
+    )
 
-    # prepare quiver sampling
+    # --- Prepare quiver sampling (giữ nguyên cấu trúc) ---
     valid = np.isfinite(lon2d) & np.isfinite(lat2d) & np.isfinite(U1) & mask_t
     if not np.any(valid):
         print("No valid points to plot quiver")
@@ -194,26 +209,29 @@ def draw_vector_plot(u, v, lon, lat, opts, state, quiver_max_n=10):
     grid_x, grid_y = np.meshgrid(lon_small_1d, lat_small_1d)
     grid_pts = np.column_stack((grid_x.ravel(), grid_y.ravel()))
 
-    # nearest neighbor with KDTree if available
+    # --- KDTree nearest neighbor nếu có ---
     if KDTree is not None and pts_xy.size > 0:
         tree = KDTree(pts_xy)
         dists, idxs = tree.query(grid_pts, k=1)
         idxs = idxs.reshape(grid_x.shape)
+
         u_q = np.full(grid_x.shape, np.nan)
         v_q = np.full(grid_x.shape, np.nan)
         lon_q = np.full(grid_x.shape, np.nan)
         lat_q = np.full(grid_x.shape, np.nan)
+
         for j in range(grid_x.shape[0]):
             for i in range(grid_x.shape[1]):
                 idx = idxs[j, i]
                 u_q[j, i], v_q[j, i] = pts_uv[idx]
                 lon_q[j, i], lat_q[j, i] = pts_xy[idx]
     else:
-        # fallback brute force
+        # --- Brute force fallback ---
         u_q = np.full(grid_x.shape, np.nan)
         v_q = np.full(grid_x.shape, np.nan)
         lon_q = np.copy(grid_x)
         lat_q = np.copy(grid_y)
+
         if pts_xy.size > 0:
             for j in range(grid_x.shape[0]):
                 for i in range(grid_x.shape[1]):
@@ -223,11 +241,15 @@ def draw_vector_plot(u, v, lon, lat, opts, state, quiver_max_n=10):
                     u_q[j, i], v_q[j, i] = pts_uv[idx]
                     lon_q[j, i], lat_q[j, i] = pts_xy[idx]
 
-    # quiver
-    ax.quiver(lon_q, lat_q, u_q, v_q, zorder=11, scale=scale, width=0.004,
-              headwidth=3, headlength=4, headaxislength=3.5)
+    # --- Quiver trên Basemap ---
+    m.quiver(
+        lon_q, lat_q, u_q, v_q,
+        latlon=True, zorder=11, scale=scale,
+        width=0.004, headwidth=3, headlength=4,
+        headaxislength=3.5, color="black"
+    )
 
-    # colorbar
+    # --- Colorbar & title ---
     cbar = fig.colorbar(cs, ax=ax, orientation="vertical")
     cbar.set_label("Speed")
 

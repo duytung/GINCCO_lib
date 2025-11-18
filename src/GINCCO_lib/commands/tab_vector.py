@@ -12,7 +12,7 @@ from tkinter import messagebox, END
 import numpy as np
 from netCDF4 import Dataset
 import matplotlib.cm as cm
-from .map_plot_uv import draw_vector_plot
+from .plot_vector_map import draw_vector_plot
 
 
 def _bind_mousewheel(widget, target):
@@ -309,6 +309,7 @@ def build_vector_tab(parent, datafile, gridfile=None, draw_callback=None):
 
         print (state.get("lon").shape, state.get("lat").shape)
 
+        print ('Chosen options', opts)
 
         if callable(draw_callback):
             try:
