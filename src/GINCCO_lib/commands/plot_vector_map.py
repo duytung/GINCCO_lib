@@ -60,7 +60,7 @@ def draw_vector_plot(u, v, lon, lat, opts, state, quiver_max_n=10):
     dpi = opts.get("dpi", 100)
     scale = opts.get("scale", 400)
 
-    need_rotate = bool(opts.get("need_rotate", False))
+    need_rotate = bool(opts.get("need_rotate", True))
     layer_idx = int(opts.get("layer", 0)) if str(opts.get("layer", "0")).isdigit() else 0
 
     # helper: squeeze only leading singleton dims to allow (1, level, j, i) -> (level, j, i)
