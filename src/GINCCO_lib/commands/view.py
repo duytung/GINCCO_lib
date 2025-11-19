@@ -3,22 +3,6 @@
 Main viewer (simplified)
 """
 
-def register_subparser(subparsers):
-    parser = subparsers.add_parser(
-        "view",
-        help="Open GINCCO GUI viewer for a given NetCDF file",
-    )
-    parser.add_argument(
-        "filename",
-        help="Path to data file (NetCDF)",
-    )
-    parser.add_argument(
-        "--grid",
-        dest="gridfile",
-        default=None,
-        help="Path to grid file (default: try to find grid.nc near datafile)",
-    )
-
 ################################
 
 import os
@@ -35,6 +19,22 @@ import matplotlib
 matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
 
+def register_subparser(subparser):
+    """
+    Được gọi từ gincco CLI.
+    subparser ở đây là 1 ArgumentParser con tương ứng với lệnh 'view'.
+    Ở đây chỉ việc khai báo các argument cho lệnh này.
+    """
+    subparser.add_argument(
+        "filename",
+        help="Path to data file (NetCDF)",
+    )
+    subparser.add_argument(
+        "--grid",
+        dest="gridfile",
+        default=None,
+        help="Path to grid file (default: try to find grid.nc near datafile)",
+    )
 
 
 
