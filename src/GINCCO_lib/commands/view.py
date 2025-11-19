@@ -2,6 +2,25 @@
 """
 Main viewer (simplified)
 """
+
+def register_subparser(subparsers):
+    parser = subparsers.add_parser(
+        "view",
+        help="Open GINCCO GUI viewer for a given NetCDF file",
+    )
+    parser.add_argument(
+        "filename",
+        help="Path to data file (NetCDF)",
+    )
+    parser.add_argument(
+        "--grid",
+        dest="gridfile",
+        default=None,
+        help="Path to grid file (default: try to find grid.nc near datafile)",
+    )
+
+################################
+
 import os
 import argparse
 import tkinter as tk
