@@ -1,4 +1,3 @@
-
 """
 Main viewer (simplified)
 """
@@ -37,7 +36,6 @@ def register_subparser(subparser):
     )
 
 
-
 def bring_all_windows_front(root):
     """Bring root + all Toplevel windows to the front."""
     try:
@@ -62,10 +60,6 @@ def on_any_focus_in(event):
     bring_all_windows_front(root)
 
 
-
-
-
-
 def open_file(datafile, gridfile=None):
     if not os.path.exists(datafile):
         messagebox.showerror("Error", f"Data file not found: {datafile}")
@@ -75,8 +69,8 @@ def open_file(datafile, gridfile=None):
     root.title(f"GINCCO Viewer (experimental) - {os.path.basename(datafile)}")
     root.geometry("500x500")
 
+    # auto bring all windows front when any widget gets focus
     root.bind_all("<FocusIn>", on_any_focus_in)
-
 
     top_frame = tk.Frame(root)
     top_frame.pack(fill="both", expand=True)
@@ -90,20 +84,30 @@ def open_file(datafile, gridfile=None):
     vector_tab_widgets = build_vector_tab(notebook, datafile, gridfile)
     combine_tab_widgets = build_combine_tab(notebook, datafile, gridfile)
 
-
     notebook.add(scalar_tab_widgets['frame'], text="Scalar")
     notebook.add(vector_tab_widgets['frame'], text="Vector")
     notebook.add(combine_tab_widgets['frame'], text="Combine")  # <--- tab mới
 
-
     root.mainloop()
 
-def main():
-    p = argparse.ArgumentParser()
-    p.add_argument('filename')
-    p.add_argument('--grid', dest='gridfile', default=None,
-                   help="Path to grid file (default: search for 'grid.nc' near datafile)")
-    ns = p.parse_args()
+
+def main(args=None):
+    """
+    - Nếu chạy trực tiếp:  python -m GINCCO_lib.commands.view file.nc
+      -> args=None -> tự argparse như cũ.
+    - Nếu chạy qua CLI:   gincco view file.nc
+      -> cli.py truyền Namespace vào -> dùng luôn args đó.
+    """
+    if args is None:
+        # chạy kiểu module trực tiếp
+        p = argparse.ArgumentParser()
+        p.add_argument('filename')
+        p.add_argument('--grid', dest='gridfile', default=None,
+                       help="Path to grid file (default: search for 'grid.nc' near datafile)")
+        ns = p.parse_args()
+    else:
+        # được gọi từ gincco CLI
+        ns = args
 
     datafile = ns.filename
 
@@ -114,15 +118,16 @@ def main():
 
     # 1) if user provided --grid, use it (if exists)
     gridfile = None
-    if ns.gridfile:
-        cand = ns.gridfile
+    grid_arg = getattr(ns, "gridfile", None)
+    if grid_arg:
+        cand = grid_arg
         if not os.path.isabs(cand):
             # allow relative to current cwd
             cand = os.path.abspath(cand)
         if os.path.exists(cand):
             gridfile = cand
         else:
-            print(f"Warning: provided grid file not found: {ns.gridfile} (ignored)")
+            print(f"Warning: provided grid file not found: {grid_arg} (ignored)")
 
     # 2) If no --grid or it didn't exist, try to find grid.nc next to datafile
     if gridfile is None:
