@@ -54,10 +54,6 @@ def bring_all_windows_front(root):
                 pass
 
 
-def on_any_focus_in(event):
-    """Whenever ANY widget in the app gains focus, bring all windows front."""
-    root = event.widget.winfo_toplevel()
-    bring_all_windows_front(root)
 
 
 def open_file(datafile, gridfile=None):
@@ -69,8 +65,6 @@ def open_file(datafile, gridfile=None):
     root.title(f"GINCCO Viewer (experimental) - {os.path.basename(datafile)}")
     root.geometry("500x500")
 
-    # auto bring all windows front when any widget gets focus
-    root.bind_all("<FocusIn>", on_any_focus_in)
 
     top_frame = tk.Frame(root)
     top_frame.pack(fill="both", expand=True)
