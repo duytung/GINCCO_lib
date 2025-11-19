@@ -63,7 +63,7 @@ def open_file(datafile, gridfile=None):
 
     root = tk.Tk()
     root.title(f"GINCCO Viewer (experimental) - {os.path.basename(datafile)}")
-    root.geometry("500x500")
+    root.geometry("500x600")
 
 
     top_frame = tk.Frame(root)
