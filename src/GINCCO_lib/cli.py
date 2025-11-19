@@ -20,8 +20,8 @@ def main():
         if hasattr(module, "register_subparser"):
             subparser = subparsers.add_parser(module_name, help=f"{module_name} command")
             module.register_subparser(subparser)
-        else:
-            print(f"Warning: {module_name} has no register_subparser()")
+        #else:
+        #    print(f"Warning: {module_name} has no register_subparser()")
 
     # === Parse arguments ===
     args = parser.parse_args()
