@@ -630,12 +630,20 @@ def map_draw_uv(
     u_q = np.full_like(lon_small, np.nan, dtype=float)
     v_q = np.full_like(lon_small, np.nan, dtype=float)
 
+
+
+    dlon = np.nanmax(np.abs(np.diff(lon2d, axis=1)))
+    dlat = np.nanmax(np.abs(np.diff(lat2d, axis=0)))
+    max_dist = (max(dlon, dlat)) **2
+    
+
+
     for j in range(lat_small.shape[0]):
         for i in range(lon_small.shape[1]):
             # tính khoảng cách (theo độ) tới toàn bộ grid gốc
             dist2 = (lon_data - lon_small[j, i])**2 + (lat_data - lat_small[j, i])**2
             idx = np.unravel_index(np.nanargmin(dist2), dist2.shape)
-            if mask_ocean[idx] ==1:
+            if ((mask_ocean[idx] ==1) and (dist2[idx] < max_dist)):
                 u_q[j, i] = data_u[idx]
                 v_q[j, i] = data_v[idx]
                 lon_small[j,i] = lon_data[idx]

@@ -203,7 +203,7 @@ def draw_vector_plot(u, v, lon, lat, opts, log_box, state, quiver_max_n=10):
     lat_max = lat_max or np.nanmax(lat)
 
     m = Basemap(
-        projection="cyl",
+        projection="merc",
         llcrnrlon=lon_min, urcrnrlon=lon_max,
         llcrnrlat=lat_min, urcrnrlat=lat_max,
         resolution=resolution, ax=ax
