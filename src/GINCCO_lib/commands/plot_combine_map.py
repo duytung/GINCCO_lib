@@ -322,4 +322,4 @@ def draw_map_combine(scalar_name, scalar_var, u, v, lon, lat, opts, state):
 
     ax.set_title(f"Scalar + Vector field - {scalar_name}")
     fig.tight_layout()
-    plt.show()
+    plt.show(block=False)

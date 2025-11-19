@@ -264,6 +264,31 @@ def _create_right_panel(frame, state, gridfile, ds, listbox, draw_callback):
     menu_button.grid(row=row_s, column=1, sticky="w")
     row_s += 1
 
+
+    # --- Cmap range ---
+    tk.Label(controls_frame, text="Cmap range:").grid(
+        row=row_s, column=0, sticky="e", padx=5, pady=2
+    )
+    frame_cmap_scalar = tk.Frame(controls_frame)
+    frame_cmap_scalar.grid(row=row_s, column=1, sticky="w", padx=5, pady=2)
+
+    tk.Label(frame_cmap_scalar, text="Min").pack(side="left")
+    cmap_min_scalar = tk.Entry(frame_cmap_scalar, width=6)
+    cmap_min_scalar.pack(side="left", padx=(2, 5))
+    cmap_min_scalar.insert(0, "0")
+
+    tk.Label(frame_cmap_scalar, text="Max").pack(side="left")
+    cmap_max_scalar = tk.Entry(frame_cmap_scalar, width=6)
+    cmap_max_scalar.pack(side="left", padx=(2, 0))
+    cmap_max_scalar.insert(0, "1")
+
+    row_s += 1
+
+
+
+
+
+
     # --- Map resolution ---
     tk.Label(controls_frame, text="Map resolution:").grid(
         row=row_s, column=0, sticky="e", padx=5, pady=2
@@ -327,50 +352,60 @@ def _create_right_panel(frame, state, gridfile, ds, listbox, draw_callback):
             except Exception:
                 return None
 
-        opts = {
-            "vmin": safe_float(entry_min_scalar.get()) if entry_min_scalar else None,
-            "vmax": safe_float(entry_max_scalar.get()) if entry_max_scalar else None,
-            "cmap": cmap_var_scalar.get() if cmap_var_scalar else None,
-            "lon_min": safe_float(lon_min_scalar.get()) if lon_min_scalar else None,
-            "lon_max": safe_float(lon_max_scalar.get()) if lon_max_scalar else None,
-            "lat_min": safe_float(lat_min_scalar.get()) if lat_min_scalar else None,
-            "lat_max": safe_float(lat_max_scalar.get()) if lat_max_scalar else None,
-            "resolution": res_map[res_display_var_scalar.get()]
-            if res_display_var_scalar
-            else "i",
-            "dpi": int(dpi_entry_scalar.get())
-            if dpi_entry_scalar and dpi_entry_scalar.get().isdigit()
-            else 100,
-        }
+        root = frame.winfo_toplevel()
 
-        # depth/layer selection
-        if mode_var.get() == "depth":
-            dtxt = depth_var.get().strip()
-            if dtxt == "":
-                messagebox.showinfo("Info", "Please enter a depth value.")
-                return
-            try:
-                opts["depth"] = float(dtxt)
-            except Exception:
-                messagebox.showinfo("Info", "Invalid depth value.")
-                return
-        else:
-            opts["layer"] = int(layer_var.get()) if layer_var.get().isdigit() else 0
-
-        if not state.get("var"):
-            messagebox.showinfo("Info", "Please select a variable first.")
-            return
-
-        print("Chosen options", opts)
-
-        # chọn hàm vẽ: ưu tiên draw_callback, fallback draw_map_plot
-        draw_fn = draw_callback if callable(draw_callback) else draw_map_plot
-
-        if not callable(draw_fn):
-            print("No valid drawing function (draw_callback/draw_map_plot).")
-            return
+        # bật busy + disable
+        root.config(cursor="watch")
+        redraw_btn_scalar.config(state="disabled")
+        root.update_idletasks()
 
         try:
+            # ======== TẤT CẢ LOGIC ĐỀU PHẢI NẰM TRONG try =========
+
+            opts = {
+                "vmin": safe_float(entry_min_scalar.get()) if entry_min_scalar else None,
+                "vmax": safe_float(entry_max_scalar.get()) if entry_max_scalar else None,
+
+                "cmap": cmap_var_scalar.get() if cmap_var_scalar else None,
+                "cmap_min": safe_float(cmap_min_scalar.get()) if cmap_min_scalar else None,
+                "cmap_max": safe_float(cmap_max_scalar.get()) if cmap_max_scalar else None,
+
+                "lon_min": safe_float(lon_min_scalar.get()) if lon_min_scalar else None,
+                "lon_max": safe_float(lon_max_scalar.get()) if lon_max_scalar else None,
+                "lat_min": safe_float(lat_min_scalar.get()) if lat_min_scalar else None,
+                "lat_max": safe_float(lat_max_scalar.get()) if lat_max_scalar else None,
+                "resolution": res_map.get(res_display_var_scalar.get(), "i"),
+                "dpi": int(dpi_entry_scalar.get())
+                       if dpi_entry_scalar and dpi_entry_scalar.get().isdigit()
+                       else 100,
+            }
+
+            # depth/layer selection
+            if mode_var.get() == "depth":
+                dtxt = depth_var.get().strip()
+                if dtxt == "":
+                    messagebox.showinfo("Info", "Please enter a depth value.")
+                    return
+                try:
+                    opts["depth"] = float(dtxt)
+                except Exception:
+                    messagebox.showinfo("Info", "Invalid depth value.")
+                    return
+            else:
+                opts["layer"] = int(layer_var.get()) if layer_var.get().isdigit() else 0
+
+            if not state.get("var"):
+                messagebox.showinfo("Info", "Please select a variable first.")
+                return
+
+            print("Chosen options", opts)
+
+            draw_fn = draw_callback if callable(draw_callback) else draw_map_plot
+            if not callable(draw_fn):
+                print("No valid drawing function.")
+                return
+
+            # gọi hàm vẽ
             draw_fn(
                 state["varname"],
                 state["var"],
@@ -380,10 +415,12 @@ def _create_right_panel(frame, state, gridfile, ds, listbox, draw_callback):
                 state,
             )
 
+        finally:
+            # dù return ở đâu trong try, finally vẫn chạy
+            root.config(cursor="")
+            redraw_btn_scalar.config(state="normal")
+            root.update_idletasks()
 
-
-        except Exception as e:
-            messagebox.showerror("Error", f"{draw_fn.__name__} failed:\n{e}")
 
     redraw_btn_scalar = tk.Button(
         controls_frame, text="Draw Map", bg="lightblue", command=redraw

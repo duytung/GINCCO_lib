@@ -59,10 +59,7 @@ def draw_vector_plot(u, v, lon, lat, opts, state, quiver_max_n=10):
     cmap_max = opts.get("cmap_max", 0.6)
     dpi = opts.get("dpi", 100)
     scale = opts.get("scale", 400)
-    lon_min = opts.get("lon_min", None)
-    lon_max = opts.get("lon_max", None)
-    lat_min = opts.get("lat_min", None)
-    lat_max = opts.get("lat_max", None)
+
     need_rotate = bool(opts.get("need_rotate", False))
     layer_idx = int(opts.get("layer", 0)) if str(opts.get("layer", "0")).isdigit() else 0
 
@@ -85,9 +82,8 @@ def draw_vector_plot(u, v, lon, lat, opts, state, quiver_max_n=10):
     # mask: fallback to all-True so code continues
     mask_t = state.get("mask_t")
     if mask_t is None:
-        mask_t = np.ones_like(u, dtype=bool)
-    else:
-        mask_t = np.asarray(mask_t, dtype=bool)
+        print ('Cannot find mask_t')
+
 
     # interpolate staggered fields to T-grid if shapes don't match
     try:
@@ -111,26 +107,17 @@ def draw_vector_plot(u, v, lon, lat, opts, state, quiver_max_n=10):
 
     # check shapes
     if lon2d.shape != mask_t.shape or lat2d.shape != mask_t.shape:
-        # try transpose suspects: sometimes lon/lat swapped axes
-        if lon2d.T.shape == mask_t.shape and lat2d.T.shape == mask_t.shape:
-            lon2d = lon2d.T
-            lat2d = lat2d.T
-        else:
-            print("Warning: lon/lat shape does not match mask/speed shape:",
-                  lon2d.shape, lat2d.shape, mask_t.shape)
-            # continue but pcolormesh will likely fail; we bail gracefully
-            return
+        print("Warning: lon/lat shape does not match mask/speed shape:",
+            lon2d.shape, lat2d.shape, mask_t.shape)
+        return
 
     # rotation if needed
     if need_rotate:
         sin_t = state.get("sin_t")
         cos_t = state.get("cos_t")
-        if sin_t is None or cos_t is None:
-            U1 = np.copy(u)
-            V1 = np.copy(v)
-        else:
-            U1 = u * cos_t + v * sin_t
-            V1 = -u * sin_t + v * cos_t
+        U1 = u * cos_t + v * sin_t
+        V1 = -u * sin_t + v * cos_t
+
     else:
         U1 = np.copy(u)
         V1 = np.copy(v)
@@ -141,25 +128,42 @@ def draw_vector_plot(u, v, lon, lat, opts, state, quiver_max_n=10):
 
     speed = np.hypot(U1, V1)
 
-    # compute bounds if not provided
-    try:
-        lon_min = lon_min if lon_min is not None else np.nanmin(lon2d)
-        lon_max = lon_max if lon_max is not None else np.nanmax(lon2d)
-        lat_min = lat_min if lat_min is not None else np.nanmin(lat2d)
-        lat_max = lat_max if lat_max is not None else np.nanmax(lat2d)
-    except Exception:
-        lon_min, lon_max, lat_min, lat_max = 0, 1, 0, 1
-
     # prepare figure
     plt.close("all")
     fig, ax = plt.subplots(figsize=(7, 6), dpi=dpi)
 
     # --- Thiết lập Basemap theo lon/lat ---
     # (có thể auto-range nếu muốn)
-    lon_min = lon_min if lon_min is not None else float(np.nanmin(lon2d))
-    lon_max = lon_max if lon_max is not None else float(np.nanmax(lon2d))
-    lat_min = lat_min if lat_min is not None else float(np.nanmin(lat2d))
-    lat_max = lat_max if lat_max is not None else float(np.nanmax(lat2d))
+    lon_min_user = (opts.get("lon_min"))
+    lon_max_user = (opts.get("lon_max"))
+    lat_min_user = (opts.get("lat_min"))
+    lat_max_user = (opts.get("lat_max"))
+
+    # lấy giá trị tự nhiên từ dữ liệu
+    lon_min_data = float(np.nanmin(lon))
+    lon_max_data = float(np.nanmax(lon))
+    lat_min_data = float(np.nanmin(lat))
+    lat_max_data = float(np.nanmax(lat))
+
+    # nếu user không define → dùng data range
+    lon_min = lon_min_user if lon_min_user is not None else lon_min_data
+    lon_max = lon_max_user if lon_max_user is not None else lon_max_data
+    lat_min = lat_min_user if lat_min_user is not None else lat_min_data
+    lat_max = lat_max_user if lat_max_user is not None else lat_max_data
+
+    # ---- chỉ padding nếu BOTH min & max của người dùng đều là None ----
+    if lon_min_user is None and lon_max_user is None:
+        lon_range = lon_max - lon_min
+        pad = lon_range * 0.01
+        lon_min -= pad
+        lon_max += pad
+
+    if lat_min_user is None and lat_max_user is None:
+        lat_range = lat_max - lat_min
+        pad = lat_range * 0.01
+        lat_min -= pad
+        lat_max += pad
+
 
     m = Basemap(
         projection="merc",
@@ -188,62 +192,37 @@ def draw_vector_plot(u, v, lon, lat, opts, state, quiver_max_n=10):
         vmin=vmin, vmax=vmax
     )
 
-    # --- Prepare quiver sampling (giữ nguyên cấu trúc) ---
-    valid = np.isfinite(lon2d) & np.isfinite(lat2d) & np.isfinite(U1) & mask_t
-    if not np.any(valid):
-        print("No valid points to plot quiver")
-        cbar = fig.colorbar(cs, ax=ax, orientation="vertical")
-        cbar.set_label("Speed")
-        ax.set_title("Vector field")
-        fig.tight_layout()
-        plt.show()
-        return
-
-    pts_lon = lon2d[valid].ravel()
-    pts_lat = lat2d[valid].ravel()
-    pts_uv = np.column_stack((U1[valid].ravel(), V1[valid].ravel()))
-    pts_xy = np.column_stack((pts_lon, pts_lat))
+    # --- Quiver arrows for direction ---
 
     lon_small_1d = np.linspace(np.nanmin(lon2d), np.nanmax(lon2d), quiver_max_n)
     lat_small_1d = np.linspace(np.nanmin(lat2d), np.nanmax(lat2d), quiver_max_n)
-    grid_x, grid_y = np.meshgrid(lon_small_1d, lat_small_1d)
-    grid_pts = np.column_stack((grid_x.ravel(), grid_y.ravel()))
+    lon_small, lat_small = np.meshgrid(lon_small_1d, lat_small_1d)
 
-    # --- KDTree nearest neighbor nếu có ---
-    if KDTree is not None and pts_xy.size > 0:
-        tree = KDTree(pts_xy)
-        dists, idxs = tree.query(grid_pts, k=1)
-        idxs = idxs.reshape(grid_x.shape)
+    # --- Obtain nearest value from data_u, data_v ---
 
-        u_q = np.full(grid_x.shape, np.nan)
-        v_q = np.full(grid_x.shape, np.nan)
-        lon_q = np.full(grid_x.shape, np.nan)
-        lat_q = np.full(grid_x.shape, np.nan)
+    dlon = np.nanmax(np.abs(np.diff(lon2d, axis=1)))
+    dlat = np.nanmax(np.abs(np.diff(lat2d, axis=0)))
+    max_dist = (max(dlon, dlat)) **2
 
-        for j in range(grid_x.shape[0]):
-            for i in range(grid_x.shape[1]):
-                idx = idxs[j, i]
-                u_q[j, i], v_q[j, i] = pts_uv[idx]
-                lon_q[j, i], lat_q[j, i] = pts_xy[idx]
-    else:
-        # --- Brute force fallback ---
-        u_q = np.full(grid_x.shape, np.nan)
-        v_q = np.full(grid_x.shape, np.nan)
-        lon_q = np.copy(grid_x)
-        lat_q = np.copy(grid_y)
 
-        if pts_xy.size > 0:
-            for j in range(grid_x.shape[0]):
-                for i in range(grid_x.shape[1]):
-                    gx, gy = grid_x[j, i], grid_y[j, i]
-                    dist2 = (pts_lon - gx) ** 2 + (pts_lat - gy) ** 2
-                    idx = np.argmin(dist2)
-                    u_q[j, i], v_q[j, i] = pts_uv[idx]
-                    lon_q[j, i], lat_q[j, i] = pts_xy[idx]
+    u_q = np.full_like(lon_small, np.nan, dtype=float)
+    v_q = np.full_like(lon_small, np.nan, dtype=float)
+
+    for j in range(lat_small.shape[0]):
+        for i in range(lon_small.shape[1]):
+            # tính khoảng cách (theo độ) tới toàn bộ grid gốc
+            dist2 = (lon2d - lon_small[j, i])**2 + (lat2d - lat_small[j, i])**2
+            idx = np.unravel_index(np.nanargmin(dist2), dist2.shape)
+            if ((mask_t[idx] ==1) and (dist2[idx] < max_dist)):
+                u_q[j, i] = U1[idx]
+                v_q[j, i] = V1[idx]
+                lon_small[j,i] = lon2d[idx]
+                lat_small[j,i] = lat2d[idx]
+
 
     # --- Quiver trên Basemap ---
     m.quiver(
-        lon_q, lat_q, u_q, v_q,
+        lon_small, lat_small, u_q, v_q,
         latlon=True, zorder=11, scale=scale,
         width=0.004, headwidth=3, headlength=4,
         headaxislength=3.5, color="black"
@@ -255,4 +234,4 @@ def draw_vector_plot(u, v, lon, lat, opts, state, quiver_max_n=10):
 
     ax.set_title("Vector field")
     fig.tight_layout()
-    plt.show()
+    plt.show(block=False)

@@ -12,11 +12,40 @@ from .tab_scalar import build_scalar_tab
 from .tab_vector import build_vector_tab
 from .tab_combine import build_combine_tab   
 
-
-
 import matplotlib
 matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
+
+
+
+
+def bring_all_windows_front(root):
+    """Bring root + all Toplevel windows to the front."""
+    try:
+        root.deiconify()
+        root.lift()
+        root.focus_force()
+    except Exception:
+        pass
+
+    for w in root.winfo_children():
+        if isinstance(w, tk.Toplevel):
+            try:
+                w.deiconify()
+                w.lift()
+            except Exception:
+                pass
+
+
+def on_any_focus_in(event):
+    """Whenever ANY widget in the app gains focus, bring all windows front."""
+    root = event.widget.winfo_toplevel()
+    bring_all_windows_front(root)
+
+
+
+
+
 
 def open_file(datafile, gridfile=None):
     if not os.path.exists(datafile):
@@ -26,6 +55,9 @@ def open_file(datafile, gridfile=None):
     root = tk.Tk()
     root.title(f"GINCCO Viewer (experimental) - {os.path.basename(datafile)}")
     root.geometry("500x500")
+
+    root.bind_all("<FocusIn>", on_any_focus_in)
+
 
     top_frame = tk.Frame(root)
     top_frame.pack(fill="both", expand=True)
