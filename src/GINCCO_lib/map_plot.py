@@ -632,8 +632,8 @@ def map_draw_uv(
 
 
 
-    dlon = np.nanmax(np.abs(np.diff(lon2d, axis=1)))
-    dlat = np.nanmax(np.abs(np.diff(lat2d, axis=0)))
+    dlon = np.nanmax(np.abs(np.diff(lon_data, axis=1)))
+    dlat = np.nanmax(np.abs(np.diff(lat_data, axis=0)))
     max_dist = (max(dlon, dlat)) **2
     
 
