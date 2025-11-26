@@ -53,19 +53,12 @@ gc.map_draw(
 )
 
 
-for i in range(0,11):
-    print (i*10,  np.nanpercentile(data_draw, i*10))    
-
-
-
-
 
 #Step 2: Choose a day and calculate
 U1, V1 = gc.geostrophic_current(data_draw, lat_t, dx_t, dy_t, sin_t, cos_t)
 
 for i in range(0,11):
     print (i*10,  np.nanpercentile(U1, i*10),np.nanpercentile(V1, i*10))
-
 
 
 #Step 4: Draw
