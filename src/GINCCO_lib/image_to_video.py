@@ -4,8 +4,6 @@
 import os
 import glob
 import numpy as np
-import imageio.v3 as iio
-from PIL import Image
 
 def _ensure_even_hw(arr):
     """Pad last row/col if H or W is odd to keep encoders happy."""
