@@ -19,7 +19,8 @@ conda activate gincco_test2
 
 # Install dependencies
 conda install numpy scipy netcdf4
-conda install matplotlib basemap
+conda install matplotlib 
+conda install basemap
 
 # Install GINCCO_lib
 pip install git+https://github.com/duytung/GINCCO_lib.git
@@ -35,6 +36,8 @@ pip install --force-reinstall --no-deps "git+https://github.com/duytung/GINCCO_l
 ## Documentation
 
 https://gincco-lib.readthedocs.io/
+
+Training 1: https://bom.so/gincco
 
 
 ## Acknowledgememt
