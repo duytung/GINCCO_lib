@@ -26,7 +26,8 @@ conda install basemap
 pip install git+https://github.com/duytung/GINCCO_lib.git
 
 # Optional: make video from outputs
-pip install imageio[ffmpeg] imageio[pyav] pillow
+conda install -c conda-forge imageio av pillow <------ This seem better
+pip install imageio[ffmpeg] imageio[pyav] pillow  <------- Do not work in some cases
 
 # To update the library
 pip install --force-reinstall --no-deps "git+https://github.com/duytung/GINCCO_lib.git"
