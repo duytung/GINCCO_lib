@@ -81,7 +81,7 @@ def pngs_to_video(inputs, output_path, fps=24, resize_to=None):
         w, h = (resize_to if resize_to is not None else im0.size)
 
     try:
-        with iio.imopen(output_path, "w", plugin="ffmpeg") as writer:
+        with iio.imopen(output_path, "w", plugin="pyav") as writer:
             writer.init_video_stream(fps=fps, codec="h264")
 
             for idx, path in enumerate(files):
