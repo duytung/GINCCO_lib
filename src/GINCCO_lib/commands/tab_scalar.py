@@ -475,16 +475,28 @@ def _create_right_panel(frame, state, gridfile, ds, listbox, draw_callback):
         data = np.squeeze(var[:])
         nd = data.ndim
 
-        menu = top_layer_menu["menu"]
-        menu.delete(0, "end")
-
+        # --- NEW: cập nhật layer cho Combobox (hoặc OptionMenu cũ) ---
         if nd == 3:
-            for i in range(data.shape[0]):
-                menu.add_command(label=str(i), command=lambda v=str(i): layer_var.set(v))
-            layer_var.set("0")
+            values = [str(i) for i in range(data.shape[0])]
         else:
-            menu.add_command(label="0", command=lambda: layer_var.set("0"))
+            values = ["0"]
+
+        # Ưu tiên: Combobox (ttk.Combobox có option "values")
+        try:
+            top_layer_menu["values"] = values
+        except tk.TclError:
+            # Fallback: OptionMenu cũ dùng "menu"
+            menu = top_layer_menu["menu"]
+            menu.delete(0, "end")
+            for val in values:
+                menu.add_command(label=val, command=lambda v=val: layer_var.set(v))
+
+        # đặt default layer
+        if values:
+            layer_var.set(values[0])
+        else:
             layer_var.set("0")
+        # --- HẾT PHẦN SỬA ---
 
         # suffix detection: u/v/f/t
         suffix = "t"
@@ -498,7 +510,6 @@ def _create_right_panel(frame, state, gridfile, ds, listbox, draw_callback):
         state["lon"], state["lat"] = lon, lat
         state["varname"] = varname
         state["var"] = var
-
 
         # NEW: đọc depth & mask từ gridfile, lưu vào state
         if gridfile:
@@ -531,7 +542,6 @@ def _create_right_panel(frame, state, gridfile, ds, listbox, draw_callback):
         else:
             state["depth_levels"] = None
             state["mask_t"] = None
-
 
 
 
