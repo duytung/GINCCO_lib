@@ -247,7 +247,7 @@ def _create_right_panel(frame, state, gridfile, ds, listbox, draw_callback):
 
     # === CHỈ ĐỔI DÒNG NÀY ===
     # top_layer_menu = tk.OptionMenu(top_row, layer_var, "0")
-    top_layer_menu = ttk.Combobox(
+    top_layer_menu = tk.ttk.Combobox(
         top_row,
         textvariable=layer_var,
         width=4,
