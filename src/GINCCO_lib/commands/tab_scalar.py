@@ -207,6 +207,8 @@ def _create_right_panel(frame, state, gridfile, ds, listbox, draw_callback):
     ).grid(row=row_s, column=0, columnspan=2, pady=8, sticky="")
     row_s += 1
 
+
+    '''
     # --- Layer/Depth controls ---
     mode_var = tk.StringVar(value="layer")
     layer_var = tk.StringVar(value="0")
@@ -229,7 +231,54 @@ def _create_right_panel(frame, state, gridfile, ds, listbox, draw_callback):
     depth_entry.pack(side="left", padx=(6, 0))
 
     row_s += 1
+    '''
 
+    # --- Layer/Depth controls ---
+    mode_var = tk.StringVar(value="layer")
+    layer_var = tk.StringVar(value="0")
+    depth_var = tk.StringVar(value="")
+
+    top_row = tk.Frame(controls_frame)
+    top_row.grid(row=row_s, column=0, columnspan=2, sticky="we", pady=(4, 6))
+
+    rb_layer = tk.Radiobutton(top_row, text="Layer", variable=mode_var, value="layer")
+    rb_layer.pack(side="left")
+
+    # === Spinbox thay OptionMenu ===
+    max_layer = 200
+    top_layer_menu = tk.Spinbox(top_row, from_=0, to=max_layer,
+                                textvariable=layer_var, width=4)
+    top_layer_menu.pack(side="left", padx=(6, 10))
+
+    # === THÊM SCROLL BẰNG CHUỘT ===
+    def on_mouse_wheel(event):
+        try:
+            # event.delta > 0: cuộn lên → layer - 1
+            if event.delta > 0:
+                top_layer_menu.invoke('buttondown')
+            else:
+                top_layer_menu.invoke('buttonup')
+        except:
+            pass
+
+    top_layer_menu.bind("<MouseWheel>", on_mouse_wheel)
+    # Linux/X11
+    top_layer_menu.bind("<Button-4>", lambda e: top_layer_menu.invoke('buttondown'))
+    top_layer_menu.bind("<Button-5>", lambda e: top_layer_menu.invoke('buttonup'))
+    # === HẾT PHẦN THÊM ===
+
+    rb_depth = tk.Radiobutton(top_row, text="Depth", variable=mode_var, value="depth")
+    rb_depth.pack(side="left")
+
+    depth_entry = tk.Entry(top_row, textvariable=depth_var, width=12)
+    depth_entry.pack(side="left", padx=(6, 0))
+
+    row_s += 1
+
+
+
+
+    
     # --- Map customization header ---
     tk.Label(
         controls_frame,

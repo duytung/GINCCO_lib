@@ -517,6 +517,7 @@ def map_draw_uv(
     path_save, name_save,
     quiver_max_n=10,   # ~max arrows per axis (auto step so arrows <= quiver_max_n x quiver_max_n)
     quiver_scale=None  # None lets Matplotlib choose; or set e.g. 50, 100 for different scaling
+    data_min=None, data_max=None,
 ):
     
     """
@@ -553,6 +554,10 @@ def map_draw_uv(
     quiver_scale : float, optional
         Scaling factor for quiver arrow lengths.  
         If ``None``, Matplotlib chooses automatically. Examples: ``50``, ``100``.
+    data_min, data_max : float, optional
+        User-specified minimum and maximum color limits.  
+        If ``None``, they are derived from the 5th and 95th percentiles of ``data_draw``.
+
 
     Returns
     -------
@@ -595,15 +600,35 @@ def map_draw_uv(
 
     finite_vals = np.asarray(speed)[np.isfinite(speed)]
     if finite_vals.size == 0:
-        data_min, data_max = 0.0, 1.0
+        if data_min is None:
+            data_min = 0.0
+        if data_max is None:
+            data_max = 1.0
     else:
-        data_min = float(np.nanpercentile(finite_vals, 5))
-        data_max = float(np.nanpercentile(finite_vals, 95))
+        if data_min is None:
+            data_min = float(np.nanpercentile(finite_vals, 5))
+        if data_max is None:
+            data_max = float(np.nanpercentile(finite_vals, 95))
+
 
     vmin_pad, vmax_pad = _pad_10pct(data_min, data_max)
-    if vmin_pad < 0:
-        vmin_pad = 0
+
+    # Overwrite in case provided value as input ! Nov 30
+    if data_min is not None:
+        vmin_pad = data_min
+    if data_max is not None:
+        vmax_pad = data_max
+
     ticks = _pretty_ticks(vmin_pad, vmax_pad)
+
+
+
+
+
+
+
+
+
 
     # Colormap
     cmap = _truncate_colormap("YlOrBr", 0.0, 0.6)
