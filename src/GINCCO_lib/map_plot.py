@@ -516,7 +516,7 @@ def map_draw_uv(
     mask_ocean,
     path_save, name_save,
     quiver_max_n=10,   # ~max arrows per axis (auto step so arrows <= quiver_max_n x quiver_max_n)
-    quiver_scale=None  # None lets Matplotlib choose; or set e.g. 50, 100 for different scaling
+    quiver_scale=None,  # None lets Matplotlib choose; or set e.g. 50, 100 for different scaling
     data_min=None, data_max=None,
 ):
     
