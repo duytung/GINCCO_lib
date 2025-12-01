@@ -221,7 +221,7 @@ def draw_vector_plot(u, v, lon, lat, opts, state, quiver_max_n=10):
 
 
     # --- Quiver trên Basemap ---
-    m.quiver(
+    Q = m.quiver(
         lon_small, lat_small, u_q, v_q,
         latlon=True, zorder=11, scale=scale,
         width=0.004, headwidth=3, headlength=4,
