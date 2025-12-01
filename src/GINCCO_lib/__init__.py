@@ -30,7 +30,7 @@ from .modules.heatmap_plot import plot_heatmap, plot_section, plot_section_conto
 
 
 #video-related function
-from .image_to_video import pngs_to_video
+from .modules.image_to_video import pngs_to_video
 
 # define what is exposed when users do `from yourpkg import *`
 __all__ = [
