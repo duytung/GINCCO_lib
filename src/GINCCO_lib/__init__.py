@@ -4,7 +4,7 @@
 '''
 
 # import-related functions
-from .import_series_daily import (
+from .modules.import_series_daily import (
     import_4D,
     import_3D,
     import_surface,
@@ -13,24 +13,24 @@ from .import_series_daily import (
     import_point,
     import_profile,
 )
-from .import_daily import import_section
+from .modules.import_daily import import_section
 
 
 # post-processing function
-from .interpolate_to_t import interpolate_to_t
-from .geostrophic_current import geostrophic_current
-from .spatial_average import spatial_average
-from .temporal_mean import monthly_mean, annual_mean
+from .modules.interpolate_to_t import interpolate_to_t
+from .modules.geostrophic_current import geostrophic_current
+from .modules.spatial_average import spatial_average
+from .modules.temporal_mean import monthly_mean, annual_mean
 
 
 # plot-related functions
-from .map_plot import map_draw, map_draw_point, map_draw_uv, map_draw_box
-from .time_series_plot import plot_point, plot_point_monthly
-from .heatmap_plot import plot_heatmap, plot_section, plot_section_contourf
+from .modules.map_plot import map_draw, map_draw_point, map_draw_uv, map_draw_box
+from .modules.time_series_plot import plot_point, plot_point_monthly
+from .modules.heatmap_plot import plot_heatmap, plot_section, plot_section_contourf
 
 
 #video-related function
-from .image_to_video import pngs_to_video
+from .modules.image_to_video import pngs_to_video
 
 # define what is exposed when users do `from yourpkg import *`
 __all__ = [
@@ -64,4 +64,4 @@ __all__ = [
     "pngs_to_video",
 ]
 
-__version__ = "0.6"
+__version__ = "0.7"

@@ -13,6 +13,7 @@ If draw_callback is None, fallback to local draw_map_plot imported from .map_plo
 
 import tkinter as tk
 from tkinter import messagebox, END
+from tkinter import ttk  # NEW: for Combobox
 import numpy as np
 from netCDF4 import Dataset
 import matplotlib.cm as cm
@@ -49,9 +50,9 @@ def _bind_mousewheel(widget, target):
 
     def _on_mousewheel(event):
         # Windows / macOS use event.delta, X11 uses event.num
-        if event.num == 5 or event.delta < 0:
+        if getattr(event, "num", None) == 5 or getattr(event, "delta", 0) < 0:
             target.yview_scroll(1, "units")
-        elif event.num == 4 or event.delta > 0:
+        elif getattr(event, "num", None) == 4 or getattr(event, "delta", 0) > 0:
             target.yview_scroll(-1, "units")
 
     def _bind_all(_):
@@ -86,7 +87,13 @@ def _create_base_frame(parent):
     frame.grid_columnconfigure(1, weight=1)  # right (controls) expandable
 
     # central state shared in this tab
-    state = {"varname": None, "var": None, "lon": None, "lat": None, "suffix": "t"}
+    state = {
+        "varname": None,
+        "var": None,
+        "lon": None,
+        "lat": None,
+        "suffix": "t",
+    }
     return frame, state
 
 
@@ -146,7 +153,9 @@ def _build_cmap_menu(parent, cmap_var_scalar):
 
     categories = {"Sequential": [], "Diverging": [], "Qualitative": [], "Miscellaneous": []}
     try:
-        for name in sorted(cm.cmap_d.keys()):
+        # cm.cmap_d is deprecated in newer matplotlib, but you may keep for backwards compat
+        cmap_dict = getattr(cm, "cmap_d", {name: cm.get_cmap(name) for name in cm.cmapnames})
+        for name in sorted(cmap_dict.keys()):
             cat = classify_cmap(name)
             categories[cat].append(name)
     except Exception:
@@ -212,14 +221,22 @@ def _create_right_panel(frame, state, gridfile, ds, listbox, draw_callback):
     layer_var = tk.StringVar(value="0")
     depth_var = tk.StringVar(value="")
 
+    # cờ cho phép dùng depth hay không (2D vs 3D)
+    state["allow_depth"] = True
+
     top_row = tk.Frame(controls_frame)
     top_row.grid(row=row_s, column=0, columnspan=2, sticky="we", pady=(4, 6))
 
     rb_layer = tk.Radiobutton(top_row, text="Layer", variable=mode_var, value="layer")
     rb_layer.pack(side="left")
 
-    top_layer_menu = tk.OptionMenu(top_row, layer_var, "0")
-    top_layer_menu.config(width=2)
+    # dùng Combobox cho layer
+    top_layer_menu = ttk.Combobox(
+        top_row,
+        textvariable=layer_var,
+        width=4,
+        state="readonly",
+    )
     top_layer_menu.pack(side="left", padx=(6, 10))
 
     rb_depth = tk.Radiobutton(top_row, text="Depth", variable=mode_var, value="depth")
@@ -264,7 +281,6 @@ def _create_right_panel(frame, state, gridfile, ds, listbox, draw_callback):
     menu_button.grid(row=row_s, column=1, sticky="w")
     row_s += 1
 
-
     # --- Cmap range ---
     tk.Label(controls_frame, text="Cmap range:").grid(
         row=row_s, column=0, sticky="e", padx=5, pady=2
@@ -283,11 +299,6 @@ def _create_right_panel(frame, state, gridfile, ds, listbox, draw_callback):
     cmap_max_scalar.insert(0, "1")
 
     row_s += 1
-
-
-
-
-
 
     # --- Map resolution ---
     tk.Label(controls_frame, text="Map resolution:").grid(
@@ -360,16 +371,12 @@ def _create_right_panel(frame, state, gridfile, ds, listbox, draw_callback):
         root.update_idletasks()
 
         try:
-            # ======== TẤT CẢ LOGIC ĐỀU PHẢI NẰM TRONG try =========
-
             opts = {
                 "vmin": safe_float(entry_min_scalar.get()) if entry_min_scalar else None,
                 "vmax": safe_float(entry_max_scalar.get()) if entry_max_scalar else None,
-
                 "cmap": cmap_var_scalar.get() if cmap_var_scalar else None,
                 "cmap_min": safe_float(cmap_min_scalar.get()) if cmap_min_scalar else None,
                 "cmap_max": safe_float(cmap_max_scalar.get()) if cmap_max_scalar else None,
-
                 "lon_min": safe_float(lon_min_scalar.get()) if lon_min_scalar else None,
                 "lon_max": safe_float(lon_max_scalar.get()) if lon_max_scalar else None,
                 "lat_min": safe_float(lat_min_scalar.get()) if lat_min_scalar else None,
@@ -381,7 +388,7 @@ def _create_right_panel(frame, state, gridfile, ds, listbox, draw_callback):
             }
 
             # depth/layer selection
-            if mode_var.get() == "depth":
+            if mode_var.get() == "depth" and state.get("allow_depth", True):
                 dtxt = depth_var.get().strip()
                 if dtxt == "":
                     messagebox.showinfo("Info", "Please enter a depth value.")
@@ -392,6 +399,7 @@ def _create_right_panel(frame, state, gridfile, ds, listbox, draw_callback):
                     messagebox.showinfo("Info", "Invalid depth value.")
                     return
             else:
+                # nếu không dùng depth thì dùng layer
                 opts["layer"] = int(layer_var.get()) if layer_var.get().isdigit() else 0
 
             if not state.get("var"):
@@ -416,11 +424,9 @@ def _create_right_panel(frame, state, gridfile, ds, listbox, draw_callback):
             )
 
         finally:
-            # dù return ở đâu trong try, finally vẫn chạy
             root.config(cursor="")
             redraw_btn_scalar.config(state="normal")
             root.update_idletasks()
-
 
     redraw_btn_scalar = tk.Button(
         controls_frame, text="Draw Map", bg="lightblue", command=redraw
@@ -440,16 +446,33 @@ def _create_right_panel(frame, state, gridfile, ds, listbox, draw_callback):
         data = np.squeeze(var[:])
         nd = data.ndim
 
-        menu = top_layer_menu["menu"]
-        menu.delete(0, "end")
-
+        # cập nhật layer cho Combobox (hoặc OptionMenu fallback)
         if nd == 3:
-            for i in range(data.shape[0]):
-                menu.add_command(label=str(i), command=lambda v=str(i): layer_var.set(v))
-            layer_var.set("0")
+            values = [str(i) for i in range(data.shape[0])]
         else:
-            menu.add_command(label="0", command=lambda: layer_var.set("0"))
+            values = ["0"]
+
+        # Combobox (ttk) hỗ trợ "values"
+        try:
+            top_layer_menu["values"] = values
+        except tk.TclError:
+            # Fallback: OptionMenu cũ dùng "menu"
+            menu = top_layer_menu["menu"]
+            menu.delete(0, "end")
+            for val in values:
+                menu.add_command(label=val, command=lambda v=val: layer_var.set(v))
+
+        if values:
+            layer_var.set(values[0])
+        else:
             layer_var.set("0")
+
+        # 2D vs 3D → quyết định có cho dùng depth không
+        if nd == 3:
+            state["allow_depth"] = True
+        else:
+            state["allow_depth"] = False
+            depth_var.set("")  # xoá depth cũ nếu có
 
         # suffix detection: u/v/f/t
         suffix = "t"
@@ -464,24 +487,20 @@ def _create_right_panel(frame, state, gridfile, ds, listbox, draw_callback):
         state["varname"] = varname
         state["var"] = var
 
-
-        # NEW: đọc depth & mask từ gridfile, lưu vào state
+        # đọc depth & mask từ gridfile, lưu vào state
         if gridfile:
             try:
                 with Dataset(gridfile) as g:
-                    # depth_? (vd depth_t, depth_u, ...)
                     try:
                         depth_3d = g.variables[f"depth_{suffix}"][:]
                     except KeyError:
                         depth_3d = g.variables["depth_t"][:]
 
-                    # mask_? (vd mask_t)
                     try:
                         mask_ = g.variables[f"mask_{suffix}"][:]
                     except KeyError:
                         mask_ = g.variables["mask_t"][:]
 
-                    # mask_t 2D
                     if mask_.ndim == 3:
                         mask_t = mask_[0, :, :]
                     else:
@@ -497,22 +516,8 @@ def _create_right_panel(frame, state, gridfile, ds, listbox, draw_callback):
             state["depth_levels"] = None
             state["mask_t"] = None
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
+        # cập nhật UI sau khi biết allow_depth
+        set_mode()
 
     def on_var_change(evt):
         sel = listbox.curselection()
@@ -529,11 +534,43 @@ def _create_right_panel(frame, state, gridfile, ds, listbox, draw_callback):
     # Mode switching (layer vs depth)
     # ------------------------------------------------------------------
     def set_mode(*_):
-        if mode_var.get() == "layer":
+        allow_depth = state.get("allow_depth", True)
+
+        if not allow_depth:
+            # ép về layer, khóa luôn depth
+            mode_var.set("layer")
             try:
-                top_layer_menu.config(state="normal")
+                rb_depth.config(state="disabled")
             except Exception:
                 pass
+            try:
+                depth_entry.config(state="disabled")
+            except Exception:
+                pass
+            # Layer luôn cho chọn
+            try:
+                top_layer_menu.config(state="readonly")
+            except Exception:
+                try:
+                    top_layer_menu.config(state="normal")
+                except Exception:
+                    pass
+            return
+
+        # nếu cho phép depth → bật lại
+        try:
+            rb_depth.config(state="normal")
+        except Exception:
+            pass
+
+        if mode_var.get() == "layer":
+            try:
+                top_layer_menu.config(state="readonly")
+            except Exception:
+                try:
+                    top_layer_menu.config(state="normal")
+                except Exception:
+                    pass
             try:
                 depth_entry.config(state="disabled")
             except Exception:
@@ -549,9 +586,13 @@ def _create_right_panel(frame, state, gridfile, ds, listbox, draw_callback):
                 pass
 
     mode_var.trace_add("write", lambda *a: set_mode())
-    depth_var.trace_add(
-        "write", lambda *a: mode_var.set("depth") if depth_var.get().strip() else None
-    )
+
+    def _on_depth_change(*a):
+        # chỉ bật chế độ depth nếu đang cho phép depth
+        if depth_var.get().strip() and state.get("allow_depth", True):
+            mode_var.set("depth")
+
+    depth_var.trace_add("write", _on_depth_change)
     set_mode()
 
     # return important handles

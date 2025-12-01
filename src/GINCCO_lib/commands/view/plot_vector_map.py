@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
-from GINCCO_lib.commands.interpolate_to_t import interpolate_to_t
+from GINCCO_lib.commands.view.interpolate_to_t import interpolate_to_t
 from mpl_toolkits.basemap import Basemap
 
 try:
@@ -221,12 +221,21 @@ def draw_vector_plot(u, v, lon, lat, opts, state, quiver_max_n=10):
 
 
     # --- Quiver trên Basemap ---
-    m.quiver(
+    Q = m.quiver(
         lon_small, lat_small, u_q, v_q,
         latlon=True, zorder=11, scale=scale,
         width=0.004, headwidth=3, headlength=4,
         headaxislength=3.5, color="black"
     )
+
+    # --- Quiver key ---
+
+    ax.quiverkey(Q, 
+         X=0.85, Y=0.05,  # position in axes fraction
+         U=0.1,             # length of reference vector
+         label='0.1 m/s',
+         labelpos='E')
+
 
     # --- Colorbar & title ---
     cbar = fig.colorbar(cs, ax=ax, orientation="vertical")
