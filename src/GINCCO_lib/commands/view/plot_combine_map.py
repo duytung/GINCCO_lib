@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 from mpl_toolkits.basemap import Basemap
-from GINCCO_lib.commands.interpolate_to_t import interpolate_to_t
+from GINCCO_lib.commands.view.interpolate_to_t import interpolate_to_t
 
 try:
     from scipy.spatial import cKDTree as KDTree

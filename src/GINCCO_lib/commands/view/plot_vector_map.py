@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
-from GINCCO_lib.commands.interpolate_to_t import interpolate_to_t
+from GINCCO_lib.commands.view.interpolate_to_t import interpolate_to_t
 from mpl_toolkits.basemap import Basemap
 
 try:
