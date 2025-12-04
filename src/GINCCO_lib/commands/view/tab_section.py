@@ -14,6 +14,9 @@ from tkinter import messagebox
 import numpy as np
 from netCDF4 import Dataset
 import matplotlib.cm as cm
+from matplotlib.colors import BoundaryNorm
+from matplotlib.ticker import MaxNLocator
+
 from .plot_section import draw_section
 
 
@@ -258,7 +261,7 @@ def build_section_tab(parent, datafile, gridfile=None, draw_callback=None):
         row=row_v, column=0, sticky="e", padx=5, pady=2
     )
 
-    interp_var = tk.StringVar(value="Linear")   # Default method
+    interp_var = tk.StringVar(value="bilinear")   # Default method
     interp_menu = tk.OptionMenu(inner_frame, interp_var, "bilinear", "idw")
     interp_menu.grid(row=row_v, column=1, sticky="w", padx=5, pady=2)
 
