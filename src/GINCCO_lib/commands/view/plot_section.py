@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 from mpl_toolkits.basemap import Basemap
 from GINCCO_lib.commands.view.interpolate_to_t import interpolate_to_t
-from GINCCO_lib.modules.import_daily import section_extract, apply_interp, _data_interp
+from GINCCO_lib.modules.import_daily import section_extract, _data_interp
 
 try:
     from scipy.spatial import cKDTree as KDTree
