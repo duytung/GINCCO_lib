@@ -260,6 +260,5 @@ def draw_section(var_name, var_data, opts, state):
     cbar_ax.set_label(var_name)
 
     fig.subplots_adjust(bottom=0.3, top=0.9, left=0.1, right=0.95, wspace=0.2, hspace=0.3)
-    fig.tight_layout()
     plt.show(block=False)
 
