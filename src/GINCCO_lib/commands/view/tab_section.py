@@ -326,6 +326,11 @@ def build_section_tab(parent, datafile, gridfile=None, draw_callback=None):
     tk.Label(frame_minmax_vector, text="Max").pack(side="left")
     entry_max_vector = tk.Entry(frame_minmax_vector, width=6)
     entry_max_vector.pack(side="left", padx=(2, 0))
+
+    tk.Label(frame_minmax_vector, text="Interval").pack(side="left")
+    entry_range_dv = tk.Entry(frame_minmax_vector, width=6)
+    entry_range_dv.pack(side="left", padx=(2, 0))
+
     row_v += 1
 
     # Color palette (grouped by type)
@@ -432,6 +437,8 @@ def build_section_tab(parent, datafile, gridfile=None, draw_callback=None):
                 "depth_interval": safe_float(depth_interval.get()) or 1,
                 "vmin": safe_float(entry_min_vector.get()) if entry_min_vector else None,
                 "vmax": safe_float(entry_max_vector.get()) if entry_max_vector else None,
+                "dv": safe_float(entry_range_dv.get()) if entry_range_dv else None,
+                
                 "fig_width": safe_float(entry_figsize_width.get()) if entry_figsize_width else 7,
                 "fig_height": safe_float(entry_figsize_height.get()) if entry_figsize_height else 4,
                 "cmap": cmap_var_vector.get(),

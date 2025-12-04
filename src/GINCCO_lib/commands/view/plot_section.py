@@ -223,6 +223,9 @@ def draw_section(var_name, var_data, opts, state):
     norm = BoundaryNorm(levels, ncolors=cmap.N, clip=True)
     ticks = _nice_ticks(vmin, vmax)
 
+    dv = safe_float(opts.get("dv"))
+    if dv is not None:
+        ticks = np.arange(vmin, vmax+dv, dv)
 
     # ---------- Figure ----------
     plt.close("all")
