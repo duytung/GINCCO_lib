@@ -1,8 +1,12 @@
-# draw_combine.py
+# draw_section.py
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 from mpl_toolkits.basemap import Basemap
+from matplotlib.colors import BoundaryNorm
+from matplotlib.ticker import MaxNLocator
+from tkinter import messagebox
+
 from GINCCO_lib.commands.view.interpolate_to_t import interpolate_to_t
 from GINCCO_lib.modules.import_daily import section_extract, _data_interp
 

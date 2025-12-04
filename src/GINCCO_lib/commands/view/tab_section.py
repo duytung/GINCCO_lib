@@ -14,8 +14,6 @@ from tkinter import messagebox
 import numpy as np
 from netCDF4 import Dataset
 import matplotlib.cm as cm
-from matplotlib.colors import BoundaryNorm
-from matplotlib.ticker import MaxNLocator
 
 from .plot_section import draw_section
 
