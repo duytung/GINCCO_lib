@@ -259,7 +259,7 @@ def build_section_tab(parent, datafile, gridfile=None, draw_callback=None):
     )
 
     interp_var = tk.StringVar(value="Linear")   # Default method
-    interp_menu = tk.OptionMenu(inner_frame, interp_var, "Linear", "IDW")
+    interp_menu = tk.OptionMenu(inner_frame, interp_var, "bilinear", "idw")
     interp_menu.grid(row=row_v, column=1, sticky="w", padx=5, pady=2)
 
     row_v += 1
