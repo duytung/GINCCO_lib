@@ -1,8 +1,10 @@
 """
-Main viewer (simplified)
-"""
+Main viewer entry point.
 
-################################
+This module provides a simple Tkinter-based GUI for exploring NetCDF data
+using multiple tabs (Scalar, Vector, Combine, Section). It can be called
+either directly as a Python module or via the gincco CLI.
+"""
 
 import os
 import argparse
@@ -12,32 +14,46 @@ from tkinter import ttk
 
 from .tab_scalar import build_scalar_tab
 from .tab_vector import build_vector_tab
-from .tab_combine import build_combine_tab   
+from .tab_combine import build_combine_tab
+from .tab_section import build_section_tab
 
 import matplotlib
 matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
 
+
 def register_subparser(subparser):
     """
-    Được gọi từ gincco CLI.
-    subparser ở đây là 1 ArgumentParser con tương ứng với lệnh 'view'.
-    Ở đây chỉ việc khai báo các argument cho lệnh này.
+    Register the 'view' subcommand options for the gincco CLI.
+
+    Parameters
+    ----------
+    subparser : argparse.ArgumentParser
+        The subparser corresponding to the 'view' command. This function
+        adds the arguments required by the viewer, such as the data file
+        and optional grid file.
     """
     subparser.add_argument(
         "filename",
-        help="Path to data file (NetCDF)",
+        help="Path to data file (NetCDF).",
     )
     subparser.add_argument(
         "--grid",
         dest="gridfile",
         default=None,
-        help="Path to grid file (default: try to find grid.nc near datafile)",
+        help="Path to grid file (default: try to find 'grid.nc' near the data file).",
     )
 
 
 def bring_all_windows_front(root):
-    """Bring root + all Toplevel windows to the front."""
+    """
+    Bring the main Tk root window and all Toplevel windows to the front.
+
+    Parameters
+    ----------
+    root : tk.Tk
+        The main Tkinter root window.
+    """
     try:
         root.deiconify()
         root.lift()
@@ -54,9 +70,22 @@ def bring_all_windows_front(root):
                 pass
 
 
-
-
 def open_file(datafile, gridfile=None):
+    """
+    Open the main viewer window for a given NetCDF data file.
+
+    This function creates a Tkinter root window, sets up a Notebook with
+    multiple tabs (Scalar, Vector, Combine, Section), and starts the Tk
+    event loop.
+
+    Parameters
+    ----------
+    datafile : str
+        Path to the NetCDF data file to visualize.
+    gridfile : str or None, optional
+        Path to the grid file used by some tabs. If None, the viewer may
+        still run but certain features (e.g., mapped plots) can be limited.
+    """
     if not os.path.exists(datafile):
         messagebox.showerror("Error", f"Data file not found: {datafile}")
         return
@@ -65,58 +94,77 @@ def open_file(datafile, gridfile=None):
     root.title(f"GINCCO Viewer (experimental) - {os.path.basename(datafile)}")
     root.geometry("500x600")
 
-
     top_frame = tk.Frame(root)
     top_frame.pack(fill="both", expand=True)
 
-    # notebook on the right (single area)
+    # Main notebook (tabbed interface)
     notebook = ttk.Notebook(top_frame)
     notebook.pack(fill="both", expand=True)
 
-    # Build tabs. Each tab loads the dataset independently (keeps them isolated).
+    # Build tabs. Each tab opens the dataset independently (keeps state isolated).
     scalar_tab_widgets = build_scalar_tab(notebook, datafile, gridfile)
     vector_tab_widgets = build_vector_tab(notebook, datafile, gridfile)
     combine_tab_widgets = build_combine_tab(notebook, datafile, gridfile)
+    section_tab_widgets = build_section_tab(notebook, datafile, gridfile)
 
-    notebook.add(scalar_tab_widgets['frame'], text="Scalar")
-    notebook.add(vector_tab_widgets['frame'], text="Vector")
-    notebook.add(combine_tab_widgets['frame'], text="Combine")  # <--- tab mới
+    notebook.add(scalar_tab_widgets["frame"], text="Scalar")
+    notebook.add(vector_tab_widgets["frame"], text="Vector")
+    notebook.add(combine_tab_widgets["frame"], text="Combine")
+    notebook.add(section_tab_widgets["frame"], text="Section")
 
     root.mainloop()
 
 
 def main(args=None):
     """
-    - Nếu chạy trực tiếp:  python -m GINCCO_lib.commands.view file.nc
-      -> args=None -> tự argparse như cũ.
-    - Nếu chạy qua CLI:   gincco view file.nc
-      -> cli.py truyền Namespace vào -> dùng luôn args đó.
+    Entry point for the viewer.
+
+    This function can be called in two ways:
+
+    1. Directly as a Python module:
+           python -m GINCCO_lib.commands.view file.nc
+       In this case `args` is None and local argparse is used.
+
+    2. Via the gincco CLI:
+           gincco view file.nc
+       In this case the CLI passes an argparse.Namespace in `args`,
+       and this function uses it directly.
+
+    Parameters
+    ----------
+    args : argparse.Namespace or None, optional
+        Parsed arguments. If None, arguments are parsed from the command
+        line inside this function.
     """
     if args is None:
-        # chạy kiểu module trực tiếp
+        # Called directly as a module: parse arguments here.
         p = argparse.ArgumentParser()
-        p.add_argument('filename')
-        p.add_argument('--grid', dest='gridfile', default=None,
-                       help="Path to grid file (default: search for 'grid.nc' near datafile)")
+        p.add_argument("filename")
+        p.add_argument(
+            "--grid",
+            dest="gridfile",
+            default=None,
+            help="Path to grid file (default: search for 'grid.nc' near datafile)",
+        )
         ns = p.parse_args()
     else:
-        # được gọi từ gincco CLI
+        # Called from gincco CLI: use the provided Namespace as-is.
         ns = args
 
     datafile = ns.filename
 
-    # ensure datafile exists
+    # Ensure data file exists
     if not os.path.exists(datafile):
         print(f"Data file not found: {datafile}")
         return
 
-    # 1) if user provided --grid, use it (if exists)
+    # 1) If user provided --grid, use it (if it exists)
     gridfile = None
     grid_arg = getattr(ns, "gridfile", None)
     if grid_arg:
         cand = grid_arg
         if not os.path.isabs(cand):
-            # allow relative to current cwd
+            # Allow relative paths (relative to current working directory)
             cand = os.path.abspath(cand)
         if os.path.exists(cand):
             gridfile = cand
@@ -130,7 +178,7 @@ def main(args=None):
         if os.path.exists(candidate):
             gridfile = candidate
 
-    # 3) Optionally search up parent directories (up to max_levels)
+    # 3) Optionally search parent directories (up to max_levels) for grid.nc
     if gridfile is None:
         max_levels = 2
         cur = os.path.abspath(os.path.dirname(datafile))
@@ -144,8 +192,8 @@ def main(args=None):
                 break
             cur = parent
 
+    # 4) Last resort: try 'grid.nc' in the current working directory
     if gridfile is None:
-        # last resort: try 'grid.nc' in cwd (keeps some compatibility)
         candidate = os.path.abspath("grid.nc")
         if os.path.exists(candidate):
             gridfile = candidate
@@ -158,5 +206,5 @@ def main(args=None):
     open_file(datafile, gridfile)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
