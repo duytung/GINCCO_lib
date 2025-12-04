@@ -210,7 +210,7 @@ def draw_section(var_name, var_data, opts, state):
     vmax = v_max_user if v_max_user is not None else vmax_data
 
     # ---------- Colormap ----------
-    n_colors = 20
+    n_colors = 200
     levels = np.linspace(vmin, vmax, n_colors + 1)
     cmap = plt.get_cmap(cmap_name, n_colors)
 
