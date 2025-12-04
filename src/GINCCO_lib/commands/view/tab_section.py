@@ -309,7 +309,7 @@ def build_section_tab(parent, datafile, gridfile=None, draw_callback=None):
     tk.Label(frame_figsize, text="Height").pack(side="left")
     entry_figsize_height = tk.Entry(frame_figsize, width=6)
     entry_figsize_height.pack(side="left", padx=(2, 0))
-    entry_figsize_height.insert(0, "6")
+    entry_figsize_height.insert(0, "4")
     row_v += 1
 
     # Value range (data vmin/vmax)
@@ -332,7 +332,7 @@ def build_section_tab(parent, datafile, gridfile=None, draw_callback=None):
     tk.Label(inner_frame, text="Color palette:").grid(
         row=row_v, column=0, sticky="e", padx=5, pady=2
     )
-    cmap_var_vector = tk.StringVar(value="YlOrBr")
+    cmap_var_vector = tk.StringVar(value="jet")
     menu_button = tk.Menubutton(inner_frame, textvariable=cmap_var_vector, relief="raised")
     menu = tk.Menu(menu_button, tearoff=False)
     menu_button["menu"] = menu
@@ -396,7 +396,7 @@ def build_section_tab(parent, datafile, gridfile=None, draw_callback=None):
     tk.Label(frame_cmap_vector, text="Max").pack(side="left")
     cmap_max_vector = tk.Entry(frame_cmap_vector, width=6)
     cmap_max_vector.pack(side="left", padx=(2, 0))
-    cmap_max_vector.insert(0, "0.7")
+    cmap_max_vector.insert(0, "1")
     row_v += 1
 
     # Figure DPI
@@ -433,7 +433,7 @@ def build_section_tab(parent, datafile, gridfile=None, draw_callback=None):
                 "vmin": safe_float(entry_min_vector.get()) if entry_min_vector else None,
                 "vmax": safe_float(entry_max_vector.get()) if entry_max_vector else None,
                 "fig_width": safe_float(entry_figsize_width.get()) if entry_figsize_width else 7,
-                "fig_height": safe_float(entry_figsize_height.get()) if entry_figsize_height else 6,
+                "fig_height": safe_float(entry_figsize_height.get()) if entry_figsize_height else 4,
                 "cmap": cmap_var_vector.get(),
                 "cmap_min": safe_float(cmap_min_vector.get()) if cmap_min_vector else 0,
                 "cmap_max": safe_float(cmap_max_vector.get()) if cmap_max_vector else 1,
