@@ -494,14 +494,25 @@ def build_section_tab(parent, datafile, gridfile=None, draw_callback=None):
     # Populate the variable menu from the dataset
     v_menu["menu"].delete(0, "end")
 
-    v_list = list(ds.variables.keys())
+
+    v_list = []
+    for name, var in ds.variables.items():
+        shape = getattr(var, "shape", ())
+        # Count dimensions with size > 1
+        effective_ndim = sum(1 for s in shape if s is not None and s > 1)
+        if effective_ndim == 3:
+            v_list.append(name)
+
+    # Add filtered variables to the OptionMenu
     for varname in v_list:
         v_menu["menu"].add_command(
             label=varname,
-            command=lambda v=varname: v_var_var.set(v),
+            command=lambda v=varname: v_var_var.set(v)
         )
-    if v_list:
-        v_var_var.set(v_list[0])
+
+    # Set default selection
+    v_var_var.set(v_list[0] if v_list else "")
+
 
     def on_vector_select(*_):
         """
