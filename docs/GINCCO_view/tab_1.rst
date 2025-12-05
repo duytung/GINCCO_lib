@@ -21,3 +21,17 @@ Now we will open GINCCO view
    :width: 500px
    :align: center
 
+
+Then, you can customize the map by changing different parameters 
+
+.. image:: ../_static/gincco_tab1_2.png
+   :width: 500px
+   :align: center
+
+
+If you would like to plot the vector map, please move to Vector tab
+
+.. image:: ../_static/gincco_tab2.1.png
+   :width: 600px
+   :align: center
+
