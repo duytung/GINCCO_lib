@@ -18,4 +18,5 @@ For inquiries or feedback, please contact nguyenduytung@hotmail.com
    GINCCO_lib
    examples/index
    utils/index
+   GINCCO_view/index
 
