@@ -1,4 +1,4 @@
-GINCCO vỉew
+GINCCO view
 ===========
 
 Below are worked examples demonstrating how to use key functions
