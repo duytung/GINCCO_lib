@@ -102,7 +102,8 @@ class _BaseMapTab:
             messagebox.showerror("Error", "Cannot open file:\n{}".format(exc))
 
     def _scroll_content(self):
-        canvas = tk.Canvas(self.frame, highlightthickness=0)
+        bg = ttk.Style(self.frame).lookup("TFrame", "background") or self.frame.cget("background")
+        canvas = tk.Canvas(self.frame, highlightthickness=0, background=bg)
         canvas.grid(row=0, column=0, sticky="nsew")
         scroll = ttk.Scrollbar(self.frame, orient="vertical", command=canvas.yview)
         scroll.grid(row=0, column=1, sticky="ns")
