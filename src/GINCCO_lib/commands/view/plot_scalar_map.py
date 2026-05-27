@@ -200,6 +200,14 @@ def draw_map_plot(varname, var, lon, lat, options, state=None):
         m.drawmeridians(meridians, labels=[0, 0, 0, 1],
                         fontsize=8, linewidth=0.5, dashes=[2, 4])
 
+    # Keep the map frame visible after filled continent polygons.
+    try:
+        m.drawmapboundary(linewidth=1.0, color="black", zorder=20)
+    except TypeError:
+        m.drawmapboundary(linewidth=1.0, color="black")
+    for spine in ax.spines.values():
+        spine.set_zorder(21)
+
     cbar = plt.colorbar(cs, ax=ax)
     cbar.set_label(colorbar_label)
 
