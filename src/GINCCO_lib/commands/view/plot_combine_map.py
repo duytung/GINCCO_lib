@@ -133,12 +133,26 @@ def draw_map_combine(scalar_name, scalar_var, u, v, lon, lat, opts, state):
 
     dpi = int(scalar_opts.get("dpi", 100))
     resolution = scalar_opts.get("resolution", "i")
+    fig_width = safe_float(scalar_opts.get("fig_width")) or 7.0
+    fig_height = safe_float(scalar_opts.get("fig_height")) or 6.0
+    show_coastline = bool(scalar_opts.get("show_coastline", True))
+    fill_continents = bool(scalar_opts.get("fill_continents", False))
+    continent_color = scalar_opts.get("continent_color") or "0.8"
+    lake_color = scalar_opts.get("lake_color") or "white"
+    show_gridlines = bool(scalar_opts.get("show_gridlines", True))
+    n_ticks = int(scalar_opts.get("n_ticks", 4)) if str(scalar_opts.get("n_ticks", "4")).isdigit() else 4
+    bad_color = scalar_opts.get("bad_color") or "white"
+    title = scalar_opts.get("title") or "{} + Vector field".format(scalar_name)
+    colorbar_label = scalar_opts.get("colorbar_label")
+    if colorbar_label is None:
+        colorbar_label = getattr(scalar_var, "units", "")
 
-    # Cho phép truncate colormap nếu muốn sau này
-    cmap_min = 0.0
-    cmap_max = 1.0
+    cmap_min = safe_float(scalar_opts.get("cmap_min"))
+    cmap_min = cmap_min if cmap_min is not None else 0.0
+    cmap_max = safe_float(scalar_opts.get("cmap_max"))
+    cmap_max = cmap_max if cmap_max is not None else 1.0
     cmap = _truncate_colormap(cmap_name, cmap_min, cmap_max)
-    cmap.set_bad(color="white")
+    cmap.set_bad(color=bad_color)
 
     # ---------- Mask ----------
     mask_t = state.get("mask_t")
@@ -149,7 +163,7 @@ def draw_map_combine(scalar_name, scalar_var, u, v, lon, lat, opts, state):
 
     # ---------- Figure + Basemap ----------
     plt.close("all")
-    fig, ax = plt.subplots(figsize=(7, 6), dpi=dpi)
+    fig, ax = plt.subplots(figsize=(fig_width, fig_height), dpi=dpi)
 
     m = Basemap(
         projection="merc",
@@ -173,26 +187,30 @@ def draw_map_combine(scalar_name, scalar_var, u, v, lon, lat, opts, state):
         vmax=vmax_s,
     )
 
-    m.drawcoastlines()
-    parallels = _nice_ticks(lat_min, lat_max, n=4)
-    meridians = _nice_ticks(lon_min, lon_max, n=4)
-    m.drawparallels(
-        parallels,
-        labels=[1, 0, 0, 0],
-        fontsize=8,
-        linewidth=0.5,
-        dashes=[2, 4],
-    )
-    m.drawmeridians(
-        meridians,
-        labels=[0, 0, 0, 1],
-        fontsize=8,
-        linewidth=0.5,
-        dashes=[2, 4],
-    )
+    if fill_continents:
+        m.fillcontinents(color=continent_color, lake_color=lake_color, zorder=10)
+    if show_coastline:
+        m.drawcoastlines(zorder=11)
+    if show_gridlines:
+        parallels = _nice_ticks(lat_min, lat_max, n=n_ticks)
+        meridians = _nice_ticks(lon_min, lon_max, n=n_ticks)
+        m.drawparallels(
+            parallels,
+            labels=[1, 0, 0, 0],
+            fontsize=8,
+            linewidth=0.5,
+            dashes=[2, 4],
+        )
+        m.drawmeridians(
+            meridians,
+            labels=[0, 0, 0, 1],
+            fontsize=8,
+            linewidth=0.5,
+            dashes=[2, 4],
+        )
 
     cbar = fig.colorbar(cs, ax=ax, orientation="vertical")
-    cbar.set_label(getattr(scalar_var, "units", ""))
+    cbar.set_label(colorbar_label)
 
     # ---------- Vector field ----------
     def _squeeze_leading(arr):
@@ -309,6 +327,13 @@ def draw_map_combine(scalar_name, scalar_var, u, v, lon, lat, opts, state):
         color="black",
     )
 
-    ax.set_title(f"{scalar_name} + Vector field")
+    try:
+        m.drawmapboundary(linewidth=1.0, color="black", zorder=20)
+    except TypeError:
+        m.drawmapboundary(linewidth=1.0, color="black")
+    for spine in ax.spines.values():
+        spine.set_zorder(21)
+
+    ax.set_title(title)
     fig.tight_layout()
     plt.show(block=False)

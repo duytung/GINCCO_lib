@@ -392,23 +392,44 @@ class VectorTab(_BaseMapTab):
         self.layer_combo.set("0")
         self.layer_combo.grid(row=2, column=1, sticky="w", padx=(4, 12), pady=3)
         self.rotate_var = tk.BooleanVar(value=True)
-        ttk.Checkbutton(group, text="Rotate using grid angle", variable=self.rotate_var).grid(row=3, column=1, sticky="w", padx=(4, 12), pady=3)
+        ttk.Checkbutton(group, text="Rotate using grid angle", variable=self.rotate_var).grid(
+            row=3, column=1, columnspan=3, sticky="w", padx=(4, 12), pady=3
+        )
 
         group = self.group("Map Bounds", row); row += 1
         self.lon_min, self.lon_max, self.lat_min, self.lat_max = self.bounds_group(group)
 
-        group = self.group("Vector Style", row); row += 1
+        group = self.group("Map-drawing options", row); row += 1
         self.label(group, "Max arrows", 0)
         self.quiver_n = self.entry(group, 0, "20")
         self.vmin, self.vmax = self.value_range(group, 1)
         self.cmap, self.cmap_min, self.cmap_max = self.cmap_group(group, 2, default="YlOrBr")
         self.cmap_max.delete(0, "end"); self.cmap_max.insert(0, "0.7")
-        self.label(group, "Resolution", 4)
-        self.resolution = self.combo(group, 4, ("c", "l", "i", "h", "f"), "i", width=6)
-        self.label(group, "DPI", 5)
-        self.dpi = self.entry(group, 5, "100")
-        self.label(group, "Scale", 6)
-        self.scale = self.entry(group, 6, "3")
+        self.fig_width, self.fig_height = self.pair_entries(group, 4, "Figure size", "W", "H", "7", "6", width=6)
+        self.label(group, "Resolution", 5)
+        self.resolution = self.combo(group, 5, ("c", "l", "i", "h", "f"), "i", width=6)
+        self.label(group, "Ticks", 6)
+        self.n_ticks = self.entry(group, 6, "4", width=6)
+        self.label(group, "DPI", 7)
+        self.dpi = self.entry(group, 7, "100")
+        self.label(group, "Scale", 8)
+        self.scale = self.entry(group, 8, "3")
+        self.label(group, "Missing color", 9)
+        self.bad_color = self.combo(group, 9, ("white", "lightgray", "none", "black"), "white", width=12)
+        self.show_coastline = tk.BooleanVar(value=True)
+        self.show_gridlines = tk.BooleanVar(value=True)
+        self.fill_continents = tk.BooleanVar(value=False)
+        ttk.Checkbutton(group, text="Draw coastlines", variable=self.show_coastline).grid(row=10, column=1, sticky="w", padx=(4, 12), pady=3)
+        ttk.Checkbutton(group, text="Draw gridlines", variable=self.show_gridlines).grid(row=10, column=2, sticky="w", padx=(4, 12), pady=3)
+        ttk.Checkbutton(group, text="Fill continents", variable=self.fill_continents).grid(row=10, column=3, sticky="w", padx=(4, 12), pady=3)
+        self.label(group, "Continent color", 11)
+        self.continent_color = self.combo(group, 11, ("0.8", "lightgray", "white", "tan", "darkgray"), "0.8", width=12)
+        self.label(group, "Lake color", 12)
+        self.lake_color = self.combo(group, 12, ("white", "lightblue", "0.9"), "white", width=12)
+        self.label(group, "Title", 13)
+        self.title_entry = self.entry(group, 13, "", width=26)
+        self.label(group, "Colorbar label", 14)
+        self.cbar_label = self.entry(group, 14, "", width=26)
 
         self.draw_button = self.action(row, "Draw Vector Map", self.draw)
         self._on_vector_change()
@@ -474,6 +495,17 @@ class VectorTab(_BaseMapTab):
             "scale": _safe_float(self.scale.get()) or 3,
             "resolution": self.resolution.get() or "i",
             "dpi": _safe_int(self.dpi.get(), 100),
+            "fig_width": _safe_float(self.fig_width.get()) or 7,
+            "fig_height": _safe_float(self.fig_height.get()) or 6,
+            "show_coastline": self.show_coastline.get(),
+            "fill_continents": self.fill_continents.get(),
+            "continent_color": self.continent_color.get() or "0.8",
+            "lake_color": self.lake_color.get() or "white",
+            "show_gridlines": self.show_gridlines.get(),
+            "n_ticks": _safe_int(self.n_ticks.get(), 4),
+            "bad_color": self.bad_color.get() or "white",
+            "title": self.title_entry.get().strip() or None,
+            "colorbar_label": self.cbar_label.get().strip() or None,
         }
 
 
@@ -503,22 +535,43 @@ class CombineTab(VectorTab):
         self.layer_combo.set("0")
         self.layer_combo.grid(row=4, column=1, sticky="w", padx=(4, 12), pady=3)
         self.rotate_var = tk.BooleanVar(value=True)
-        ttk.Checkbutton(group, text="Rotate using grid angle", variable=self.rotate_var).grid(row=5, column=1, sticky="w", padx=(4, 12), pady=3)
+        ttk.Checkbutton(group, text="Rotate using grid angle", variable=self.rotate_var).grid(
+            row=5, column=1, columnspan=3, sticky="w", padx=(4, 12), pady=3
+        )
 
         group = self.group("Map Bounds", row); row += 1
         self.lon_min, self.lon_max, self.lat_min, self.lat_max = self.bounds_group(group)
 
-        group = self.group("Style", row); row += 1
+        group = self.group("Map-drawing options", row); row += 1
         self.vmin, self.vmax = self.value_range(group, 0)
         self.cmap, self.cmap_min, self.cmap_max = self.cmap_group(group, 1)
-        self.label(group, "Resolution", 3)
-        self.resolution = self.combo(group, 3, ("c", "l", "i", "h", "f"), "i", width=6)
-        self.label(group, "DPI", 4)
-        self.dpi = self.entry(group, 4, "100")
-        self.label(group, "Max arrows", 5)
-        self.quiver_n = self.entry(group, 5, "20")
-        self.label(group, "Scale", 6)
-        self.scale = self.entry(group, 6, "400")
+        self.fig_width, self.fig_height = self.pair_entries(group, 3, "Figure size", "W", "H", "7", "6", width=6)
+        self.label(group, "Resolution", 4)
+        self.resolution = self.combo(group, 4, ("c", "l", "i", "h", "f"), "i", width=6)
+        self.label(group, "Ticks", 5)
+        self.n_ticks = self.entry(group, 5, "4", width=6)
+        self.label(group, "DPI", 6)
+        self.dpi = self.entry(group, 6, "100")
+        self.label(group, "Max arrows", 7)
+        self.quiver_n = self.entry(group, 7, "20")
+        self.label(group, "Scale", 8)
+        self.scale = self.entry(group, 8, "400")
+        self.label(group, "Missing color", 9)
+        self.bad_color = self.combo(group, 9, ("white", "lightgray", "none", "black"), "white", width=12)
+        self.show_coastline = tk.BooleanVar(value=True)
+        self.show_gridlines = tk.BooleanVar(value=True)
+        self.fill_continents = tk.BooleanVar(value=False)
+        ttk.Checkbutton(group, text="Draw coastlines", variable=self.show_coastline).grid(row=10, column=1, sticky="w", padx=(4, 12), pady=3)
+        ttk.Checkbutton(group, text="Draw gridlines", variable=self.show_gridlines).grid(row=10, column=2, sticky="w", padx=(4, 12), pady=3)
+        ttk.Checkbutton(group, text="Fill continents", variable=self.fill_continents).grid(row=10, column=3, sticky="w", padx=(4, 12), pady=3)
+        self.label(group, "Continent color", 11)
+        self.continent_color = self.combo(group, 11, ("0.8", "lightgray", "white", "tan", "darkgray"), "0.8", width=12)
+        self.label(group, "Lake color", 12)
+        self.lake_color = self.combo(group, 12, ("white", "lightblue", "0.9"), "white", width=12)
+        self.label(group, "Title", 13)
+        self.title_entry = self.entry(group, 13, "", width=26)
+        self.label(group, "Colorbar label", 14)
+        self.cbar_label = self.entry(group, 14, "", width=26)
 
         self.draw_button = self.action(row, "Draw Combined Map", self.draw)
         self._on_scalar_change()
@@ -567,8 +620,21 @@ class CombineTab(VectorTab):
                 "vmin": _safe_float(self.vmin.get()),
                 "vmax": _safe_float(self.vmax.get()),
                 "cmap": self.cmap.get() or "jet",
+                "cmap_min": _safe_float(self.cmap_min.get()),
+                "cmap_max": _safe_float(self.cmap_max.get()),
                 "resolution": self.resolution.get() or "i",
                 "dpi": _safe_int(self.dpi.get(), 100),
+                "fig_width": _safe_float(self.fig_width.get()) or 7,
+                "fig_height": _safe_float(self.fig_height.get()) or 6,
+                "show_coastline": self.show_coastline.get(),
+                "fill_continents": self.fill_continents.get(),
+                "continent_color": self.continent_color.get() or "0.8",
+                "lake_color": self.lake_color.get() or "white",
+                "show_gridlines": self.show_gridlines.get(),
+                "n_ticks": _safe_int(self.n_ticks.get(), 4),
+                "bad_color": self.bad_color.get() or "white",
+                "title": self.title_entry.get().strip() or None,
+                "colorbar_label": self.cbar_label.get().strip() or None,
             }
             vector_opts = self._vector_opts()
             vector_opts["quiver_max_n"] = _safe_int(self.quiver_n.get(), 20)

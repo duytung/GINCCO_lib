@@ -59,6 +59,17 @@ def draw_vector_plot(u, v, lon, lat, opts, state, quiver_max_n=10):
     cmap_max = opts.get("cmap_max", 0.6)
     dpi = opts.get("dpi", 100)
     scale = opts.get("scale", 400)
+    fig_width = float(opts.get("fig_width", 7) or 7)
+    fig_height = float(opts.get("fig_height", 6) or 6)
+    show_coastline = bool(opts.get("show_coastline", True))
+    fill_continents = bool(opts.get("fill_continents", False))
+    continent_color = opts.get("continent_color") or "0.8"
+    lake_color = opts.get("lake_color") or "white"
+    show_gridlines = bool(opts.get("show_gridlines", True))
+    n_ticks = int(opts.get("n_ticks", 4)) if str(opts.get("n_ticks", "4")).isdigit() else 4
+    bad_color = opts.get("bad_color") or "white"
+    title = opts.get("title") or "Vector field"
+    colorbar_label = opts.get("colorbar_label") or "Speed"
 
     need_rotate = bool(opts.get("need_rotate", True))
     layer_idx = int(opts.get("layer", 0)) if str(opts.get("layer", "0")).isdigit() else 0
@@ -135,7 +146,7 @@ def draw_vector_plot(u, v, lon, lat, opts, state, quiver_max_n=10):
 
     # prepare figure
     plt.close("all")
-    fig, ax = plt.subplots(figsize=(7, 6), dpi=dpi)
+    fig, ax = plt.subplots(figsize=(fig_width, fig_height), dpi=dpi)
 
     # --- Thiết lập Basemap theo lon/lat ---
     # (có thể auto-range nếu muốn)
@@ -177,18 +188,21 @@ def draw_vector_plot(u, v, lon, lat, opts, state, quiver_max_n=10):
         resolution=opts.get("resolution", "i"), ax=ax
     )
 
-    # vẽ bờ biển + lưới toạ độ
-    m.drawcoastlines()
-    parallels = _nice_ticks(lat_min, lat_max, n=4)
-    meridians = _nice_ticks(lon_min, lon_max, n=4)
-    m.drawparallels(parallels, labels=[1, 0, 0, 0], fontsize=8,
-                    linewidth=0.5, dashes=[2, 4])
-    m.drawmeridians(meridians, labels=[0, 0, 0, 1], fontsize=8,
-                    linewidth=0.5, dashes=[2, 4])
+    if fill_continents:
+        m.fillcontinents(color=continent_color, lake_color=lake_color, zorder=10)
+    if show_coastline:
+        m.drawcoastlines(zorder=11)
+    if show_gridlines:
+        parallels = _nice_ticks(lat_min, lat_max, n=n_ticks)
+        meridians = _nice_ticks(lon_min, lon_max, n=n_ticks)
+        m.drawparallels(parallels, labels=[1, 0, 0, 0], fontsize=8,
+                        linewidth=0.5, dashes=[2, 4])
+        m.drawmeridians(meridians, labels=[0, 0, 0, 1], fontsize=8,
+                        linewidth=0.5, dashes=[2, 4])
 
     # --- Colormap ---
     cmap = _truncate_colormap(cmap_name, cmap_min, cmap_max)
-    cmap.set_bad(color="white")
+    cmap.set_bad(color=bad_color)
 
     # --- pcolormesh trên Basemap ---
     cs = m.pcolormesh(
@@ -242,10 +256,17 @@ def draw_vector_plot(u, v, lon, lat, opts, state, quiver_max_n=10):
          labelpos='E')
 
 
+    try:
+        m.drawmapboundary(linewidth=1.0, color="black", zorder=20)
+    except TypeError:
+        m.drawmapboundary(linewidth=1.0, color="black")
+    for spine in ax.spines.values():
+        spine.set_zorder(21)
+
     # --- Colorbar & title ---
     cbar = fig.colorbar(cs, ax=ax, orientation="vertical")
-    cbar.set_label("Speed")
+    cbar.set_label(colorbar_label)
 
-    ax.set_title("Vector field")
+    ax.set_title(title)
     fig.tight_layout()
     plt.show(block=False)
