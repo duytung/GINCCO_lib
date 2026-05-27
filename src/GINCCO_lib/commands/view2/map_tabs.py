@@ -243,13 +243,26 @@ class ScalarTab(_BaseMapTab):
         group = self.group("Map Bounds", row); row += 1
         self.lon_min, self.lon_max, self.lat_min, self.lat_max = self.bounds_group(group)
 
-        group = self.group("Style", row); row += 1
+        group = self.group("Map-drawing options", row); row += 1
         self.vmin, self.vmax = self.value_range(group, 0)
         self.cmap, self.cmap_min, self.cmap_max = self.cmap_group(group, 1)
-        self.label(group, "Resolution", 3)
-        self.resolution = self.combo(group, 3, ("c", "l", "i", "h", "f"), "i", width=6)
-        self.label(group, "DPI", 4)
-        self.dpi = self.entry(group, 4, "100")
+        self.fig_width, self.fig_height = self.pair_entries(group, 3, "Figure size", "W", "H", "7", "6", width=6)
+        self.label(group, "Resolution", 4)
+        self.resolution = self.combo(group, 4, ("c", "l", "i", "h", "f"), "i", width=6)
+        self.label(group, "Ticks", 5)
+        self.n_ticks = self.entry(group, 5, "4", width=6)
+        self.label(group, "DPI", 6)
+        self.dpi = self.entry(group, 6, "100")
+        self.label(group, "Missing color", 7)
+        self.bad_color = self.combo(group, 7, ("white", "lightgray", "none", "black"), "white", width=12)
+        self.show_coastline = tk.BooleanVar(value=True)
+        self.show_gridlines = tk.BooleanVar(value=True)
+        ttk.Checkbutton(group, text="Draw coastlines", variable=self.show_coastline).grid(row=8, column=1, sticky="w", padx=(4, 12), pady=3)
+        ttk.Checkbutton(group, text="Draw gridlines", variable=self.show_gridlines).grid(row=8, column=2, sticky="w", padx=(4, 12), pady=3)
+        self.label(group, "Title", 9)
+        self.title_entry = self.entry(group, 9, "", width=26)
+        self.label(group, "Colorbar label", 10)
+        self.cbar_label = self.entry(group, 10, "", width=26)
 
         self.draw_button = self.action(row, "Draw Scalar Map", self.draw)
         self._on_variable_change()
@@ -314,6 +327,14 @@ class ScalarTab(_BaseMapTab):
                 "cmap_max": _safe_float(self.cmap_max.get()),
                 "resolution": self.resolution.get() or "i",
                 "dpi": _safe_int(self.dpi.get(), 100),
+                "fig_width": _safe_float(self.fig_width.get()) or 7,
+                "fig_height": _safe_float(self.fig_height.get()) or 6,
+                "show_coastline": self.show_coastline.get(),
+                "show_gridlines": self.show_gridlines.get(),
+                "n_ticks": _safe_int(self.n_ticks.get(), 4),
+                "bad_color": self.bad_color.get() or "white",
+                "title": self.title_entry.get().strip() or None,
+                "colorbar_label": self.cbar_label.get().strip() or None,
             }
             if self.mode_var.get() == "depth" and self.allow_depth:
                 depth = _safe_float(self.depth_entry.get())

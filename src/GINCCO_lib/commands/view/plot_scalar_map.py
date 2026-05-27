@@ -128,6 +128,16 @@ def draw_map_plot(varname, var, lon, lat, options, state=None):
 
     dpi = int(options.get("dpi", 100))
     resolution = options.get("resolution", "i")
+    fig_width = safe_float(options.get("fig_width")) or 7.0
+    fig_height = safe_float(options.get("fig_height")) or 6.0
+    show_coastline = bool(options.get("show_coastline", True))
+    show_gridlines = bool(options.get("show_gridlines", True))
+    n_ticks = int(options.get("n_ticks", 4)) if str(options.get("n_ticks", "4")).isdigit() else 4
+    title = options.get("title") or varname
+    colorbar_label = options.get("colorbar_label")
+    if colorbar_label is None:
+        colorbar_label = getattr(var, "units", "")
+    bad_color = options.get("bad_color") or "white"
 
     cmap_min = safe_float(options.get("cmap_min"))
     cmap_min = cmap_min if cmap_min is not None else 0.0
@@ -137,6 +147,10 @@ def draw_map_plot(varname, var, lon, lat, options, state=None):
 
     # --- colormap truncation ---
     cmap = _truncate_colormap(cmap_name, cmap_min, cmap_max)
+    try:
+        cmap.set_bad(color=bad_color)
+    except Exception:
+        pass
 
     print("Chosen options:", options)
 
@@ -150,7 +164,7 @@ def draw_map_plot(varname, var, lon, lat, options, state=None):
         return
 
     # --- 2D+ map ---
-    fig, ax = plt.subplots(figsize=(7, 6), dpi=dpi)
+    fig, ax = plt.subplots(figsize=(fig_width, fig_height), dpi=dpi)
 
     m = Basemap(
         projection="merc",
@@ -169,21 +183,22 @@ def draw_map_plot(varname, var, lon, lat, options, state=None):
         vmax=vmax,
     )
 
-    m.drawcoastlines()
+    if show_coastline:
+        m.drawcoastlines()
 
-    # dùng _nice_ticks cho parallels / meridians
-    parallels = _nice_ticks(lat_min, lat_max, n=4)
-    meridians = _nice_ticks(lon_min, lon_max, n=4)
+    if show_gridlines:
+        parallels = _nice_ticks(lat_min, lat_max, n=n_ticks)
+        meridians = _nice_ticks(lon_min, lon_max, n=n_ticks)
 
-    m.drawparallels(parallels, labels=[1, 0, 0, 0],
-                    fontsize=8, linewidth=0.5, dashes=[2, 4])
-    m.drawmeridians(meridians, labels=[0, 0, 0, 1],
-                    fontsize=8, linewidth=0.5, dashes=[2, 4])
+        m.drawparallels(parallels, labels=[1, 0, 0, 0],
+                        fontsize=8, linewidth=0.5, dashes=[2, 4])
+        m.drawmeridians(meridians, labels=[0, 0, 0, 1],
+                        fontsize=8, linewidth=0.5, dashes=[2, 4])
 
     cbar = plt.colorbar(cs, ax=ax)
-    cbar.set_label(getattr(var, "units", ""))
+    cbar.set_label(colorbar_label)
 
-    plt.title(varname)
+    plt.title(title)
     plt.tight_layout()
     plt.show(block=False)
 
