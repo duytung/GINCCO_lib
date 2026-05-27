@@ -257,12 +257,18 @@ class ScalarTab(_BaseMapTab):
         self.bad_color = self.combo(group, 7, ("white", "lightgray", "none", "black"), "white", width=12)
         self.show_coastline = tk.BooleanVar(value=True)
         self.show_gridlines = tk.BooleanVar(value=True)
+        self.fill_continents = tk.BooleanVar(value=False)
         ttk.Checkbutton(group, text="Draw coastlines", variable=self.show_coastline).grid(row=8, column=1, sticky="w", padx=(4, 12), pady=3)
         ttk.Checkbutton(group, text="Draw gridlines", variable=self.show_gridlines).grid(row=8, column=2, sticky="w", padx=(4, 12), pady=3)
-        self.label(group, "Title", 9)
-        self.title_entry = self.entry(group, 9, "", width=26)
-        self.label(group, "Colorbar label", 10)
-        self.cbar_label = self.entry(group, 10, "", width=26)
+        ttk.Checkbutton(group, text="Fill continents", variable=self.fill_continents).grid(row=8, column=3, sticky="w", padx=(4, 12), pady=3)
+        self.label(group, "Continent color", 9)
+        self.continent_color = self.combo(group, 9, ("0.8", "lightgray", "white", "tan", "darkgray"), "0.8", width=12)
+        self.label(group, "Lake color", 10)
+        self.lake_color = self.combo(group, 10, ("white", "lightblue", "0.9"), "white", width=12)
+        self.label(group, "Title", 11)
+        self.title_entry = self.entry(group, 11, "", width=26)
+        self.label(group, "Colorbar label", 12)
+        self.cbar_label = self.entry(group, 12, "", width=26)
 
         self.draw_button = self.action(row, "Draw Scalar Map", self.draw)
         self._on_variable_change()
@@ -330,6 +336,9 @@ class ScalarTab(_BaseMapTab):
                 "fig_width": _safe_float(self.fig_width.get()) or 7,
                 "fig_height": _safe_float(self.fig_height.get()) or 6,
                 "show_coastline": self.show_coastline.get(),
+                "fill_continents": self.fill_continents.get(),
+                "continent_color": self.continent_color.get() or "0.8",
+                "lake_color": self.lake_color.get() or "white",
                 "show_gridlines": self.show_gridlines.get(),
                 "n_ticks": _safe_int(self.n_ticks.get(), 4),
                 "bad_color": self.bad_color.get() or "white",

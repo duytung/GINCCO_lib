@@ -131,6 +131,9 @@ def draw_map_plot(varname, var, lon, lat, options, state=None):
     fig_width = safe_float(options.get("fig_width")) or 7.0
     fig_height = safe_float(options.get("fig_height")) or 6.0
     show_coastline = bool(options.get("show_coastline", True))
+    fill_continents = bool(options.get("fill_continents", False))
+    continent_color = options.get("continent_color") or "0.8"
+    lake_color = options.get("lake_color") or "white"
     show_gridlines = bool(options.get("show_gridlines", True))
     n_ticks = int(options.get("n_ticks", 4)) if str(options.get("n_ticks", "4")).isdigit() else 4
     title = options.get("title") or varname
@@ -183,8 +186,10 @@ def draw_map_plot(varname, var, lon, lat, options, state=None):
         vmax=vmax,
     )
 
+    if fill_continents:
+        m.fillcontinents(color=continent_color, lake_color=lake_color, zorder=10)
     if show_coastline:
-        m.drawcoastlines()
+        m.drawcoastlines(zorder=11)
 
     if show_gridlines:
         parallels = _nice_ticks(lat_min, lat_max, n=n_ticks)
