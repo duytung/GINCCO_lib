@@ -34,6 +34,44 @@ def _nice_ticks(vmin, vmax, n=4):
         digits = 0
     return np.round(ticks, digits)
 
+def _interval_ticks(vmin, vmax, interval):
+    try:
+        vmin = float(vmin)
+        vmax = float(vmax)
+        interval = float(interval)
+    except Exception:
+        return None
+    if interval <= 0 or not np.isfinite(interval) or not np.isfinite(vmin) or not np.isfinite(vmax):
+        return None
+    if vmin == vmax:
+        return np.array([vmin])
+
+    lo = min(vmin, vmax)
+    hi = max(vmin, vmax)
+    ticks = np.arange(lo, hi + interval * 0.5, interval)
+    ticks = ticks[(ticks >= lo - interval * 1e-9) & (ticks <= hi + interval * 1e-9)]
+    if vmin > vmax:
+        ticks = ticks[::-1]
+
+    try:
+        digits = max(0, 2 - int(np.floor(np.log10(abs(interval)))))
+    except Exception:
+        digits = 6
+    return np.round(ticks, digits)
+
+
+def _ticks_with_interval(vmin, vmax, interval=None, n=4):
+    ticks = _interval_ticks(vmin, vmax, interval)
+    if ticks is not None and ticks.size > 0:
+        return ticks
+    return _nice_ticks(vmin, vmax, n=n)
+
+
+def _colorbar_ticks(mappable, interval=None):
+    ticks = _interval_ticks(mappable.get_clim()[0], mappable.get_clim()[1], interval)
+    return ticks if ticks is not None and ticks.size > 0 else None
+
+
 
 def draw_map_combine(scalar_name, scalar_var, u, v, lon, lat, opts, state):
     """
@@ -103,8 +141,10 @@ def draw_map_combine(scalar_name, scalar_var, u, v, lon, lat, opts, state):
     # (có thể auto-range nếu muốn)
     lon_min_user = (scalar_opts.get("lon_min"))
     lon_max_user = (scalar_opts.get("lon_max"))
+    lon_interval = safe_float(scalar_opts.get("lon_interval"))
     lat_min_user = (scalar_opts.get("lat_min"))
     lat_max_user = (scalar_opts.get("lat_max"))
+    lat_interval = safe_float(scalar_opts.get("lat_interval"))
 
     # lấy giá trị tự nhiên từ dữ liệu
     lon_min_data = float(np.nanmin(lon))
@@ -141,6 +181,7 @@ def draw_map_combine(scalar_name, scalar_var, u, v, lon, lat, opts, state):
     lake_color = scalar_opts.get("lake_color") or "white"
     show_gridlines = bool(scalar_opts.get("show_gridlines", True))
     n_ticks = int(scalar_opts.get("n_ticks", 4)) if str(scalar_opts.get("n_ticks", "4")).isdigit() else 4
+    value_interval = safe_float(scalar_opts.get("value_interval"))
     bad_color = scalar_opts.get("bad_color") or "white"
     title = scalar_opts.get("title") or "{} + Vector field".format(scalar_name)
     colorbar_label = scalar_opts.get("colorbar_label")
@@ -192,8 +233,8 @@ def draw_map_combine(scalar_name, scalar_var, u, v, lon, lat, opts, state):
     if show_coastline:
         m.drawcoastlines(zorder=11)
     if show_gridlines:
-        parallels = _nice_ticks(lat_min, lat_max, n=n_ticks)
-        meridians = _nice_ticks(lon_min, lon_max, n=n_ticks)
+        parallels = _ticks_with_interval(lat_min, lat_max, lat_interval, n=n_ticks)
+        meridians = _ticks_with_interval(lon_min, lon_max, lon_interval, n=n_ticks)
         m.drawparallels(
             parallels,
             labels=[1, 0, 0, 0],
@@ -209,7 +250,7 @@ def draw_map_combine(scalar_name, scalar_var, u, v, lon, lat, opts, state):
             dashes=[2, 4],
         )
 
-    cbar = fig.colorbar(cs, ax=ax, orientation="vertical")
+    cbar = fig.colorbar(cs, ax=ax, orientation="vertical", ticks=_colorbar_ticks(cs, value_interval))
     cbar.set_label(colorbar_label)
 
     # ---------- Vector field ----------

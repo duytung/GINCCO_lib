@@ -185,13 +185,32 @@ class _BaseMapTab:
         right = self.value_slot(parent, row, 2, right_label, right_default, width)
         return left, right
 
+    def triplet_entries(
+        self,
+        parent,
+        row,
+        label,
+        left_label,
+        middle_label,
+        right_label,
+        left_default="",
+        middle_default="",
+        right_default="",
+        width=7,
+    ):
+        self.label(parent, label, row)
+        left = self.value_slot(parent, row, 1, left_label, left_default, width)
+        middle = self.value_slot(parent, row, 2, middle_label, middle_default, width)
+        right = self.value_slot(parent, row, 3, right_label, right_default, width)
+        return left, middle, right
+
     def bounds_group(self, parent, start_row=0):
-        lon_min, lon_max = self.pair_entries(parent, start_row, "Longitude", "Min", "Max")
-        lat_min, lat_max = self.pair_entries(parent, start_row + 1, "Latitude", "Min", "Max")
-        return lon_min, lon_max, lat_min, lat_max
+        lon_min, lon_max, lon_interval = self.triplet_entries(parent, start_row, "Longitude", "Min", "Max", "Interval")
+        lat_min, lat_max, lat_interval = self.triplet_entries(parent, start_row + 1, "Latitude", "Min", "Max", "Interval")
+        return lon_min, lon_max, lon_interval, lat_min, lat_max, lat_interval
 
     def value_range(self, parent, row):
-        return self.pair_entries(parent, row, "Value range", "Min", "Max")
+        return self.triplet_entries(parent, row, "Value range", "Min", "Max", "Interval")
 
     def cmap_group(self, parent, row, default="jet"):
         self.label(parent, "Color map", row)
@@ -261,10 +280,10 @@ class ScalarTab(_BaseMapTab):
         self.depth_entry.bind("<FocusIn>", lambda _e: self._select_depth_mode())
 
         group = self.group("Map Bounds", row); row += 1
-        self.lon_min, self.lon_max, self.lat_min, self.lat_max = self.bounds_group(group)
+        self.lon_min, self.lon_max, self.lon_interval, self.lat_min, self.lat_max, self.lat_interval = self.bounds_group(group)
 
         group = self.group("Map-drawing options", row); row += 1
-        self.vmin, self.vmax = self.value_range(group, 0)
+        self.vmin, self.vmax, self.value_interval = self.value_range(group, 0)
         self.cmap, self.cmap_min, self.cmap_max = self.cmap_group(group, 1)
         self.fig_width, self.fig_height = self.pair_entries(group, 3, "Figure size", "W", "H", "7", "6", width=6)
         self.label(group, "Basemap Resolution", 4)
@@ -344,10 +363,13 @@ class ScalarTab(_BaseMapTab):
             opts = {
                 "lon_min": _safe_float(self.lon_min.get()),
                 "lon_max": _safe_float(self.lon_max.get()),
+                "lon_interval": _safe_float(self.lon_interval.get()),
                 "lat_min": _safe_float(self.lat_min.get()),
                 "lat_max": _safe_float(self.lat_max.get()),
+                "lat_interval": _safe_float(self.lat_interval.get()),
                 "vmin": _safe_float(self.vmin.get()),
                 "vmax": _safe_float(self.vmax.get()),
+                "value_interval": _safe_float(self.value_interval.get()),
                 "cmap": self.cmap.get() or "jet",
                 "cmap_min": _safe_float(self.cmap_min.get()),
                 "cmap_max": _safe_float(self.cmap_max.get()),
@@ -416,12 +438,12 @@ class VectorTab(_BaseMapTab):
         )
 
         group = self.group("Map Bounds", row); row += 1
-        self.lon_min, self.lon_max, self.lat_min, self.lat_max = self.bounds_group(group)
+        self.lon_min, self.lon_max, self.lon_interval, self.lat_min, self.lat_max, self.lat_interval = self.bounds_group(group)
 
         group = self.group("Map-drawing options", row); row += 1
         self.label(group, "Max arrows", 0)
         self.quiver_n = self.entry(group, 0, "20")
-        self.vmin, self.vmax = self.value_range(group, 1)
+        self.vmin, self.vmax, self.value_interval = self.value_range(group, 1)
         self.cmap, self.cmap_min, self.cmap_max = self.cmap_group(group, 2, default="YlOrBr")
         self.cmap_max.delete(0, "end"); self.cmap_max.insert(0, "0.7")
         self.fig_width, self.fig_height = self.pair_entries(group, 4, "Figure size", "W", "H", "7", "6", width=6)
@@ -504,10 +526,13 @@ class VectorTab(_BaseMapTab):
             "need_rotate": self.rotate_var.get(),
             "lon_min": _safe_float(self.lon_min.get()),
             "lon_max": _safe_float(self.lon_max.get()),
+            "lon_interval": _safe_float(self.lon_interval.get()),
             "lat_min": _safe_float(self.lat_min.get()),
             "lat_max": _safe_float(self.lat_max.get()),
+            "lat_interval": _safe_float(self.lat_interval.get()),
             "vmin": _safe_float(self.vmin.get()),
             "vmax": _safe_float(self.vmax.get()),
+            "value_interval": _safe_float(self.value_interval.get()),
             "cmap": self.cmap.get() or "YlOrBr",
             "cmap_min": _safe_float(self.cmap_min.get()) or 0,
             "cmap_max": _safe_float(self.cmap_max.get()) or 0.7,
@@ -559,10 +584,10 @@ class CombineTab(VectorTab):
         )
 
         group = self.group("Map Bounds", row); row += 1
-        self.lon_min, self.lon_max, self.lat_min, self.lat_max = self.bounds_group(group)
+        self.lon_min, self.lon_max, self.lon_interval, self.lat_min, self.lat_max, self.lat_interval = self.bounds_group(group)
 
         group = self.group("Map-drawing options", row); row += 1
-        self.vmin, self.vmax = self.value_range(group, 0)
+        self.vmin, self.vmax, self.value_interval = self.value_range(group, 0)
         self.cmap, self.cmap_min, self.cmap_max = self.cmap_group(group, 1)
         self.fig_width, self.fig_height = self.pair_entries(group, 3, "Figure size", "W", "H", "7", "6", width=6)
         self.label(group, "Basemap Resolution", 4)
@@ -634,10 +659,13 @@ class CombineTab(VectorTab):
                 "layer": _safe_int(self.scalar_layer_combo.get(), 0),
                 "lon_min": _safe_float(self.lon_min.get()),
                 "lon_max": _safe_float(self.lon_max.get()),
+                "lon_interval": _safe_float(self.lon_interval.get()),
                 "lat_min": _safe_float(self.lat_min.get()),
                 "lat_max": _safe_float(self.lat_max.get()),
+                "lat_interval": _safe_float(self.lat_interval.get()),
                 "vmin": _safe_float(self.vmin.get()),
                 "vmax": _safe_float(self.vmax.get()),
+                "value_interval": _safe_float(self.value_interval.get()),
                 "cmap": self.cmap.get() or "jet",
                 "cmap_min": _safe_float(self.cmap_min.get()),
                 "cmap_max": _safe_float(self.cmap_max.get()),
