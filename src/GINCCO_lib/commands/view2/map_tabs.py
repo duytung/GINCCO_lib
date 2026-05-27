@@ -46,6 +46,25 @@ def _cmap_values():
         return ["jet", "viridis", "YlOrBr", "coolwarm"]
 
 
+BASEMAP_RESOLUTIONS = ("crude", "low", "intermediate", "high", "full")
+_BASEMAP_RESOLUTION_CODES = {
+    "crude": "c",
+    "low": "l",
+    "intermediate": "i",
+    "high": "h",
+    "full": "f",
+    "c": "c",
+    "l": "l",
+    "i": "i",
+    "h": "h",
+    "f": "f",
+}
+
+
+def _basemap_resolution_code(value):
+    return _BASEMAP_RESOLUTION_CODES.get(str(value or "").lower(), "i")
+
+
 def _load_grid(gridfile, suffix="t"):
     state = {"lon": None, "lat": None, "depth_levels": None, "mask_t": None, "sin_t": None, "cos_t": None}
     if not gridfile:
@@ -248,8 +267,8 @@ class ScalarTab(_BaseMapTab):
         self.vmin, self.vmax = self.value_range(group, 0)
         self.cmap, self.cmap_min, self.cmap_max = self.cmap_group(group, 1)
         self.fig_width, self.fig_height = self.pair_entries(group, 3, "Figure size", "W", "H", "7", "6", width=6)
-        self.label(group, "Resolution", 4)
-        self.resolution = self.combo(group, 4, ("c", "l", "i", "h", "f"), "i", width=6)
+        self.label(group, "Basemap Resolution", 4)
+        self.resolution = self.combo(group, 4, BASEMAP_RESOLUTIONS, "intermediate", width=14)
         self.label(group, "Ticks", 5)
         self.n_ticks = self.entry(group, 5, "4", width=6)
         self.label(group, "DPI", 6)
@@ -332,7 +351,7 @@ class ScalarTab(_BaseMapTab):
                 "cmap": self.cmap.get() or "jet",
                 "cmap_min": _safe_float(self.cmap_min.get()),
                 "cmap_max": _safe_float(self.cmap_max.get()),
-                "resolution": self.resolution.get() or "i",
+                "resolution": _basemap_resolution_code(self.resolution.get()),
                 "dpi": _safe_int(self.dpi.get(), 100),
                 "fig_width": _safe_float(self.fig_width.get()) or 7,
                 "fig_height": _safe_float(self.fig_height.get()) or 6,
@@ -406,8 +425,8 @@ class VectorTab(_BaseMapTab):
         self.cmap, self.cmap_min, self.cmap_max = self.cmap_group(group, 2, default="YlOrBr")
         self.cmap_max.delete(0, "end"); self.cmap_max.insert(0, "0.7")
         self.fig_width, self.fig_height = self.pair_entries(group, 4, "Figure size", "W", "H", "7", "6", width=6)
-        self.label(group, "Resolution", 5)
-        self.resolution = self.combo(group, 5, ("c", "l", "i", "h", "f"), "i", width=6)
+        self.label(group, "Basemap Resolution", 5)
+        self.resolution = self.combo(group, 5, BASEMAP_RESOLUTIONS, "intermediate", width=14)
         self.label(group, "Ticks", 6)
         self.n_ticks = self.entry(group, 6, "4", width=6)
         self.label(group, "DPI", 7)
@@ -493,7 +512,7 @@ class VectorTab(_BaseMapTab):
             "cmap_min": _safe_float(self.cmap_min.get()) or 0,
             "cmap_max": _safe_float(self.cmap_max.get()) or 0.7,
             "scale": _safe_float(self.scale.get()) or 3,
-            "resolution": self.resolution.get() or "i",
+            "resolution": _basemap_resolution_code(self.resolution.get()),
             "dpi": _safe_int(self.dpi.get(), 100),
             "fig_width": _safe_float(self.fig_width.get()) or 7,
             "fig_height": _safe_float(self.fig_height.get()) or 6,
@@ -546,8 +565,8 @@ class CombineTab(VectorTab):
         self.vmin, self.vmax = self.value_range(group, 0)
         self.cmap, self.cmap_min, self.cmap_max = self.cmap_group(group, 1)
         self.fig_width, self.fig_height = self.pair_entries(group, 3, "Figure size", "W", "H", "7", "6", width=6)
-        self.label(group, "Resolution", 4)
-        self.resolution = self.combo(group, 4, ("c", "l", "i", "h", "f"), "i", width=6)
+        self.label(group, "Basemap Resolution", 4)
+        self.resolution = self.combo(group, 4, BASEMAP_RESOLUTIONS, "intermediate", width=14)
         self.label(group, "Ticks", 5)
         self.n_ticks = self.entry(group, 5, "4", width=6)
         self.label(group, "DPI", 6)
@@ -622,7 +641,7 @@ class CombineTab(VectorTab):
                 "cmap": self.cmap.get() or "jet",
                 "cmap_min": _safe_float(self.cmap_min.get()),
                 "cmap_max": _safe_float(self.cmap_max.get()),
-                "resolution": self.resolution.get() or "i",
+                "resolution": _basemap_resolution_code(self.resolution.get()),
                 "dpi": _safe_int(self.dpi.get(), 100),
                 "fig_width": _safe_float(self.fig_width.get()) or 7,
                 "fig_height": _safe_float(self.fig_height.get()) or 6,

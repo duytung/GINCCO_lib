@@ -31,6 +31,50 @@ def _nice_ticks(vmin, vmax, n=4):
     return np.round(ticks, digits)
 
 
+def _to_nan_array(values):
+    arr = np.ma.asarray(values)
+    if np.ma.isMaskedArray(arr):
+        return arr.astype(float).filled(np.nan)
+    return np.asarray(arr, dtype=float)
+
+
+def _mask_to_2d(mask):
+    if mask is None:
+        return None
+
+    mask_arr = np.squeeze(np.ma.filled(mask, 0))
+    if mask_arr.ndim < 2:
+        return None
+    if mask_arr.ndim > 2:
+        first_slice = (0,) * (mask_arr.ndim - 2) + (slice(None), slice(None))
+        mask_arr = mask_arr[first_slice]
+
+    return np.asarray(mask_arr)
+
+
+def _apply_land_mask(data, mask):
+    data_arr = _to_nan_array(data)
+    if data_arr.ndim != 2:
+        return data_arr
+
+    mask_2d = _mask_to_2d(mask)
+    if mask_2d is None:
+        return data_arr
+    if mask_2d.shape != data_arr.shape:
+        print(
+            "Warning: land mask shape {} does not match data shape {}; mask ignored.".format(
+                mask_2d.shape, data_arr.shape
+            )
+        )
+        return data_arr
+
+    data_arr = data_arr.copy()
+    data_arr[mask_2d == 0] = np.nan
+    return data_arr
+
+
+
+
 
 
 
@@ -53,7 +97,7 @@ def draw_map_plot(varname, var, lon, lat, options, state=None):
     # --- dữ liệu ---
     data = np.squeeze(var[:])
     nd = data.ndim
-
+    apply_layer_mask = nd == 2
     # --- Xử lý 3D: layer vs depth ---
 
     if nd == 3:
@@ -61,6 +105,7 @@ def draw_map_plot(varname, var, lon, lat, options, state=None):
         layer_value = options.get("layer", None)
 
         if depth_value is not None:
+            apply_layer_mask = False
             # dùng depth interpolation
             if state is None or "depth_levels" not in state:
                 print("Warning: depth option set but no depth_levels in state. Fallback to layer 0.")
@@ -77,6 +122,7 @@ def draw_map_plot(varname, var, lon, lat, options, state=None):
                     mask_t=mask_t,
                 )
         else:
+            apply_layer_mask = True
             # không chọn depth -> dùng layer
             if layer_value is not None:
                 layer = int(layer_value)
@@ -85,7 +131,12 @@ def draw_map_plot(varname, var, lon, lat, options, state=None):
             data = data[layer, :, :]
 
         # update nd
-        nd =2
+        nd = 2
+
+    if nd == 2 and state is not None and apply_layer_mask:
+        data = _apply_land_mask(data, state.get("mask_t"))
+    else:
+        data = _to_nan_array(data)
 
 
 
