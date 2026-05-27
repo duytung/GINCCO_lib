@@ -5,15 +5,71 @@ set -euo pipefail
 # Prepare directories and files for a free ensemble run.
 #
 # MUST be run inside the ensemble directory.
-#
-# Set copy_notebooks=1 if you want a separate NOTEBOOK dir per member.
 # ==========================================
 
-# === User configuration ===
-BASE_DIR="/tmpdir/duytung/S271/SYMPHONIE/RDIR"   # Path to RDIR parent folder
-SIMU_NAME="GOTEN_NOTIDE"                          # Base simulation name
+usage() {
+    cat <<'EOF'
+Usage: setup_ensemble.sh --rdir RDIR_PARENT --simu SIMU_NAME [--n N] [--copy-notebooks 0|1]
+
+Options:
+  --rdir RDIR_PARENT     Path to the RDIR parent folder.
+  --simu SIMU_NAME       Base simulation name under RDIR_PARENT.
+  --n N                  Number of ensemble members to create. Default: 10.
+  --copy-notebooks 0|1   Copy a NOTEBOOK directory per member. Default: 1.
+  -h, --help             Show this help message.
+EOF
+}
+
+BASE_DIR=""
+SIMU_NAME=""
 copy_notebooks=1
 N_MEMBERS=10
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --rdir)
+            BASE_DIR="${2:-}"
+            shift 2
+            ;;
+        --simu)
+            SIMU_NAME="${2:-}"
+            shift 2
+            ;;
+        --n)
+            N_MEMBERS="${2:-}"
+            shift 2
+            ;;
+        --copy-notebooks)
+            copy_notebooks="${2:-}"
+            shift 2
+            ;;
+        -h|--help)
+            usage
+            exit 0
+            ;;
+        *)
+            echo "Unknown argument: $1" >&2
+            usage >&2
+            exit 2
+            ;;
+    esac
+done
+
+if [[ -z "$BASE_DIR" || -z "$SIMU_NAME" ]]; then
+    echo "Error: --rdir and --simu are required." >&2
+    usage >&2
+    exit 2
+fi
+
+if ! [[ "$N_MEMBERS" =~ ^[0-9]+$ ]] || [[ "$N_MEMBERS" -lt 1 ]]; then
+    echo "Error: --n must be a positive integer." >&2
+    exit 2
+fi
+
+if [[ "$copy_notebooks" != "0" && "$copy_notebooks" != "1" ]]; then
+    echo "Error: --copy-notebooks must be 0 or 1." >&2
+    exit 2
+fi
 
 # === Derived paths ===
 LAUNCH_DIR="${BASE_DIR}/${SIMU_NAME}"
@@ -27,12 +83,16 @@ RED="\033[1;31m"
 RESET="\033[0m"
 
 # === Sanity checks ===
-if [[ ! -f "$SYMPHONIE" ]]; then
-    echo -e "${RED}Error:${RESET} SYMPHONIE executable not found at $SYMPHONIE"
+if [[ ! -d "$BASE_DIR" ]]; then
+    echo -e "${RED}Error:${RESET} RDIR parent folder does not exist: $BASE_DIR"
     exit 1
 fi
 if [[ ! -d "$LAUNCH_DIR" ]]; then
     echo -e "${RED}Error:${RESET} LAUNCH_DIR does not exist: $LAUNCH_DIR"
+    exit 1
+fi
+if [[ ! -f "$SYMPHONIE" ]]; then
+    echo -e "${RED}Error:${RESET} SYMPHONIE executable not found at $SYMPHONIE"
     exit 1
 fi
 
@@ -55,7 +115,7 @@ for memno in $(seq 1 "$N_MEMBERS"); do
     popd >/dev/null
 done
 
-echo -e "${GREEN}✓ All member directories created.${RESET}\n"
+echo -e "${GREEN}All member directories created.${RESET}\n"
 
 # === Copy and modify template files for each member ===
 for MEMBER_NUM in $(seq 1 "$N_MEMBERS"); do
@@ -115,7 +175,7 @@ for MEMBER_NUM in $(seq 1 "$N_MEMBERS"); do
     fi
 
     pwd
-    echo -e "${GREEN}✓ Finished member ${MEMBER_NUM}${RESET}\n"
+    echo -e "${GREEN}Finished member ${MEMBER_NUM}${RESET}\n"
     popd >/dev/null
 done
 

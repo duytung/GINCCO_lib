@@ -415,27 +415,26 @@ def import_section(path, file_name, var, lon_min, lon_max, lat_min, lat_max, M, 
 
 
     # Open the grid file to determine depth dimensions
-    grid = ''.join(glob.glob(path + '/grid.nc'))
-    fgrid = Dataset(grid, 'r')
-    try:
-        lat_t = fgrid.variables['latitude_%s' % (var[-1])][:]
-        lon_t = fgrid.variables['longitude_%s' % (var[-1])][:]
-        depth_t = fgrid.variables['depth_%s' % (var[-1])][:]
-    except KeyError:
-        print('Could not find a grid suffix for %s. Using _t as default.' % (var))
-        lat_t = fgrid.variables['latitude_t'][:]
-        lon_t = fgrid.variables['longitude_t'][:]
-        depth_t = fgrid.variables['depth_t'][:]
+    grid = os.path.join(path, 'grid.nc')
+    with Dataset(grid, 'r') as fgrid:
+        try:
+            lat_t = fgrid.variables['latitude_%s' % (var[-1])][:]
+            lon_t = fgrid.variables['longitude_%s' % (var[-1])][:]
+            depth_t = fgrid.variables['depth_%s' % (var[-1])][:]
+        except KeyError:
+            print('Could not find a grid suffix for %s. Using _t as default.' % (var))
+            lat_t = fgrid.variables['latitude_t'][:]
+            lon_t = fgrid.variables['longitude_t'][:]
+            depth_t = fgrid.variables['depth_t'][:]
     
-    nc_file = Dataset(path + file_name, 'r')
-    data = np.squeeze(nc_file.variables[var][:])
+    with Dataset(os.path.join(path, file_name), 'r') as nc_file:
+        data = np.squeeze(nc_file.variables[var][:])
 
 
     # Setup the section
     if (lon_min == lon_max):
         if lat_min == lat_max:  
-            print ('lon_min = lon_max and lat_min = lat_max. Not a section. Exiting...' )
-            exit()
+            raise ValueError('lon_min = lon_max and lat_min = lat_max. Not a section.')
         else:
             lon_sec = np.full(M, lon_max)
             lat_sec = np.linspace(lat_min, lat_max, M) 
@@ -455,7 +454,6 @@ def import_section(path, file_name, var, lon_min, lon_max, lat_min, lat_max, M, 
     depth_out, data_out = _data_interp(depth_sec, data_interpolation, depth_interval=depth_interval)
 
     return depth_out, data_out
-
 
 
 

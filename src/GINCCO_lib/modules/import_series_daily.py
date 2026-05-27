@@ -1,6 +1,5 @@
 import os
 import glob
-import sys
 from datetime import datetime, timedelta
 
 import numpy as np
@@ -26,6 +25,17 @@ Features:
 
 '''
 #############################
+
+
+def _missing_not_allowed(ignore_missing):
+    return ignore_missing is False or str(ignore_missing).lower() == 'false'
+
+
+def _raise_if_missing(file_list):
+    if "" in file_list:
+        raise FileNotFoundError(
+            "Missing input files. Set ignore_missing=True to fill missing dates with NaN."
+        )
 
 
 
@@ -59,7 +69,7 @@ def build_file_list(path, tstart, tend):
     """
 
     # Step 1: locate the first file to extract the filename pattern
-    first_pattern = path + tstart.strftime("%Y%m%d") + "*"
+    first_pattern = os.path.join(path, tstart.strftime("%Y%m%d") + "*")
     hits = glob.glob(first_pattern)
     if len(hits) == 0:
         raise FileNotFoundError(f"No file found for {tstart.strftime('%Y%m%d')} in {path}")
@@ -128,18 +138,17 @@ def import_4D(path, var, tstart, tend, ignore_missing='False'):
     file_list = build_file_list(path, tstart, tend)
 
     # If ignore_missing is 'False' and at least one file is missing → stop execution.
-    if ignore_missing == 'False':
-        if "" in file_list:
-            sys.exit(1)
+    if _missing_not_allowed(ignore_missing):
+        _raise_if_missing(file_list)
 
     # Open the grid file to determine depth dimensions
-    grid = ''.join(glob.glob(path + 'grid.nc'))
-    fgrid = Dataset(grid, 'r')
-    try:
-        depth_t = fgrid.variables['depth_%s' % (var[-1])][:]
-    except KeyError:
-        print('Could not find a grid suffix for %s. Using _t as default.' % (var))
-        depth_t = fgrid.variables['depth_t'][:]
+    grid = os.path.join(path, 'grid.nc')
+    with Dataset(grid, 'r') as fgrid:
+        try:
+            depth_t = fgrid.variables['depth_%s' % (var[-1])][:]
+        except KeyError:
+            print('Could not find a grid suffix for %s. Using _t as default.' % (var))
+            depth_t = fgrid.variables['depth_t'][:]
 
     # Prepare output array filled with zeros
     # Shape: [time, depth_z, depth_y, depth_x]
@@ -160,8 +169,10 @@ def import_4D(path, var, tstart, tend, ignore_missing='False'):
 
         # If the file exists, read the variable into the output array
         if fpath:
-            file1 = Dataset(fpath, 'r')   # fixed: previously 'ncfile'
-            data_array[i, :, :, :] = np.squeeze(file1.variables[var][:, :, :, :]).filled(np.nan)
+            with Dataset(fpath, 'r') as file1:
+                data_array[i, :, :, :] = np.ma.filled(
+                    np.squeeze(file1.variables[var][:, :, :, :]), np.nan
+                )
         # If the file is missing, fill with NaN values
         if not fpath:
             print(('File not found for:', str(tnow)), 'Missing values will be filled with NaN')
@@ -207,18 +218,17 @@ def import_3D(path, var, tstart, tend, ignore_missing='False'):
     file_list = build_file_list(path, tstart, tend)
 
     # If ignore_missing is 'False' and at least one file is missing → stop execution.
-    if ignore_missing == 'False':
-        if "" in file_list:
-            sys.exit(1)
+    if _missing_not_allowed(ignore_missing):
+        _raise_if_missing(file_list)
 
     # Open the grid file to determine depth dimensions
-    grid = ''.join(glob.glob(path + 'grid.nc'))
-    fgrid = Dataset(grid, 'r')
-    try:
-        depth_t = fgrid.variables['depth_%s' % (var[-1])][:]
-    except KeyError:
-        print('Could not find a grid suffix for %s. Using _t as default.' % (var))
-        depth_t = fgrid.variables['depth_t'][:]
+    grid = os.path.join(path, 'grid.nc')
+    with Dataset(grid, 'r') as fgrid:
+        try:
+            depth_t = fgrid.variables['depth_%s' % (var[-1])][:]
+        except KeyError:
+            print('Could not find a grid suffix for %s. Using _t as default.' % (var))
+            depth_t = fgrid.variables['depth_t'][:]
 
     # Prepare output array filled with zeros
     # Shape: [time, depth_y, depth_x]
@@ -239,8 +249,10 @@ def import_3D(path, var, tstart, tend, ignore_missing='False'):
 
         # If the file exists, read the variable into the output array
         if fpath:
-            file1 = Dataset(fpath, 'r')   # fixed: previously 'ncfile'
-            data_array[i, :, :] = np.squeeze(file1.variables[var][ :, :, :]).filled(np.nan)
+            with Dataset(fpath, 'r') as file1:
+                data_array[i, :, :] = np.ma.filled(
+                    np.squeeze(file1.variables[var][ :, :, :]), np.nan
+                )
             
 
 
@@ -288,18 +300,17 @@ def import_surface(path, var, tstart, tend, ignore_missing='False'):
     file_list = build_file_list(path, tstart, tend)
 
     # If ignore_missing is 'False' and at least one file is missing → stop execution.
-    if ignore_missing == 'False':
-        if "" in file_list:
-            sys.exit(1)
+    if _missing_not_allowed(ignore_missing):
+        _raise_if_missing(file_list)
 
     # Open the grid file to determine depth dimensions
-    grid = ''.join(glob.glob(path + 'grid.nc'))
-    fgrid = Dataset(grid, 'r')
-    try:
-        depth_t = fgrid.variables['depth_%s' % (var[-1])][:]
-    except KeyError:
-        print('Could not find a grid suffix for %s. Using _t as default.' % (var))
-        depth_t = fgrid.variables['depth_t'][:]
+    grid = os.path.join(path, 'grid.nc')
+    with Dataset(grid, 'r') as fgrid:
+        try:
+            depth_t = fgrid.variables['depth_%s' % (var[-1])][:]
+        except KeyError:
+            print('Could not find a grid suffix for %s. Using _t as default.' % (var))
+            depth_t = fgrid.variables['depth_t'][:]
 
     # Prepare output array filled with zeros
     # Shape: [time, depth_z, depth_y, depth_x]
@@ -317,8 +328,10 @@ def import_surface(path, var, tstart, tend, ignore_missing='False'):
 
         # If the file exists, read the variable into the output array
         if fpath:
-            file1 = Dataset(fpath, 'r')   # fixed: previously 'ncfile'
-            data_array[i, :, :] = np.squeeze(file1.variables[var][:, -1, :, :]).filled(np.nan)
+            with Dataset(fpath, 'r') as file1:
+                data_array[i, :, :] = np.ma.filled(
+                    np.squeeze(file1.variables[var][:, -1, :, :]), np.nan
+                )
 
         # If the file is missing, fill with NaN values
         if not fpath:
@@ -367,18 +380,17 @@ def import_layer(path, var, tstart, tend, layer, ignore_missing='False'):
     file_list = build_file_list(path, tstart, tend)
 
     # If ignore_missing is 'False' and at least one file is missing → stop execution.
-    if ignore_missing == 'False':
-        if "" in file_list:
-            sys.exit(1)
+    if _missing_not_allowed(ignore_missing):
+        _raise_if_missing(file_list)
 
     # Open the grid file to determine depth dimensions
-    grid = ''.join(glob.glob(path + 'grid.nc'))
-    fgrid = Dataset(grid, 'r')
-    try:
-        depth_t = fgrid.variables['depth_%s' % (var[-1])][:]
-    except KeyError:
-        print('Could not find a grid suffix for %s. Using _t as default.' % (var))
-        depth_t = fgrid.variables['depth_t'][:]
+    grid = os.path.join(path, 'grid.nc')
+    with Dataset(grid, 'r') as fgrid:
+        try:
+            depth_t = fgrid.variables['depth_%s' % (var[-1])][:]
+        except KeyError:
+            print('Could not find a grid suffix for %s. Using _t as default.' % (var))
+            depth_t = fgrid.variables['depth_t'][:]
 
     # Prepare output array filled with zeros
     # Shape: [time, depth_z, depth_y, depth_x]
@@ -396,13 +408,15 @@ def import_layer(path, var, tstart, tend, layer, ignore_missing='False'):
 
         # If the file exists, read the variable into the output array
         if fpath:
-            file1 = Dataset(fpath, 'r')   # fixed: previously 'ncfile'
-            data_array[i, :, :] = np.squeeze(file1.variables[var][:, layer, :, :]).filled(np.nan)
+            with Dataset(fpath, 'r') as file1:
+                data_array[i, :, :] = np.ma.filled(
+                    np.squeeze(file1.variables[var][:, layer, :, :]), np.nan
+                )
 
         # If the file is missing, fill with NaN values
         if not fpath:
             print(('File not found for:', str(tnow)), 'Missing values will be filled with NaN')
-            data_array[i, :, :] = nan
+            data_array[i, :, :] = np.nan
 
     print('Import completed.')
     return data_array
@@ -448,20 +462,19 @@ def import_depth(path, var, tstart, tend, depth, ignore_missing='False'):
     file_list = build_file_list(path, tstart, tend)
 
     # If ignore_missing is 'False' and at least one file is missing → stop execution.
-    if ignore_missing == 'False':
-        if "" in file_list:
-            sys.exit(1)
+    if _missing_not_allowed(ignore_missing):
+        _raise_if_missing(file_list)
 
     # Open the grid file to determine depth dimensions
-    grid = ''.join(glob.glob(path + 'grid.nc'))
-    fgrid = Dataset(grid, 'r')
-    try:
-        depth_t = fgrid.variables['depth_%s' % (var[-1])][:]
-        mask_ = fgrid.variables['mask_%s' % (var[-1])][:]
-    except KeyError:
-        print('Could not find a grid suffix for %s. Using _t as default.' % (var))
-        depth_t = fgrid.variables['depth_t'][:]
-        mask_ = fgrid.variables['mask_t'][:]
+    grid = os.path.join(path, 'grid.nc')
+    with Dataset(grid, 'r') as fgrid:
+        try:
+            depth_t = fgrid.variables['depth_%s' % (var[-1])][:]
+            mask_ = fgrid.variables['mask_%s' % (var[-1])][:]
+        except KeyError:
+            print('Could not find a grid suffix for %s. Using _t as default.' % (var))
+            depth_t = fgrid.variables['depth_t'][:]
+            mask_ = fgrid.variables['mask_t'][:]
 
     if mask_.ndim == 3:
         mask_t = mask_[0, :, :]
@@ -518,8 +531,10 @@ def import_depth(path, var, tstart, tend, depth, ignore_missing='False'):
 
         # If the file exists, read the variable into the output array
         if fpath:
-            file1 = Dataset(fpath, 'r')   # fixed: previously 'ncfile'
-            data_toto = np.squeeze(file1.variables[var][:,:,:,:]).filled(np.nan)
+            with Dataset(fpath, 'r') as file1:
+                data_toto = np.ma.filled(
+                    np.squeeze(file1.variables[var][:,:,:,:]), np.nan
+                )
             
             data_toto2 = np.nansum(data_toto * multiply_array, axis=0) #BE CAREFUL. NANSUM WILL RETURN 0 IF ALL NAN IN CALCULATION            
             data_toto2[np.isnan(data_toto[0,:,:])] = np.nan #filter all original nanvalue to be nan
@@ -530,7 +545,7 @@ def import_depth(path, var, tstart, tend, depth, ignore_missing='False'):
         # If the file is missing, fill with NaN values
         if not fpath:
             print(('File not found for:', str(tnow)), 'Missing values will be filled with NaN')
-            data_array[i, :, :] = nan
+            data_array[i, :, :] = np.nan
 
     print('Import completed.')
     return data_array
@@ -625,20 +640,19 @@ def import_point(path, var, tstart, tend, lat_j, lon_i, ji = 'False', level = -1
     file_list = build_file_list(path, tstart, tend)
 
     # If ignore_missing is 'False' and at least one file is missing → stop execution.
-    if ignore_missing == 'False':
-        if "" in file_list:
-            sys.exit(1)
+    if _missing_not_allowed(ignore_missing):
+        _raise_if_missing(file_list)
 
     # Open the grid file to determine depth dimensions
-    grid = ''.join(glob.glob(path + 'grid.nc'))
-    fgrid = Dataset(grid, 'r')
-    try:
-        lat_t = fgrid.variables['latitude_%s' % (var[-1])][:]
-        lon_t = fgrid.variables['longitude_%s' % (var[-1])][:]
-    except KeyError:
-        print('Could not find a grid suffix for %s. Using _t as default.' % (var))
-        lat_t = fgrid.variables['latitude_t'][:]
-        lon_t = fgrid.variables['longitude_t'][:]
+    grid = os.path.join(path, 'grid.nc')
+    with Dataset(grid, 'r') as fgrid:
+        try:
+            lat_t = fgrid.variables['latitude_%s' % (var[-1])][:]
+            lon_t = fgrid.variables['longitude_%s' % (var[-1])][:]
+        except KeyError:
+            print('Could not find a grid suffix for %s. Using _t as default.' % (var))
+            lat_t = fgrid.variables['latitude_t'][:]
+            lon_t = fgrid.variables['longitude_t'][:]
 
 
 
@@ -659,44 +673,41 @@ def import_point(path, var, tstart, tend, lat_j, lon_i, ji = 'False', level = -1
 
         # If the file exists, read the variable into the output array
         if fpath:
-            file1 = Dataset(fpath, 'r')   # fixed: previously 'ncfile'
+            with Dataset(fpath, 'r') as file1:
 
-            # Check if data is 2D or 3D
-            kount = 0
-            if kount ==0: 
+                # Check if data is 2D or 3D
                 data_toto = np.squeeze(file1.variables[var][:])
                 data_dim = data_toto.ndim
-                kount+=1
 
-            # Case 1: load 2D var:
-            if data_dim ==2:
-                if ji == 'True':
-                    data_array[i] = np.squeeze(file1.variables[var][:, j, i])
-                else:
-                    j_ind, i_ind = find_nearest_index_haversine(lat_t, lon_t, lat_j, lon_i)
-                    if kount_print ==0:
-                        print ('Original location and nearest point location')
-                        print ('Lat', lat_j, lat_t[j_ind, i_ind])
-                        print ('Lon', lon_i, lon_t[j_ind, i_ind])
-                        kount_print+=1
+                # Case 1: load 2D var:
+                if data_dim ==2:
+                    if ji == 'True':
+                        j_ind, i_ind = int(lat_j), int(lon_i)
+                    else:
+                        j_ind, i_ind = find_nearest_index_haversine(lat_t, lon_t, lat_j, lon_i)
+                        if kount_print ==0:
+                            print ('Original location and nearest point location')
+                            print ('Lat', lat_j, lat_t[j_ind, i_ind])
+                            print ('Lon', lon_i, lon_t[j_ind, i_ind])
+                            kount_print+=1
                     data_array[i] = np.squeeze(file1.variables[var][:, j_ind, i_ind])
 
-            # Case 2: load 3D var
-            elif data_dim ==3:
-                if ji == 'True':
-                    data_array[i] = np.squeeze(file1.variables[var][:, level, j, i])
-                else:
-                    j_ind, i_ind = find_nearest_index_haversine(lat_t, lon_t, lat_j, lon_i)
-                    if kount_print ==0:
-                        print ('Lat', lat_j, 'Nearest point', lat_t[j_ind, i_ind])
-                        print ('Lon', lon_i, 'Nearest point', lon_t[j_ind, i_ind])
-                        kount_print +=1
+                # Case 2: load 3D var
+                elif data_dim ==3:
+                    if ji == 'True':
+                        j_ind, i_ind = int(lat_j), int(lon_i)
+                    else:
+                        j_ind, i_ind = find_nearest_index_haversine(lat_t, lon_t, lat_j, lon_i)
+                        if kount_print ==0:
+                            print ('Lat', lat_j, 'Nearest point', lat_t[j_ind, i_ind])
+                            print ('Lon', lon_i, 'Nearest point', lon_t[j_ind, i_ind])
+                            kount_print +=1
                     data_array[i] = np.squeeze(file1.variables[var][:, level, j_ind, i_ind])
 
         # If the file is missing, fill with NaN values
         if not fpath:
             print(('File not found for:', str(tnow)), 'Missing values will be filled with NaN')
-            data_array[i] = nan
+            data_array[i] = np.nan
 
     print('Import completed.')
     return data_array
@@ -748,22 +759,21 @@ def import_profile(path, var, tstart, tend, lat_j, lon_i, ji = 'False', ignore_m
     file_list = build_file_list(path, tstart, tend)
 
     # If ignore_missing is 'False' and at least one file is missing → stop execution.
-    if ignore_missing == 'False':
-        if "" in file_list:
-            sys.exit(1)
+    if _missing_not_allowed(ignore_missing):
+        _raise_if_missing(file_list)
 
     # Open the grid file to determine depth dimensions
-    grid = ''.join(glob.glob(path + 'grid.nc'))
-    fgrid = Dataset(grid, 'r')
-    try:
-        lat_t = fgrid.variables['latitude_%s' % (var[-1])][:]
-        lon_t = fgrid.variables['longitude_%s' % (var[-1])][:]
-        depth_t = fgrid.variables['depth_%s' % (var[-1])][:]
-    except KeyError:
-        print('Could not find a grid suffix for %s. Using _t as default.' % (var))
-        lon_t = fgrid.variables['longitude_t'][:]
-        lat_t = fgrid.variables['latitude_t'][:]
-        depth_t = fgrid.variables['depth_t'][:]
+    grid = os.path.join(path, 'grid.nc')
+    with Dataset(grid, 'r') as fgrid:
+        try:
+            lat_t = fgrid.variables['latitude_%s' % (var[-1])][:]
+            lon_t = fgrid.variables['longitude_%s' % (var[-1])][:]
+            depth_t = fgrid.variables['depth_%s' % (var[-1])][:]
+        except KeyError:
+            print('Could not find a grid suffix for %s. Using _t as default.' % (var))
+            lon_t = fgrid.variables['longitude_t'][:]
+            lat_t = fgrid.variables['latitude_t'][:]
+            depth_t = fgrid.variables['depth_t'][:]
 
 
     # Prepare output array filled with zeros
@@ -783,46 +793,38 @@ def import_profile(path, var, tstart, tend, lat_j, lon_i, ji = 'False', ignore_m
 
         # If the file exists, read the variable into the output array
         if fpath:
-            file1 = Dataset(fpath, 'r')   # fixed: previously 'ncfile'
+            with Dataset(fpath, 'r') as file1:
 
-            # Check if data is 2D or 3D
-            kount = 0
-            if kount ==0: 
+                # Check if data is 2D or 3D
                 data_toto = np.squeeze(file1.variables[var][:])
                 data_dim = data_toto.ndim
-                kount+=1
 
-            # Case 1: load 2D var:
-            if data_dim ==2:
-                print ('Data dimension = 2. Please check again...')
-                exit()
+                # Case 1: load 2D var:
+                if data_dim ==2:
+                    raise ValueError('Data dimension = 2. Please check again...')
 
-            # Case 2: load 3D var
-            elif data_dim ==3:
-                if ji == 'True':
-                    data_array[i] = np.squeeze(file1.variables[var][:, :, j, i])
-                else:
-                    j_ind, i_ind = find_nearest_index_haversine(lat_t, lon_t, lat_j, lon_i)
+                # Case 2: load 3D var
+                elif data_dim ==3:
+                    if ji == 'True':
+                        j_ind, i_ind = int(lat_j), int(lon_i)
+                    else:
+                        j_ind, i_ind = find_nearest_index_haversine(lat_t, lon_t, lat_j, lon_i)
+                        if kount_print ==0:
+                            print ('Original location and nearest point location')
+                            print ('Lat', lat_j, lat_t[j_ind, i_ind])
+                            print ('Lon', lon_i, lon_t[j_ind, i_ind])
+                            kount_print +=1
                     index[0] = j_ind
                     index[1] = i_ind
-                    if kount_print ==0:
-                        print ('Original location and nearest point location')
-                        print ('Lat', lat_j, lat_t[j_ind, i_ind])
-                        print ('Lon', lon_i, lon_t[j_ind, i_ind])
-                        kount_print +=1
                     data_array[i,:] = np.squeeze(file1.variables[var][:, :, j_ind, i_ind])
 
         # If the file is missing, fill with NaN values
         if not fpath:
             print(('File not found for:', str(tnow)), 'Missing values will be filled with NaN')
-            data_array[i] = nan
+            data_array[i] = np.nan
 
     print('Import completed.')
     return data_array, index
-
-
-
-
 
 
 

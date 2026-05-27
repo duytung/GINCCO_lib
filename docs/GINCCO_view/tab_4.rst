@@ -16,7 +16,7 @@ Now we will open GINCCO view
    gincco view 20131223_120000.symphonie.nc --grid ../OFFLINE/grid.nc 
 
 
-If you would like to plot the vector map, please move to Vector tab
+To plot a transect between two points, please use the function provided in the “Section” tab.
 
 .. image:: ../_static/gincco_tab4.1.png
    :width: 600px

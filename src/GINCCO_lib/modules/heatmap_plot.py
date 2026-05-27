@@ -252,15 +252,11 @@ def plot_section(
     ax.invert_yaxis()
 
     # X axis ticks
-    interval = M/n_ticks
     lat_list = np.linspace (lat_min,lat_max, M)
     lon_list = np.linspace (lon_min,lon_max, M)
-    xtick = []
-    xtick_label = []
-    for i in range(0, M):
-        if i%interval == 0:
-            xtick.append(i)
-            xtick_label.append('%.2fN\n%.2fE' %(lat_list[i],lon_list[i]))
+    n_ticks = max(1, min(int(n_ticks), M))
+    xtick = np.linspace(0, M - 1, n_ticks, dtype=int)
+    xtick_label = ['%.2fN\n%.2fE' %(lat_list[i],lon_list[i]) for i in xtick]
 
     ax.set_xticks(xtick)
     ax.set_xticklabels(xtick_label)
@@ -363,12 +359,19 @@ def plot_section_contourf(
 
     # Figure
     fig, ax = plt.subplots(figsize=(9, 4), constrained_layout=True)
-    cf = ax.contourf(X_axis, Z_axis, data_draw, levels=levels, cmap=cmap, norm=norm, extend="both")
 
-    ax.set_title(title)
-    ax.set_xlabel("Position (Lat - Lon)")
-    ax.set_ylabel("Depth (m)")
-    #ax.invert_yaxis()
+    if n_depth < 2:
+        cf = None
+        ax.plot(np.arange(n_M), data_draw[0, :], marker="o" if n_M < 20 else None)
+        ax.set_title(title)
+        ax.set_xlabel("Position (Lat - Lon)")
+        ax.set_ylabel("Value")
+    else:
+        cf = ax.contourf(X_axis, Z_axis, data_draw, levels=levels, cmap=cmap, norm=norm, extend="both")
+        ax.set_title(title)
+        ax.set_xlabel("Position (Lat - Lon)")
+        ax.set_ylabel("Depth (m)")
+        #ax.invert_yaxis()
 
     # X-axis ticks: show combined Lat/Lon
     lat_list = np.linspace(lat_min, lat_max, n_M)
@@ -378,10 +381,11 @@ def plot_section_contourf(
     ax.set_xticks(xtick)
     ax.set_xticklabels(xtick_label)
 
-    # Colorbar
-    cbar_ax = fig.add_axes([0.15, 0.07, 0.7, 0.02])
-    cb = fig.colorbar(cf, cax=cbar_ax, ticks=ticks, orientation='horizontal')
-    cbar_ax.set_label("Value")
+    # Colorbar for true 2D sections. Single-layer transects use the y-axis.
+    if cf is not None:
+        cbar_ax = fig.add_axes([0.15, 0.07, 0.7, 0.02])
+        cb = fig.colorbar(cf, cax=cbar_ax, ticks=ticks, orientation='horizontal')
+        cbar_ax.set_label("Value")
 
     fig.subplots_adjust(bottom=0.3, top=0.9, left=0.1, right=0.95, wspace=0.2, hspace=0.3)
     
@@ -392,6 +396,5 @@ def plot_section_contourf(
     fig.savefig(out_path, dpi=200)
     plt.close(fig)
     return out_path
-
 
 

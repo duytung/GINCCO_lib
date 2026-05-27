@@ -8,4 +8,4 @@ def register_subparser(subparser):
 
 def main(args):
     script_path = Path(__file__).resolve().parent.parent / "scripts" / "simulation_clone.sh"
-    subprocess.run([str(script_path), args.model, args.ori, args.new], check=False)
+    subprocess.run([str(script_path), args.model, args.ori, args.new], check=True)
