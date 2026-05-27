@@ -3,65 +3,54 @@
    :noindex:
 '''
 
-# import-related functions
-from .modules.import_series_daily import (
-    import_4D,
-    import_3D,
-    import_surface,
-    import_layer,
-    import_depth,
-    import_point,
-    import_profile,
-)
-from .modules.import_daily import import_section
-
-
-# post-processing function
-from .modules.interpolate_to_t import interpolate_to_t
-from .modules.geostrophic_current import geostrophic_current
-from .modules.spatial_average import spatial_average
-from .modules.temporal_mean import monthly_mean, annual_mean
-
-
-# plot-related functions
-from .modules.map_plot import map_draw, map_draw_point, map_draw_uv, map_draw_box
-from .modules.time_series_plot import plot_point, plot_point_monthly
-from .modules.heatmap_plot import plot_heatmap, plot_section, plot_section_contourf
-
-
-#video-related function
-from .modules.image_to_video import pngs_to_video
-
-# define what is exposed when users do `from yourpkg import *`
-__all__ = [
-    # import functions
-    "import_4D",
-    "import_3D",
-    "import_surface",
-    "import_layer",
-    "import_depth",
-    "import_point",
-    "import_profile",
-
-    "import_section",
-
-
-    # post-processing function
-    "interpolate_to_t",
-
-
-    # plot functions
-    "map_draw",
-    "map_draw_point",
-    "map_draw_uv",
-    
-    "plot_point",
-    "plot_heatmap",
-    "plot_section",
-
-
-    #video function
-    "pngs_to_video",
-]
+from importlib import import_module
 
 __version__ = "0.7"
+
+_EXPORTS = {
+    # import-related functions
+    "import_4D": ".modules.import_series_daily",
+    "import_3D": ".modules.import_series_daily",
+    "import_surface": ".modules.import_series_daily",
+    "import_layer": ".modules.import_series_daily",
+    "import_depth": ".modules.import_series_daily",
+    "import_point": ".modules.import_series_daily",
+    "import_profile": ".modules.import_series_daily",
+    "import_section": ".modules.import_daily",
+
+    # post-processing functions
+    "interpolate_to_t": ".modules.interpolate_to_t",
+    "interpolate_depth": ".modules.vertical_interpolation",
+    "geostrophic_current": ".modules.geostrophic_current",
+    "spatial_average": ".modules.spatial_average",
+    "monthly_mean": ".modules.temporal_mean",
+    "annual_mean": ".modules.temporal_mean",
+
+    # plot-related functions
+    "map_draw": ".modules.map_plot",
+    "map_draw_point": ".modules.map_plot",
+    "map_draw_uv": ".modules.map_plot",
+    "map_draw_box": ".modules.map_plot",
+    "plot_point": ".modules.time_series_plot",
+    "plot_point_monthly": ".modules.time_series_plot",
+    "plot_heatmap": ".modules.heatmap_plot",
+    "plot_section": ".modules.heatmap_plot",
+    "plot_section_contourf": ".modules.heatmap_plot",
+    "draw_section_figure": ".modules.section_plot",
+    "extract_section": ".modules.section_plot",
+
+    # video-related function
+    "pngs_to_video": ".modules.image_to_video",
+}
+
+__all__ = sorted(_EXPORTS)
+
+
+def __getattr__(name):
+    if name not in _EXPORTS:
+        raise AttributeError("module {!r} has no attribute {!r}".format(__name__, name))
+
+    module = import_module(_EXPORTS[name], __name__)
+    value = getattr(module, name)
+    globals()[name] = value
+    return value

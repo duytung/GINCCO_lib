@@ -270,7 +270,7 @@ def build_section_tab(parent, datafile, gridfile=None, draw_callback=None):
         row=row_v, column=0, sticky="e", padx=5, pady=2
     )
     number_point = tk.Entry(inner_frame, width=10)
-    number_point.insert(0, "100")
+    number_point.insert(0, "400")
     number_point.grid(row=row_v, column=1, sticky="w", padx=5, pady=2)
     row_v += 1
 
@@ -293,6 +293,56 @@ def build_section_tab(parent, datafile, gridfile=None, draw_callback=None):
     ).grid(row=row_v, column=0, columnspan=2, pady=8)
     row_v += 1
 
+
+    # Plot type
+    tk.Label(inner_frame, text="Plot type:").grid(
+        row=row_v, column=0, sticky="e", padx=5, pady=2
+    )
+    plot_type_var = tk.StringVar(value="contourf")
+    plot_type_menu = tk.OptionMenu(inner_frame, plot_type_var, "contourf", "pcolormesh")
+    plot_type_menu.grid(row=row_v, column=1, sticky="w", padx=5, pady=2)
+    row_v += 1
+
+    # Bathymetry smoothing mask
+    tk.Label(inner_frame, text="Bottom smoothing:").grid(
+        row=row_v, column=0, sticky="e", padx=5, pady=2
+    )
+    bottom_smoothing_var = tk.StringVar(value="none")
+    bottom_smoothing_menu = tk.OptionMenu(
+        inner_frame,
+        bottom_smoothing_var,
+        "none",
+        "median",
+        "moving_average",
+        "gaussian",
+    )
+    bottom_smoothing_menu.grid(row=row_v, column=1, sticky="w", padx=5, pady=2)
+    row_v += 1
+
+    tk.Label(inner_frame, text="Smoothing params:").grid(
+        row=row_v, column=0, sticky="e", padx=5, pady=2
+    )
+    frame_bottom_smoothing = tk.Frame(inner_frame)
+    frame_bottom_smoothing.grid(row=row_v, column=1, sticky="w", padx=5, pady=2)
+
+    tk.Label(frame_bottom_smoothing, text="Window").pack(side="left")
+    bottom_smoothing_window = tk.Entry(frame_bottom_smoothing, width=5)
+    bottom_smoothing_window.insert(0, "6")
+    bottom_smoothing_window.pack(side="left", padx=(2, 8))
+
+    tk.Label(frame_bottom_smoothing, text="Sigma").pack(side="left")
+    bottom_smoothing_sigma = tk.Entry(frame_bottom_smoothing, width=5)
+    bottom_smoothing_sigma.insert(0, "3")
+    bottom_smoothing_sigma.pack(side="left", padx=(2, 0))
+
+    def update_bottom_smoothing_state(*_):
+        state_value = "disabled" if bottom_smoothing_var.get() == "none" else "normal"
+        bottom_smoothing_window.configure(state=state_value)
+        bottom_smoothing_sigma.configure(state=state_value)
+
+    bottom_smoothing_var.trace_add("write", update_bottom_smoothing_state)
+    update_bottom_smoothing_state()
+    row_v += 1
 
     # Figure size
     tk.Label(inner_frame, text="Figure size:").grid(
@@ -433,7 +483,11 @@ def build_section_tab(parent, datafile, gridfile=None, draw_callback=None):
         try:
             opts = {
                 "interp_method": interp_var.get(),
-                "number_point": int(number_point.get()) if number_point.get().isdigit() else 100,
+                "plot_type": plot_type_var.get(),
+                "bottom_smoothing": bottom_smoothing_var.get(),
+                "bottom_smoothing_window": int(bottom_smoothing_window.get()) if bottom_smoothing_window.get().isdigit() else 6,
+                "bottom_smoothing_sigma": safe_float(bottom_smoothing_sigma.get()) or 3,
+                "number_point": int(number_point.get()) if number_point.get().isdigit() else 400,
                 "depth_interval": safe_float(depth_interval.get()) or 1,
                 "vmin": safe_float(entry_min_vector.get()) if entry_min_vector else None,
                 "vmax": safe_float(entry_max_vector.get()) if entry_max_vector else None,

@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 from mpl_toolkits.basemap import Basemap
-from GINCCO_lib.commands.view.interpolate_to_t import interpolate_to_t
+from GINCCO_lib.modules.interpolate_to_t import interpolate_to_t
 
 try:
     from scipy.spatial import cKDTree as KDTree
@@ -214,15 +214,18 @@ def draw_map_combine(scalar_name, scalar_var, u, v, lon, lat, opts, state):
     # mask: fallback to all-True so code continues
     mask_t = state.get("mask_t")
     if mask_t is None:
-        print ('Cannot find mask_t')
+        if u.shape == v.shape:
+            mask_t = np.ones(u.shape, dtype=bool)
+        else:
+            raise ValueError("mask_t is required when U/V are on staggered grids.")
 
 
     # interpolate staggered fields to T-grid if shapes don't match
     try:
         if u.shape != mask_t.shape:
-            u = interpolate_to_t(u, stagger="u", mask_t=mask_t)
+            u = interpolate_to_t(u, stagger="u", mask_t=mask_t)[0]
         if v.shape != mask_t.shape:
-            v = interpolate_to_t(v, stagger="v", mask_t=mask_t)
+            v = interpolate_to_t(v, stagger="v", mask_t=mask_t)[0]
     except Exception as e:
         print("Interpolation error:", e)
         return
@@ -247,6 +250,8 @@ def draw_map_combine(scalar_name, scalar_var, u, v, lon, lat, opts, state):
     if need_rotate:
         sin_t = state.get("sin_t")
         cos_t = state.get("cos_t")
+        if sin_t is None or cos_t is None:
+            raise ValueError("grid rotation arrays are required when need_rotate=True.")
         U1 = u * cos_t + v * sin_t
         V1 = -u * sin_t + v * cos_t
 

@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 from mpl_toolkits.basemap import Basemap
+from GINCCO_lib.modules.vertical_interpolation import interpolate_depth
 
 
 
@@ -31,85 +32,6 @@ def _nice_ticks(vmin, vmax, n=4):
 
 
 
-
-
-def interpolate_depth(data_3d, depth_3d, target_depth, mask_t=None):
-    """
-    Nội suy trường 3D 'data_3d' (nz, ny, nx) về một độ sâu cụ thể.
-
-    Parameters
-    ----------
-    data_3d : np.ndarray
-        Dữ liệu 3D (nz, ny, nx).
-    depth_3d : np.ndarray
-        Lưới độ sâu 3D (nz, ny, nx), giá trị âm (vd: -3, -10, ...).
-    target_depth : float
-        Độ sâu mong muốn (dương hoặc âm). Nếu dương sẽ tự đổi sang âm.
-    mask_t : np.ndarray, optional
-        Mask 2D (ny, nx), 1 = biển, 0 = đất. Nếu None thì không áp dụng.
-
-    Returns
-    -------
-    data_2d : np.ndarray
-        Trường 2D (ny, nx) đã nội suy tại target_depth, với NaN ở chỗ không nội suy được.
-    """
-
-    # Nếu target_depth > 0, chuyển sang âm cho cùng hệ với depth_3d
-    depth = -abs(target_depth)
-
-    nz, ny, nx = depth_3d.shape
-
-    # tìm layer "dưới" và "trên" độ sâu cần nội suy
-    # ví dụ depth = -5, depth_3d có -3 (trên), -10 (dưới)
-    # max_array: chỉ số của lớp sâu hơn (giá trị nhỏ hơn, ví dụ -10)
-    # min_array: chỉ số của lớp nông hơn (giá trị lớn hơn, ví dụ -3)
-
-    # mask các lớp nông hơn depth (>-5) để tìm lớp sâu hơn gần nhất
-    tmp = np.ma.masked_where(depth_3d > depth, depth_3d)
-    max_array = np.argmax(tmp, axis=0)
-
-    # mask các lớp sâu hơn depth (<-5) để tìm lớp nông hơn gần nhất
-    tmp = np.ma.masked_where(depth_3d < depth, depth_3d)
-    min_array = np.argmin(tmp, axis=0)
-
-    # Mảng hệ số nhân cho từng lớp
-    multiply_array = np.zeros_like(depth_3d, dtype="float64")
-
-    # Mảng kiểm tra ô nào nội suy được
-    check_depth_array = np.zeros((ny, nx), dtype="float64")
-
-    for j in range(ny):
-        for i in range(nx):
-            kmin = min_array[j, i]
-            kmax = max_array[j, i]
-            if kmin != kmax:  # chỉ khi tìm được 2 lớp khác nhau
-                zmax = depth_3d[kmax, j, i]
-                zmin = depth_3d[kmin, j, i]
-                dist = zmax - zmin   # nhớ là số âm, nhưng nhất quán với công thức gốc
-
-                if dist == 0 or np.isnan(dist):
-                    continue
-
-                # hệ số đúng theo code gốc của Viet
-                multiply_array[kmax, j, i] = 1 + (depth - zmax) / dist
-                multiply_array[kmin, j, i] = 1 - (depth - zmin) / dist
-                check_depth_array[j, i] = 1
-
-    # nội suy: tổng (data * hệ số) theo chiều z
-    data_interp = np.nansum(data_3d * multiply_array, axis=0)
-
-    # nếu toàn NaN theo cột z, nansum trả 0 → sửa lại về NaN
-    all_nan = np.all(np.isnan(data_3d), axis=0)
-    data_interp[all_nan] = np.nan
-
-    # chỗ không có cặp lớp trên/dưới hợp lệ → NaN
-    data_interp[check_depth_array == 0] = np.nan
-
-    # Áp dụng mask biển/đất nếu có
-    if mask_t is not None:
-        data_interp[mask_t == 0] = np.nan
-
-    return data_interp
 
 
 

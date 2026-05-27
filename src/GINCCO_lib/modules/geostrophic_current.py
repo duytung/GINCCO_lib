@@ -23,14 +23,15 @@ def geostrophic_current(ssh, lat, dx, dy, sin_t, cos_t):
     g = 9.81
     omega = 7.292115e-5
 
+    ssh = np.asarray(np.ma.filled(ssh, np.nan), dtype=float)
+    lat = np.asarray(np.ma.filled(lat, np.nan), dtype=float)
+    dx = np.asarray(np.ma.filled(dx, np.nan), dtype=float)
+    dy = np.asarray(np.ma.filled(dy, np.nan), dtype=float)
+    sin_t = np.asarray(np.ma.filled(sin_t, np.nan), dtype=float)
+    cos_t = np.asarray(np.ma.filled(cos_t, np.nan), dtype=float)
+
     # Compute Coriolis parameter (same shape as grid)
     f = 2 * omega * np.sin(np.deg2rad(lat))
-
-    # Convert masked arrays to normal arrays with NaN
-    for a_name in ["ssh", "lat", "f", "dx", "dy"]:
-        a = locals()[a_name]
-        if np.ma.isMaskedArray(a):
-            locals()[a_name] = a.filled(np.nan)
 
     # Gradients of SSH (finite differences)
     dssh_dy, dssh_dx = np.gradient(ssh)
@@ -52,7 +53,6 @@ def geostrophic_current(ssh, lat, dx, dy, sin_t, cos_t):
     V1 = -u * sin_t + v * cos_t
 
     return U1, V1
-
 
 
 
