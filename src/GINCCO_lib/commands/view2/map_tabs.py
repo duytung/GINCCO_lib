@@ -427,6 +427,9 @@ class VectorTab(_BaseMapTab):
         self.u_combo = self.combo(group, 0, u_vals, u_vals[0] if u_vals else "", width=30)
         self.label(group, "V variable", 1)
         self.v_combo = self.combo(group, 1, v_vals, v_vals[0] if v_vals else "", width=30)
+        ttk.Button(group, text="Surface current", command=self._select_surface_current).grid(
+            row=1, column=2, columnspan=2, sticky="w", padx=(4, 12), pady=3
+        )
         self.u_combo.bind("<<ComboboxSelected>>", lambda _e: self._on_vector_change())
         self.v_combo.bind("<<ComboboxSelected>>", lambda _e: self._on_vector_change())
 
@@ -474,6 +477,26 @@ class VectorTab(_BaseMapTab):
 
         self.draw_button = self.action(row, "Draw Vector Map", self.draw)
         self._on_vector_change()
+
+    def _select_surface_current(self):
+        if self.ds is None:
+            return
+
+        names = list(self.ds.variables.keys())
+        lower_names = {name.lower(): name for name in names}
+        u_name = lower_names.get("u")
+        v_name = lower_names.get("v")
+        if u_name is None or v_name is None:
+            messagebox.showerror("Error", "Variables u and v are required for the surface current preset.")
+            return
+
+        self.u_combo.set(u_name)
+        self.v_combo.set(v_name)
+        self._on_vector_change()
+        values = [str(value) for value in self.layer_combo.cget("values")]
+        layer = values[-1] if values else "0"
+        self.layer_combo.set(layer)
+        self.status_var.set("Surface current preset selected: u, v, layer {}".format(layer))
 
     def _on_vector_change(self):
         u_name, v_name = self.u_combo.get(), self.v_combo.get()
