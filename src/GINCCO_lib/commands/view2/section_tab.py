@@ -229,14 +229,14 @@ class SectionTab:
         self.number_point = self._entry(group, 1, 1, "400")
 
         ttk.Label(group, text="Depth interval").grid(row=2, column=0, sticky="e", padx=(0, 6), pady=3)
-        self.depth_interval = self._entry(group, 2, 1, "1")
+        self.depth_interval = self._entry(group, 2, 1, "0.1")
 
         ttk.Label(group, text="Bottom smoothing").grid(row=3, column=0, sticky="e", padx=(0, 6), pady=3)
         self.bottom_smoothing = self._combo(group, 3, 1, ("none", "median", "moving_average", "gaussian"), "none")
         self.bottom_smoothing.bind("<<ComboboxSelected>>", lambda _event: self._update_smoothing_state())
 
         self.bottom_window, self.bottom_sigma = self._pair_entries(
-            group, 4, "Smoothing params", "Window", "Sigma", "6", "3", width=6
+            group, 4, "Smoothing params", "Window", "Sigma", "20", "3", width=6
         )
         self._update_smoothing_state()
 
