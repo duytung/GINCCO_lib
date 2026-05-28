@@ -288,8 +288,6 @@ class ScalarTab(_BaseMapTab):
         self.fig_width, self.fig_height = self.pair_entries(group, 3, "Figure size", "W", "H", "7", "6", width=6)
         self.label(group, "Basemap Resolution", 4)
         self.resolution = self.combo(group, 4, BASEMAP_RESOLUTIONS, "intermediate", width=14)
-        self.label(group, "Ticks", 5)
-        self.n_ticks = self.entry(group, 5, "4", width=6)
         self.label(group, "DPI", 6)
         self.dpi = self.entry(group, 6, "100")
         self.label(group, "Missing color", 7)
@@ -382,7 +380,7 @@ class ScalarTab(_BaseMapTab):
                 "continent_color": self.continent_color.get() or "0.8",
                 "lake_color": self.lake_color.get() or "white",
                 "show_gridlines": self.show_gridlines.get(),
-                "n_ticks": _safe_int(self.n_ticks.get(), 4),
+                "n_ticks": 4,
                 "bad_color": self.bad_color.get() or "white",
                 "title": self.title_entry.get().strip() or None,
                 "colorbar_label": self.cbar_label.get().strip() or None,
@@ -449,8 +447,6 @@ class VectorTab(_BaseMapTab):
         self.fig_width, self.fig_height = self.pair_entries(group, 4, "Figure size", "W", "H", "7", "6", width=6)
         self.label(group, "Basemap Resolution", 5)
         self.resolution = self.combo(group, 5, BASEMAP_RESOLUTIONS, "intermediate", width=14)
-        self.label(group, "Ticks", 6)
-        self.n_ticks = self.entry(group, 6, "4", width=6)
         self.label(group, "DPI", 7)
         self.dpi = self.entry(group, 7, "100")
         self.label(group, "Scale", 8)
@@ -546,7 +542,7 @@ class VectorTab(_BaseMapTab):
             "continent_color": self.continent_color.get() or "0.8",
             "lake_color": self.lake_color.get() or "white",
             "show_gridlines": self.show_gridlines.get(),
-            "n_ticks": _safe_int(self.n_ticks.get(), 4),
+            "n_ticks": 4,
             "bad_color": self.bad_color.get() or "white",
             "title": self.title_entry.get().strip() or None,
             "colorbar_label": self.cbar_label.get().strip() or None,
@@ -592,8 +588,6 @@ class CombineTab(VectorTab):
         self.fig_width, self.fig_height = self.pair_entries(group, 3, "Figure size", "W", "H", "7", "6", width=6)
         self.label(group, "Basemap Resolution", 4)
         self.resolution = self.combo(group, 4, BASEMAP_RESOLUTIONS, "intermediate", width=14)
-        self.label(group, "Ticks", 5)
-        self.n_ticks = self.entry(group, 5, "4", width=6)
         self.label(group, "DPI", 6)
         self.dpi = self.entry(group, 6, "100")
         self.label(group, "Max arrows", 7)
@@ -678,7 +672,7 @@ class CombineTab(VectorTab):
                 "continent_color": self.continent_color.get() or "0.8",
                 "lake_color": self.lake_color.get() or "white",
                 "show_gridlines": self.show_gridlines.get(),
-                "n_ticks": _safe_int(self.n_ticks.get(), 4),
+                "n_ticks": 4,
                 "bad_color": self.bad_color.get() or "white",
                 "title": self.title_entry.get().strip() or None,
                 "colorbar_label": self.cbar_label.get().strip() or None,

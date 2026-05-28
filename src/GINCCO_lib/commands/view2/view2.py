@@ -3,6 +3,7 @@
 import argparse
 import os
 import tkinter as tk
+from tkinter import font as tkfont
 from tkinter import messagebox
 from tkinter import ttk
 
@@ -38,16 +39,43 @@ def _find_grid_file(datafile, grid_arg=None):
 
 
 def _configure_style(root):
+    base_font = ("DejaVu Sans", 11)
+    bold_font = ("DejaVu Sans", 11, "bold")
+    status_font = ("DejaVu Sans", 10)
+
+    for name in (
+        "TkDefaultFont",
+        "TkTextFont",
+        "TkMenuFont",
+        "TkHeadingFont",
+        "TkCaptionFont",
+        "TkSmallCaptionFont",
+        "TkIconFont",
+        "TkTooltipFont",
+    ):
+        try:
+            tkfont.nametofont(name).configure(family="DejaVu Sans", size=11)
+        except tk.TclError:
+            pass
+
     style = ttk.Style(root)
     try:
         style.theme_use("clam")
     except tk.TclError:
         pass
+    style.configure(".", font=base_font)
     style.configure("TFrame", padding=0)
+    style.configure("TLabel", font=base_font)
+    style.configure("TButton", font=base_font)
+    style.configure("TCheckbutton", font=base_font)
+    style.configure("TRadiobutton", font=base_font)
+    style.configure("TEntry", font=base_font)
+    style.configure("TCombobox", font=base_font)
+    style.configure("TNotebook.Tab", font=bold_font, padding=(12, 6))
     style.configure("Panel.TLabelframe", padding=10)
-    style.configure("Panel.TLabelframe.Label", font=("TkDefaultFont", 10, "bold"))
-    style.configure("Primary.TButton", padding=(12, 6))
-    style.configure("Status.TLabel", padding=(8, 4))
+    style.configure("Panel.TLabelframe.Label", font=bold_font)
+    style.configure("Primary.TButton", font=bold_font, padding=(12, 6))
+    style.configure("Status.TLabel", font=status_font, padding=(8, 4))
 
 
 def open_file(datafile, gridfile=None):
