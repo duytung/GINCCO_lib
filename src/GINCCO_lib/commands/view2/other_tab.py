@@ -1,15 +1,15 @@
 """Other analysis tab for the redesigned GINCCO viewer."""
 
-import os
 import tkinter as tk
 from tkinter import messagebox
 from tkinter import ttk
 
+import matplotlib.cm as cm
 import numpy as np
 from netCDF4 import Dataset
 
+from GINCCO_lib.commands.view.plot_vector_map import draw_vector_plot
 from GINCCO_lib.modules.geostrophic_current import geostrophic_current
-from GINCCO_lib.modules.map_plot import map_draw_uv
 
 
 def _safe_float(value):
@@ -32,6 +32,36 @@ def _effective_ndim(shape):
 
 class InvalidSSHVariable(ValueError):
     pass
+
+
+def _cmap_values():
+    try:
+        return sorted(cm.cmap_d.keys())
+    except Exception:
+        return ["jet", "viridis", "YlOrBr", "coolwarm"]
+
+
+BASEMAP_RESOLUTIONS = ("crude", "low", "intermediate", "high", "full")
+_BASEMAP_RESOLUTION_CODES = {
+    "crude": "c",
+    "low": "l",
+    "intermediate": "i",
+    "high": "h",
+    "full": "f",
+    "c": "c",
+    "l": "l",
+    "i": "i",
+    "h": "h",
+    "f": "f",
+}
+
+
+def _basemap_resolution_code(value):
+    return _BASEMAP_RESOLUTION_CODES.get(str(value or "").lower(), "i")
+
+
+def _combo_width(width):
+    return max(1, int(round(width * 1.3)))
 
 
 def _load_grid(gridfile):
@@ -116,7 +146,7 @@ class OtherTab:
         values = list(values or [])
         if values and (default == "" or default not in values):
             default = values[0]
-        combo = ttk.Combobox(parent, values=values, state="readonly", width=int(round(width * 1.3)))
+        combo = ttk.Combobox(parent, values=values, state="readonly", width=_combo_width(width))
         combo.set(default)
         combo.grid(row=row, column=1, sticky="w", padx=(4, 12), pady=3)
         return combo
@@ -137,6 +167,13 @@ class OtherTab:
         left = self._value_slot(parent, row, 1, left_label, left_default, width)
         right = self._value_slot(parent, row, 2, right_label, right_default, width)
         return left, right
+
+    def _triplet_entries(self, parent, row, label, left_label, middle_label, right_label, width=7):
+        self._label(parent, label, row)
+        left = self._value_slot(parent, row, 1, left_label, width=width)
+        middle = self._value_slot(parent, row, 2, middle_label, width=width)
+        right = self._value_slot(parent, row, 3, right_label, width=width)
+        return left, middle, right
 
     def _variables(self, allowed_ndim=(2, 3)):
         if self.ds is None:
@@ -170,21 +207,39 @@ class OtherTab:
         self.ssh_combo.grid(row=0, column=3, sticky="w", padx=(4, 12), pady=3)
 
         group = self._group("Map Bounds", row); row += 1
-        self.lon_min, self.lon_max = self._pair_entries(group, 0, "Longitude", "Min", "Max")
-        self.lat_min, self.lat_max = self._pair_entries(group, 1, "Latitude", "Min", "Max")
+        self.lon_min, self.lon_max, self.lon_interval = self._triplet_entries(group, 0, "Longitude", "Min", "Max", "Interval")
+        self.lat_min, self.lat_max, self.lat_interval = self._triplet_entries(group, 1, "Latitude", "Min", "Max", "Interval")
 
         group = self._group("Map-drawing options", row); row += 1
-        self.data_min, self.data_max = self._pair_entries(group, 0, "Speed range", "Min", "Max")
-        self._label(group, "Max arrows", 1)
-        self.quiver_n = self._entry(group, 1, "20")
-        self._label(group, "Quiver scale", 2)
-        self.quiver_scale = self._entry(group, 2, "6")
-        self._label(group, "Title", 3)
-        self.title_entry = self._entry(group, 3, "Geostrophic current", width=28)
-        self._label(group, "Output folder", 4)
-        self.path_save = self._entry(group, 4, ".", width=28)
-        self._label(group, "Output name", 5)
-        self.name_save = self._entry(group, 5, "geostrophic_current", width=28)
+        self.vmin, self.vmax, self.value_interval = self._triplet_entries(group, 0, "Speed range", "Min", "Max", "Interval")
+        self._label(group, "Color map", 1)
+        self.cmap = self._combo(group, 1, _cmap_values(), "YlOrBr", width=22)
+        self.cmap_min, self.cmap_max = self._pair_entries(group, 2, "Cmap range", "Min", "Max", "0", "0.7", width=7)
+        self.fig_width, self.fig_height = self._pair_entries(group, 3, "Figure size", "W", "H", "7", "6", width=6)
+        self._label(group, "Basemap Resolution", 4)
+        self.resolution = self._combo(group, 4, BASEMAP_RESOLUTIONS, "intermediate", width=14)
+        self._label(group, "Max arrows", 5)
+        self.quiver_n = self._entry(group, 5, "20")
+        self._label(group, "DPI", 6)
+        self.dpi = self._entry(group, 6, "100")
+        self._label(group, "Scale", 7)
+        self.scale = self._entry(group, 7, "6")
+        self._label(group, "Missing color", 8)
+        self.bad_color = self._combo(group, 8, ("white", "lightgray", "none", "black"), "white", width=12)
+        self.show_coastline = tk.BooleanVar(value=True)
+        self.show_gridlines = tk.BooleanVar(value=True)
+        self.fill_continents = tk.BooleanVar(value=False)
+        ttk.Checkbutton(group, text="Draw coastlines", variable=self.show_coastline).grid(row=9, column=1, sticky="w", padx=(4, 12), pady=3)
+        ttk.Checkbutton(group, text="Draw gridlines", variable=self.show_gridlines).grid(row=9, column=2, sticky="w", padx=(4, 12), pady=3)
+        ttk.Checkbutton(group, text="Fill continents", variable=self.fill_continents).grid(row=9, column=3, sticky="w", padx=(4, 12), pady=3)
+        self._label(group, "Continent color", 10)
+        self.continent_color = self._combo(group, 10, ("0.8", "lightgray", "white", "tan", "darkgray"), "0.8", width=12)
+        self._label(group, "Lake color", 11)
+        self.lake_color = self._combo(group, 11, ("white", "lightblue", "0.9"), "white", width=12)
+        self._label(group, "Title", 12)
+        self.title_entry = self._entry(group, 12, "Geostrophic current", width=28)
+        self._label(group, "Colorbar label", 13)
+        self.cbar_label = self._entry(group, 13, "Speed", width=28)
 
         action = ttk.Frame(self.content)
         action.grid(row=row, column=0, sticky="ew")
@@ -216,6 +271,38 @@ class OtherTab:
         if missing:
             raise ValueError("Grid file is missing required variables: {}".format(", ".join(missing)))
 
+    def _plot_options(self):
+        return {
+            "layer": 0,
+            "need_rotate": False,
+            "lon_min": _safe_float(self.lon_min.get()),
+            "lon_max": _safe_float(self.lon_max.get()),
+            "lon_interval": _safe_float(self.lon_interval.get()),
+            "lat_min": _safe_float(self.lat_min.get()),
+            "lat_max": _safe_float(self.lat_max.get()),
+            "lat_interval": _safe_float(self.lat_interval.get()),
+            "vmin": _safe_float(self.vmin.get()),
+            "vmax": _safe_float(self.vmax.get()),
+            "value_interval": _safe_float(self.value_interval.get()),
+            "cmap": self.cmap.get() or "YlOrBr",
+            "cmap_min": _safe_float(self.cmap_min.get()) or 0,
+            "cmap_max": _safe_float(self.cmap_max.get()) or 0.7,
+            "scale": _safe_float(self.scale.get()) or 6,
+            "resolution": _basemap_resolution_code(self.resolution.get()),
+            "dpi": _safe_int(self.dpi.get(), 100),
+            "fig_width": _safe_float(self.fig_width.get()) or 7,
+            "fig_height": _safe_float(self.fig_height.get()) or 6,
+            "show_coastline": self.show_coastline.get(),
+            "fill_continents": self.fill_continents.get(),
+            "continent_color": self.continent_color.get() or "0.8",
+            "lake_color": self.lake_color.get() or "white",
+            "show_gridlines": self.show_gridlines.get(),
+            "n_ticks": 4,
+            "bad_color": self.bad_color.get() or "white",
+            "title": self.title_entry.get().strip() or "Geostrophic current",
+            "colorbar_label": self.cbar_label.get().strip() or "Speed",
+        }
+
     def draw(self):
         if self.ds is None:
             return
@@ -244,32 +331,17 @@ class OtherTab:
                 self.grid_state["sin"],
                 self.grid_state["cos"],
             )
-
-            path_save = self.path_save.get().strip() or "."
-            if not os.path.isdir(path_save):
-                os.makedirs(path_save)
-
-            lon = self.grid_state["lon"]
-            lat = self.grid_state["lat"]
-            map_draw_uv(
-                lon_min=_safe_float(self.lon_min.get()) if self.lon_min.get().strip() else float(np.nanmin(lon)),
-                lon_max=_safe_float(self.lon_max.get()) if self.lon_max.get().strip() else float(np.nanmax(lon)),
-                lat_min=_safe_float(self.lat_min.get()) if self.lat_min.get().strip() else float(np.nanmin(lat)),
-                lat_max=_safe_float(self.lat_max.get()) if self.lat_max.get().strip() else float(np.nanmax(lat)),
-                title=self.title_entry.get().strip() or "Geostrophic current",
-                lon_data=lon,
-                lat_data=lat,
-                data_u=u,
-                data_v=v,
-                mask_ocean=mask,
-                path_save=path_save,
-                name_save=self.name_save.get().strip() or "geostrophic_current",
+            state = {"mask_t": mask, "sin_t": None, "cos_t": None}
+            draw_vector_plot(
+                u,
+                v,
+                self.grid_state["lon"],
+                self.grid_state["lat"],
+                self._plot_options(),
+                state,
                 quiver_max_n=_safe_int(self.quiver_n.get(), 20),
-                quiver_scale=_safe_float(self.quiver_scale.get()),
-                data_min=_safe_float(self.data_min.get()),
-                data_max=_safe_float(self.data_max.get()),
             )
-            self.status_var.set("Done; map saved in {}".format(path_save))
+            self.status_var.set("Done")
         except InvalidSSHVariable as exc:
             self.status_var.set("Choose a 2D SSH variable")
             messagebox.showerror("Error", str(exc))
