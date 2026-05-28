@@ -21,7 +21,11 @@ def _find_grid_file(datafile, grid_arg=None):
         print("Warning: provided grid file not found: {} (ignored)".format(grid_arg))
 
     data_dir = os.path.dirname(os.path.abspath(datafile)) or "."
-    candidates = [os.path.join(data_dir, "grid.nc"), os.path.abspath("grid.nc")]
+    candidates = [
+        os.path.join(data_dir, "grid.nc"),
+        os.path.abspath("grid.nc"),
+        os.path.abspath(os.path.join("..", "OFFLINE", "grid.nc")),
+    ]
 
     cur = data_dir
     for _ in range(2):
