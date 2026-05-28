@@ -520,8 +520,10 @@ class VectorTab(_BaseMapTab):
         nd = max(getattr(u, "ndim", 0), getattr(v, "ndim", 0))
         if nd == 3:
             self.set_combo_values(self.layer_combo, range(u.shape[0]), 0)
+            self.layer_combo.configure(state="readonly")
         else:
             self.set_combo_values(self.layer_combo, [0], 0)
+            self.layer_combo.configure(state="disabled")
 
         # The vector drawing backend expects T-grid lon/lat plus mask_t for staggered interpolation.
         self.state = self.load_t_grid()
