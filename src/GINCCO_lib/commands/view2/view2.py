@@ -10,6 +10,7 @@ import matplotlib
 matplotlib.use("TkAgg")
 
 from .map_tabs import CombineTab, ScalarTab, VectorTab
+from .other_tab import OtherTab
 from .section_tab import SectionTab
 
 
@@ -78,11 +79,13 @@ def open_file(datafile, gridfile=None):
     vector_tab = VectorTab(notebook, datafile, gridfile, status_var)
     combine_tab = CombineTab(notebook, datafile, gridfile, status_var)
     section_tab = SectionTab(notebook, datafile, gridfile, status_var)
+    other_tab = OtherTab(notebook, datafile, gridfile, status_var)
 
     notebook.add(scalar_tab.frame, text="Scalar")
     notebook.add(vector_tab.frame, text="Vector")
     notebook.add(combine_tab.frame, text="Combine")
     notebook.add(section_tab.frame, text="Section")
+    notebook.add(other_tab.frame, text="Other")
 
     status = ttk.Label(root, textvariable=status_var, style="Status.TLabel", anchor="w")
     status.grid(row=1, column=0, sticky="ew")
