@@ -39,9 +39,9 @@ def _find_grid_file(datafile, grid_arg=None):
 
 
 def _configure_style(root):
-    base_font = ("DejaVu Sans", 11)
-    bold_font = ("DejaVu Sans", 11, "bold")
-    status_font = ("DejaVu Sans", 10)
+    base_font = ("DejaVu Sans", 10)
+    bold_font = ("DejaVu Sans", 10, "bold")
+    status_font = ("DejaVu Sans", 9)
 
     for name in (
         "TkDefaultFont",
@@ -54,7 +54,7 @@ def _configure_style(root):
         "TkTooltipFont",
     ):
         try:
-            tkfont.nametofont(name).configure(family="DejaVu Sans", size=11)
+            tkfont.nametofont(name).configure(family="DejaVu Sans", size=10)
         except tk.TclError:
             pass
 

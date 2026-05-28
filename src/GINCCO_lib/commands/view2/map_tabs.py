@@ -65,6 +65,10 @@ def _basemap_resolution_code(value):
     return _BASEMAP_RESOLUTION_CODES.get(str(value or "").lower(), "i")
 
 
+def _combo_width(width):
+    return max(1, int(round(width * 1.3)))
+
+
 def _load_grid(gridfile, suffix="t"):
     state = {"lon": None, "lat": None, "depth_levels": None, "mask_t": None, "sin_t": None, "cos_t": None}
     if not gridfile:
@@ -148,7 +152,7 @@ class _BaseMapTab:
         values = list(values or [])
         if values and (default == "" or default not in values):
             default = values[0]
-        combo = ttk.Combobox(parent, values=values, state="readonly", width=width)
+        combo = ttk.Combobox(parent, values=values, state="readonly", width=_combo_width(width))
         combo.set(default)
         combo.grid(row=row, column=1, sticky="w", padx=(4, 12), pady=3)
         return combo
@@ -268,7 +272,7 @@ class ScalarTab(_BaseMapTab):
         layer_slot.grid(row=1, column=1, sticky="ew", padx=(4, 12), pady=3)
         self.layer_radio = ttk.Radiobutton(layer_slot, text="Layer", variable=self.mode_var, value="layer", command=self._update_mode_state)
         self.layer_radio.grid(row=0, column=0, sticky="w", padx=(0, 4))
-        self.layer_combo = ttk.Combobox(layer_slot, values=("0",), state="readonly", width=6)
+        self.layer_combo = ttk.Combobox(layer_slot, values=("0",), state="readonly", width=8)
         self.layer_combo.set("0")
         self.layer_combo.grid(row=0, column=1, sticky="w")
         depth_slot = ttk.Frame(group)
@@ -427,7 +431,7 @@ class VectorTab(_BaseMapTab):
         self.v_combo.bind("<<ComboboxSelected>>", lambda _e: self._on_vector_change())
 
         self.label(group, "Layer", 2)
-        self.layer_combo = ttk.Combobox(group, values=("0",), state="readonly", width=6)
+        self.layer_combo = ttk.Combobox(group, values=("0",), state="readonly", width=8)
         self.layer_combo.set("0")
         self.layer_combo.grid(row=2, column=1, sticky="w", padx=(4, 12), pady=3)
         self.rotate_var = tk.BooleanVar(value=True)
@@ -560,7 +564,7 @@ class CombineTab(VectorTab):
         self.scalar_combo = self.combo(group, 0, scalar_vals, scalar_vals[0] if scalar_vals else "", width=30)
         self.scalar_combo.bind("<<ComboboxSelected>>", lambda _e: self._on_scalar_change())
         self.label(group, "Scalar layer", 1)
-        self.scalar_layer_combo = ttk.Combobox(group, values=("0",), state="readonly", width=6)
+        self.scalar_layer_combo = ttk.Combobox(group, values=("0",), state="readonly", width=8)
         self.scalar_layer_combo.set("0")
         self.scalar_layer_combo.grid(row=1, column=1, sticky="w", padx=(4, 12), pady=3)
 
@@ -571,7 +575,7 @@ class CombineTab(VectorTab):
         self.u_combo.bind("<<ComboboxSelected>>", lambda _e: self._on_vector_change())
         self.v_combo.bind("<<ComboboxSelected>>", lambda _e: self._on_vector_change())
         self.label(group, "Vector layer", 4)
-        self.layer_combo = ttk.Combobox(group, values=("0",), state="readonly", width=6)
+        self.layer_combo = ttk.Combobox(group, values=("0",), state="readonly", width=8)
         self.layer_combo.set("0")
         self.layer_combo.grid(row=4, column=1, sticky="w", padx=(4, 12), pady=3)
         self.rotate_var = tk.BooleanVar(value=True)

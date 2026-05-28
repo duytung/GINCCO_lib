@@ -66,6 +66,10 @@ def get_grid_coords(grid_file, suffix):
         return None, None, None, None
 
 
+def _combo_width(width):
+    return max(1, int(round(width * 1.3)))
+
+
 class SectionTab:
     def __init__(self, parent, datafile, gridfile, status_var):
         self.parent = parent
@@ -142,7 +146,7 @@ class SectionTab:
         values = list(values or [])
         if values and (default == "" or default not in values):
             default = values[0]
-        combo = ttk.Combobox(parent, values=values, state="readonly", width=width)
+        combo = ttk.Combobox(parent, values=values, state="readonly", width=_combo_width(width))
         combo.set(default)
         combo.grid(row=row, column=column, sticky="w", padx=(4, 12), pady=3)
         return combo
