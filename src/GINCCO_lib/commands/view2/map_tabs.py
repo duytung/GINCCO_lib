@@ -427,8 +427,13 @@ class VectorTab(_BaseMapTab):
         self.u_combo = self.combo(group, 0, u_vals, u_vals[0] if u_vals else "", width=30)
         self.label(group, "V variable", 1)
         self.v_combo = self.combo(group, 1, v_vals, v_vals[0] if v_vals else "", width=30)
-        ttk.Button(group, text="Surface current", command=self._select_surface_current).grid(
-            row=1, column=2, columnspan=2, sticky="w", padx=(4, 12), pady=3
+        preset_frame = ttk.Frame(group)
+        preset_frame.grid(row=0, column=2, columnspan=2, rowspan=2, sticky="ne", padx=(24, 0), pady=(0, 0))
+        ttk.Button(preset_frame, text="Surface current", command=self._select_surface_current).grid(
+            row=0, column=0, sticky="ew", pady=(0, 2)
+        )
+        ttk.Button(preset_frame, text="Surface wind stress", command=self._select_surface_wind_stress).grid(
+            row=1, column=0, sticky="ew"
         )
         self.u_combo.bind("<<ComboboxSelected>>", lambda _e: self._on_vector_change())
         self.v_combo.bind("<<ComboboxSelected>>", lambda _e: self._on_vector_change())
@@ -479,15 +484,21 @@ class VectorTab(_BaseMapTab):
         self._on_vector_change()
 
     def _select_surface_current(self):
+        self._select_vector_preset("u", "v", "Surface current")
+
+    def _select_surface_wind_stress(self):
+        self._select_vector_preset("wstressu", "wstressv", "Surface wind stress")
+
+    def _select_vector_preset(self, u_key, v_key, label):
         if self.ds is None:
             return
 
         names = list(self.ds.variables.keys())
         lower_names = {name.lower(): name for name in names}
-        u_name = lower_names.get("u")
-        v_name = lower_names.get("v")
+        u_name = lower_names.get(u_key)
+        v_name = lower_names.get(v_key)
         if u_name is None or v_name is None:
-            messagebox.showerror("Error", "Variables u and v are required for the surface current preset.")
+            messagebox.showerror("Error", "Variables {} and {} are required for the {} preset.".format(u_key, v_key, label.lower()))
             return
 
         self.u_combo.set(u_name)
@@ -496,7 +507,7 @@ class VectorTab(_BaseMapTab):
         values = [str(value) for value in self.layer_combo.cget("values")]
         layer = values[-1] if values else "0"
         self.layer_combo.set(layer)
-        self.status_var.set("Surface current preset selected: u, v, layer {}".format(layer))
+        self.status_var.set("{} preset selected: {}, {}, layer {}".format(label, u_name, v_name, layer))
 
     def _on_vector_change(self):
         u_name, v_name = self.u_combo.get(), self.v_combo.get()
