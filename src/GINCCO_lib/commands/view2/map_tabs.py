@@ -497,21 +497,26 @@ class VectorTab(_BaseMapTab):
         self.continent_color.configure(state=state)
 
     def _select_surface_current(self):
-        self._select_vector_preset("u", "v", "Surface current")
+        self._select_vector_preset(("u", "vel_u"), ("v", "vel_v"), "Surface current")
 
     def _select_surface_wind_stress(self):
-        self._select_vector_preset("wstressu", "wstressv", "Surface wind stress")
+        self._select_vector_preset(("wstressu", "wstress_u"), ("wstressv", "wstress_v"), "Surface wind stress")
 
-    def _select_vector_preset(self, u_key, v_key, label):
+    def _select_vector_preset(self, u_keys, v_keys, label):
         if self.ds is None:
             return
 
         names = list(self.ds.variables.keys())
         lower_names = {name.lower(): name for name in names}
-        u_name = lower_names.get(u_key)
-        v_name = lower_names.get(v_key)
+        u_name = self._first_matching_variable(lower_names, u_keys)
+        v_name = self._first_matching_variable(lower_names, v_keys)
         if u_name is None or v_name is None:
-            messagebox.showerror("Error", "Variables {} and {} are required for the {} preset.".format(u_key, v_key, label.lower()))
+            messagebox.showerror(
+                "Error",
+                "Variables {} and {} are required for the {} preset.".format(
+                    "/".join(u_keys), "/".join(v_keys), label.lower()
+                ),
+            )
             return
 
         self.u_combo.set(u_name)
@@ -521,6 +526,13 @@ class VectorTab(_BaseMapTab):
         layer = values[-1] if values else "0"
         self.layer_combo.set(layer)
         self.status_var.set("{} preset selected: {}, {}, layer {}".format(label, u_name, v_name, layer))
+
+    def _first_matching_variable(self, lower_names, candidates):
+        for candidate in candidates:
+            name = lower_names.get(candidate.lower())
+            if name is not None:
+                return name
+        return None
 
     def _on_vector_change(self):
         u_name, v_name = self.u_combo.get(), self.v_combo.get()
