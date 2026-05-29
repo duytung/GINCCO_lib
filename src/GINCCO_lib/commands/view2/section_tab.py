@@ -188,7 +188,7 @@ class SectionTab:
         self.lat_p1, self.lat_p2 = self._pair_entries(group, 1, "Latitude", "P1", "P2")
         random_btn = ttk.Button(group, text="Random", command=self._fill_random_section)
         random_btn.grid(row=2, column=1, sticky="w", padx=(4, 12), pady=(6, 3))
-        self.check_button = ttk.Button(group, text="Check", command=self._check_endpoints)
+        self.check_button = ttk.Button(group, text="Check location", command=self._check_endpoints)
         self.check_button.grid(row=2, column=2, sticky="w", padx=(4, 12), pady=(6, 3))
 
     def _set_entry(self, entry, value):

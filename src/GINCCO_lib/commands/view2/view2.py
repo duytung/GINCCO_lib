@@ -55,6 +55,24 @@ def _configure_style(root):
     style.configure("Primary.TButton", padding=(12, 6))
     style.configure("Status.TLabel", padding=(8, 4))
 
+    bg = style.lookup("TFrame", "background") or root.cget("background")
+    disabled_fg = "gray50"
+    style.configure("TEntry", fieldbackground="white", foreground="black")
+    style.map(
+        "TEntry",
+        fieldbackground=[("disabled", bg), ("!disabled", "white")],
+        foreground=[("disabled", disabled_fg), ("!disabled", "black")],
+    )
+    style.configure("TCombobox", fieldbackground="white", background="white", foreground="black")
+    style.map(
+        "TCombobox",
+        fieldbackground=[("disabled", bg), ("readonly", "white"), ("!disabled", "white")],
+        background=[("disabled", bg), ("readonly", "white"), ("!disabled", "white")],
+        foreground=[("disabled", disabled_fg), ("readonly", "black"), ("!disabled", "black")],
+        selectbackground=[("disabled", bg), ("readonly", "white")],
+        selectforeground=[("disabled", disabled_fg), ("readonly", "black")],
+    )
+
 
 def open_file(datafile, gridfile=None):
     if not os.path.exists(datafile):
