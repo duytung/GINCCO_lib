@@ -9,6 +9,7 @@ import matplotlib.cm as cm
 import numpy as np
 from netCDF4 import Dataset
 
+from GINCCO_lib.modules.map_plot import map_draw_point
 from GINCCO_lib.modules.section_plot import draw_section_figure
 
 
@@ -66,6 +67,10 @@ def get_grid_coords(grid_file, suffix):
         return None, None, None, None
 
 
+def _combo_width(width):
+    return max(1, int(round(width * 1.3)))
+
+
 class SectionTab:
     def __init__(self, parent, datafile, gridfile, status_var):
         self.parent = parent
@@ -93,7 +98,8 @@ class SectionTab:
             self.ds = None
 
     def _build(self):
-        canvas = tk.Canvas(self.frame, highlightthickness=0)
+        bg = ttk.Style(self.frame).lookup("TFrame", "background") or self.frame.cget("background")
+        canvas = tk.Canvas(self.frame, highlightthickness=0, background=bg)
         canvas.grid(row=0, column=0, sticky="nsew")
         scrollbar = ttk.Scrollbar(self.frame, orient="vertical", command=canvas.yview)
         scrollbar.grid(row=0, column=1, sticky="ns")
@@ -141,7 +147,7 @@ class SectionTab:
         values = list(values or [])
         if values and (default == "" or default not in values):
             default = values[0]
-        combo = ttk.Combobox(parent, values=values, state="readonly", width=width)
+        combo = ttk.Combobox(parent, values=values, state="readonly", width=_combo_width(width))
         combo.set(default)
         combo.grid(row=row, column=column, sticky="w", padx=(4, 12), pady=3)
         return combo
@@ -182,6 +188,8 @@ class SectionTab:
         self.lat_p1, self.lat_p2 = self._pair_entries(group, 1, "Latitude", "P1", "P2")
         random_btn = ttk.Button(group, text="Random", command=self._fill_random_section)
         random_btn.grid(row=2, column=1, sticky="w", padx=(4, 12), pady=(6, 3))
+        self.check_button = ttk.Button(group, text="Check location", command=self._check_endpoints)
+        self.check_button.grid(row=2, column=2, sticky="w", padx=(4, 12), pady=(6, 3))
 
     def _set_entry(self, entry, value):
         entry.configure(state="normal")
@@ -208,12 +216,149 @@ class SectionTab:
             messagebox.showerror("Error", "At least two valid grid points are required.")
             return
 
-        i1, i2 = random.sample(range(lon_valid.size), 2)
+        domain_length = self._point_distance(
+            float(np.nanmin(lon_valid)),
+            float(np.nanmin(lat_valid)),
+            float(np.nanmax(lon_valid)),
+            float(np.nanmax(lat_valid)),
+        )
+        min_length = domain_length / 5.0
+        i1, i2 = self._random_endpoint_indices(lon_valid, lat_valid, min_length)
         self._set_entry(self.lon_p1, lon_valid[i1])
         self._set_entry(self.lat_p1, lat_valid[i1])
         self._set_entry(self.lon_p2, lon_valid[i2])
         self._set_entry(self.lat_p2, lat_valid[i2])
         self.status_var.set("Random section endpoints selected")
+
+    def _point_distance(self, lon1, lat1, lon2, lat2):
+        return float(np.hypot(lon2 - lon1, lat2 - lat1))
+
+    def _random_endpoint_indices(self, lon_valid, lat_valid, min_length):
+        n_points = lon_valid.size
+        for _ in range(1000):
+            i1, i2 = random.sample(range(n_points), 2)
+            length = self._point_distance(lon_valid[i1], lat_valid[i1], lon_valid[i2], lat_valid[i2])
+            if length >= min_length:
+                return i1, i2
+
+        best_pair = (0, 1)
+        best_length = -1.0
+        sample_size = min(n_points, 500)
+        sample_indices = random.sample(range(n_points), sample_size) if n_points > sample_size else list(range(n_points))
+        for pos, i1 in enumerate(sample_indices):
+            for i2 in sample_indices[pos + 1:]:
+                length = self._point_distance(lon_valid[i1], lat_valid[i1], lon_valid[i2], lat_valid[i2])
+                if length > best_length:
+                    best_length = length
+                    best_pair = (i1, i2)
+        return best_pair
+
+    def _endpoint_values(self):
+        values = (
+            _safe_float(self.lon_p1.get()),
+            _safe_float(self.lon_p2.get()),
+            _safe_float(self.lat_p1.get()),
+            _safe_float(self.lat_p2.get()),
+        )
+        if any(value is None for value in values):
+            messagebox.showerror("Error", "Please enter valid longitude and latitude endpoints.")
+            return None
+        return values
+
+    def _endpoint_bounds(self, lon_points, lat_points):
+        lon_grid = np.asarray(self.state.get("lon"), dtype=float)
+        lat_grid = np.asarray(self.state.get("lat"), dtype=float)
+        lon_valid = lon_grid[np.isfinite(lon_grid)]
+        lat_valid = lat_grid[np.isfinite(lat_grid)]
+
+        lon_min = min(lon_points)
+        lon_max = max(lon_points)
+        lat_min = min(lat_points)
+        lat_max = max(lat_points)
+        lon_pad = max((lon_max - lon_min) * 0.5, 1.0)
+        lat_pad = max((lat_max - lat_min) * 0.5, 1.0)
+        lon_min -= lon_pad
+        lon_max += lon_pad
+        lat_min -= lat_pad
+        lat_max += lat_pad
+
+        if lon_valid.size:
+            lon_min = max(lon_min, float(np.nanmin(lon_valid)))
+            lon_max = min(lon_max, float(np.nanmax(lon_valid)))
+        if lat_valid.size:
+            lat_min = max(lat_min, float(np.nanmin(lat_valid)))
+            lat_max = min(lat_max, float(np.nanmax(lat_valid)))
+
+        if lon_min == lon_max:
+            lon_min -= 0.5
+            lon_max += 0.5
+        if lat_min == lat_max:
+            lat_min -= 0.5
+            lat_max += 0.5
+        return lon_min, lon_max, lat_min, lat_max
+
+    def _section_check_background(self):
+        depth = self.state.get("depth")
+        if depth is None:
+            return None
+        data_draw = np.asarray(depth, dtype=float)
+        data_draw = np.squeeze(data_draw)
+        if data_draw.ndim == 3:
+            data_draw = data_draw[0, :, :]
+        if data_draw.ndim != 2:
+            return None
+
+        mask = self.state.get("mask")
+        if mask is not None:
+            mask = np.asarray(mask)
+            if mask.shape == data_draw.shape:
+                data_draw = np.array(data_draw, copy=True)
+                data_draw[mask == 0] = np.nan
+        return data_draw
+
+    def _check_endpoints(self):
+        values = self._endpoint_values()
+        if values is None:
+            return
+        lon1, lon2, lat1, lat2 = values
+        lon = self.state.get("lon")
+        lat = self.state.get("lat")
+        data_draw = self._section_check_background()
+        if lon is None or lat is None or data_draw is None:
+            messagebox.showerror("Error", "Grid lon/lat/depth are required to check section endpoints.")
+            return
+
+        root = self.frame.winfo_toplevel()
+        root.config(cursor="watch")
+        self.check_button.configure(state="disabled")
+        self.status_var.set("Checking section endpoints...")
+        root.update_idletasks()
+
+        try:
+            lon_points = [lon1, lon2]
+            lat_points = [lat1, lat2]
+            lon_min, lon_max, lat_min, lat_max = self._endpoint_bounds(lon_points, lat_points)
+            map_draw_point(
+                lon_min=lon_min,
+                lon_max=lon_max,
+                lat_min=lat_min,
+                lat_max=lat_max,
+                title="Section endpoints",
+                lon_data=lon,
+                lat_data=lat,
+                data_draw=data_draw,
+                lat_point=lat_points,
+                lon_point=lon_points,
+                show=True,
+            )
+            self.status_var.set("Endpoint check map shown")
+        except Exception as exc:
+            self.status_var.set("Endpoint check failed")
+            messagebox.showerror("Error", "check endpoints failed:\n{}".format(exc))
+        finally:
+            self.check_button.configure(state="normal")
+            root.config(cursor="")
+            root.update_idletasks()
 
     def _build_processing_group(self, parent, row):
         group = self._group(parent, "Processing", row)
@@ -224,14 +369,14 @@ class SectionTab:
         self.number_point = self._entry(group, 1, 1, "400")
 
         ttk.Label(group, text="Depth interval").grid(row=2, column=0, sticky="e", padx=(0, 6), pady=3)
-        self.depth_interval = self._entry(group, 2, 1, "1")
+        self.depth_interval = self._entry(group, 2, 1, "0.1")
 
         ttk.Label(group, text="Bottom smoothing").grid(row=3, column=0, sticky="e", padx=(0, 6), pady=3)
         self.bottom_smoothing = self._combo(group, 3, 1, ("none", "median", "moving_average", "gaussian"), "none")
         self.bottom_smoothing.bind("<<ComboboxSelected>>", lambda _event: self._update_smoothing_state())
 
         self.bottom_window, self.bottom_sigma = self._pair_entries(
-            group, 4, "Smoothing params", "Window", "Sigma", "6", "3", width=6
+            group, 4, "Smoothing params", "Window", "Sigma", "20", "3", width=6
         )
         self._update_smoothing_state()
 

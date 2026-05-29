@@ -30,6 +30,88 @@ def _nice_ticks(vmin, vmax, n=4):
         digits = 0
     return np.round(ticks, digits)
 
+def _interval_ticks(vmin, vmax, interval):
+    try:
+        vmin = float(vmin)
+        vmax = float(vmax)
+        interval = float(interval)
+    except Exception:
+        return None
+    if interval <= 0 or not np.isfinite(interval) or not np.isfinite(vmin) or not np.isfinite(vmax):
+        return None
+    if vmin == vmax:
+        return np.array([vmin])
+
+    lo = min(vmin, vmax)
+    hi = max(vmin, vmax)
+    ticks = np.arange(lo, hi + interval * 0.5, interval)
+    ticks = ticks[(ticks >= lo - interval * 1e-9) & (ticks <= hi + interval * 1e-9)]
+    if vmin > vmax:
+        ticks = ticks[::-1]
+
+    try:
+        digits = max(0, 2 - int(np.floor(np.log10(abs(interval)))))
+    except Exception:
+        digits = 6
+    return np.round(ticks, digits)
+
+
+def _ticks_with_interval(vmin, vmax, interval=None, n=4):
+    ticks = _interval_ticks(vmin, vmax, interval)
+    if ticks is not None and ticks.size > 0:
+        return ticks
+    return _nice_ticks(vmin, vmax, n=n)
+
+
+def _colorbar_ticks(mappable, interval=None):
+    ticks = _interval_ticks(mappable.get_clim()[0], mappable.get_clim()[1], interval)
+    return ticks if ticks is not None and ticks.size > 0 else None
+
+
+
+def _to_nan_array(values):
+    arr = np.ma.asarray(values)
+    if np.ma.isMaskedArray(arr):
+        return arr.astype(float).filled(np.nan)
+    return np.asarray(arr, dtype=float)
+
+
+def _mask_to_2d(mask):
+    if mask is None:
+        return None
+
+    mask_arr = np.squeeze(np.ma.filled(mask, 0))
+    if mask_arr.ndim < 2:
+        return None
+    if mask_arr.ndim > 2:
+        first_slice = (0,) * (mask_arr.ndim - 2) + (slice(None), slice(None))
+        mask_arr = mask_arr[first_slice]
+
+    return np.asarray(mask_arr)
+
+
+def _apply_land_mask(data, mask):
+    data_arr = _to_nan_array(data)
+    if data_arr.ndim != 2:
+        return data_arr
+
+    mask_2d = _mask_to_2d(mask)
+    if mask_2d is None:
+        return data_arr
+    if mask_2d.shape != data_arr.shape:
+        print(
+            "Warning: land mask shape {} does not match data shape {}; mask ignored.".format(
+                mask_2d.shape, data_arr.shape
+            )
+        )
+        return data_arr
+
+    data_arr = data_arr.copy()
+    data_arr[mask_2d == 0] = np.nan
+    return data_arr
+
+
+
 
 
 
@@ -53,7 +135,7 @@ def draw_map_plot(varname, var, lon, lat, options, state=None):
     # --- dữ liệu ---
     data = np.squeeze(var[:])
     nd = data.ndim
-
+    apply_layer_mask = nd == 2
     # --- Xử lý 3D: layer vs depth ---
 
     if nd == 3:
@@ -61,6 +143,7 @@ def draw_map_plot(varname, var, lon, lat, options, state=None):
         layer_value = options.get("layer", None)
 
         if depth_value is not None:
+            apply_layer_mask = False
             # dùng depth interpolation
             if state is None or "depth_levels" not in state:
                 print("Warning: depth option set but no depth_levels in state. Fallback to layer 0.")
@@ -77,6 +160,7 @@ def draw_map_plot(varname, var, lon, lat, options, state=None):
                     mask_t=mask_t,
                 )
         else:
+            apply_layer_mask = True
             # không chọn depth -> dùng layer
             if layer_value is not None:
                 layer = int(layer_value)
@@ -85,7 +169,12 @@ def draw_map_plot(varname, var, lon, lat, options, state=None):
             data = data[layer, :, :]
 
         # update nd
-        nd =2
+        nd = 2
+
+    if nd == 2 and state is not None and apply_layer_mask:
+        data = _apply_land_mask(data, state.get("mask_t"))
+    else:
+        data = _to_nan_array(data)
 
 
 
@@ -96,8 +185,10 @@ def draw_map_plot(varname, var, lon, lat, options, state=None):
 
     lon_min_user = safe_float(options.get("lon_min"))
     lon_max_user = safe_float(options.get("lon_max"))
+    lon_interval = safe_float(options.get("lon_interval"))
     lat_min_user = safe_float(options.get("lat_min"))
     lat_max_user = safe_float(options.get("lat_max"))
+    lat_interval = safe_float(options.get("lat_interval"))
 
     # lấy giá trị tự nhiên từ dữ liệu
     lon_min_data = float(np.nanmin(lon))
@@ -128,6 +219,20 @@ def draw_map_plot(varname, var, lon, lat, options, state=None):
 
     dpi = int(options.get("dpi", 100))
     resolution = options.get("resolution", "i")
+    fig_width = safe_float(options.get("fig_width")) or 7.0
+    fig_height = safe_float(options.get("fig_height")) or 6.0
+    show_coastline = bool(options.get("show_coastline", True))
+    fill_continents = bool(options.get("fill_continents", False))
+    continent_color = options.get("continent_color") or "0.8"
+    lake_color = options.get("lake_color") or "white"
+    show_gridlines = bool(options.get("show_gridlines", True))
+    n_ticks = int(options.get("n_ticks", 4)) if str(options.get("n_ticks", "4")).isdigit() else 4
+    value_interval = safe_float(options.get("value_interval"))
+    title = options.get("title") or varname
+    colorbar_label = options.get("colorbar_label")
+    if colorbar_label is None:
+        colorbar_label = getattr(var, "units", "")
+    bad_color = options.get("bad_color") or "white"
 
     cmap_min = safe_float(options.get("cmap_min"))
     cmap_min = cmap_min if cmap_min is not None else 0.0
@@ -137,6 +242,10 @@ def draw_map_plot(varname, var, lon, lat, options, state=None):
 
     # --- colormap truncation ---
     cmap = _truncate_colormap(cmap_name, cmap_min, cmap_max)
+    try:
+        cmap.set_bad(color=bad_color)
+    except Exception:
+        pass
 
     print("Chosen options:", options)
 
@@ -150,7 +259,7 @@ def draw_map_plot(varname, var, lon, lat, options, state=None):
         return
 
     # --- 2D+ map ---
-    fig, ax = plt.subplots(figsize=(7, 6), dpi=dpi)
+    fig, ax = plt.subplots(figsize=(fig_width, fig_height), dpi=dpi)
 
     m = Basemap(
         projection="merc",
@@ -169,21 +278,32 @@ def draw_map_plot(varname, var, lon, lat, options, state=None):
         vmax=vmax,
     )
 
-    m.drawcoastlines()
+    if fill_continents:
+        m.fillcontinents(color=continent_color, lake_color=lake_color, zorder=10)
+    if show_coastline:
+        m.drawcoastlines(zorder=11)
 
-    # dùng _nice_ticks cho parallels / meridians
-    parallels = _nice_ticks(lat_min, lat_max, n=4)
-    meridians = _nice_ticks(lon_min, lon_max, n=4)
+    if show_gridlines:
+        parallels = _ticks_with_interval(lat_min, lat_max, lat_interval, n=n_ticks)
+        meridians = _ticks_with_interval(lon_min, lon_max, lon_interval, n=n_ticks)
 
-    m.drawparallels(parallels, labels=[1, 0, 0, 0],
-                    fontsize=8, linewidth=0.5, dashes=[2, 4])
-    m.drawmeridians(meridians, labels=[0, 0, 0, 1],
-                    fontsize=8, linewidth=0.5, dashes=[2, 4])
+        m.drawparallels(parallels, labels=[1, 0, 0, 0],
+                        fontsize=8, linewidth=0.5, dashes=[2, 4])
+        m.drawmeridians(meridians, labels=[0, 0, 0, 1],
+                        fontsize=8, linewidth=0.5, dashes=[2, 4])
 
-    cbar = plt.colorbar(cs, ax=ax)
-    cbar.set_label(getattr(var, "units", ""))
+    # Keep the map frame visible after filled continent polygons.
+    try:
+        m.drawmapboundary(linewidth=1.0, color="black", zorder=20)
+    except TypeError:
+        m.drawmapboundary(linewidth=1.0, color="black")
+    for spine in ax.spines.values():
+        spine.set_zorder(21)
 
-    plt.title(varname)
+    cbar = plt.colorbar(cs, ax=ax, ticks=_colorbar_ticks(cs, value_interval))
+    cbar.set_label(colorbar_label)
+
+    plt.title(title)
     plt.tight_layout()
     plt.show(block=False)
 

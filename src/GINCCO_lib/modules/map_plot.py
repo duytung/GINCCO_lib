@@ -277,7 +277,7 @@ def map_draw(lon_min, lon_max, lat_min, lat_max, title, lon_data, lat_data, data
 
 #########################################################
 
-def map_draw_point(lon_min, lon_max, lat_min, lat_max, title, lon_data, lat_data, data_draw, lat_point, lon_point, path_save, name_save):
+def map_draw_point(lon_min, lon_max, lat_min, lat_max, title, lon_data, lat_data, data_draw, lat_point, lon_point, path_save=None, name_save=None, show=False):
     """
     Draw a 2D geospatial field with annotated point markers on a Mercator map.
 
@@ -299,10 +299,12 @@ def map_draw_point(lon_min, lon_max, lat_min, lat_max, title, lon_data, lat_data
         List of latitudes for point markers to display.
     lon_point : list or np.ndarray
         List of longitudes corresponding to ``lat_point``.
-    path_save : str
-        Directory path where the output image will be saved.
-    name_save : str
-        Base name (without extension) for the output image file.
+    path_save : str, optional
+        Directory path where the output image will be saved. If omitted, no file is saved.
+    name_save : str, optional
+        Base name (without extension) for the output image file. Required when saving.
+    show : bool, optional
+        If True, display the figure in a Matplotlib window.
 
     Returns
     -------
@@ -357,22 +359,35 @@ def map_draw_point(lon_min, lon_max, lat_min, lat_max, title, lon_data, lat_data
     cm = plt.pcolormesh(lon_data - dlon_cell, lat_data - dlat_cell, data_draw,
                         norm=norm, cmap='jet')
 
+    if len(lat_point) >= 2 and len(lon_point) >= 2:
+        plt.plot(lon_point, lat_point, color="white", linewidth=2, zorder=11)
+        plt.plot(lon_point, lat_point, color="red", linewidth=1.5, zorder=12)
+
     # plot the point
-    for i in range (0, len(lat_point)):
-        plt.scatter (lon_point[i], lat_point[i], s = 20, zorder = 10, marker = "o", edgecolor = "white", facecolor = 'red')
-        plt.annotate(i+1, (lon_point[i]+0.05, lat_point[i]), 
-            bbox=dict( boxstyle="round,pad=0.3", facecolor="white",edgecolor="None", alpha=0.7,))
+    labels = ["A", "B"]
+    for i in range(0, len(lat_point)):
+        plt.scatter(lon_point[i], lat_point[i], s=20, zorder=13, marker="o", edgecolor="white", facecolor='red')
+        label = labels[i] if i < len(labels) else str(i + 1)
+        plt.annotate(label, (lon_point[i] + 0.05, lat_point[i]),
+            bbox=dict(boxstyle="round,pad=0.3", facecolor="white", edgecolor="None", alpha=0.7,), zorder=14)
 
     # Colorbar with nice ticks
     cbar_ax = fig.add_axes([0.15, 0.06, 0.7, 0.02])
     cb = fig.colorbar(cm, cax=cbar_ax, ticks=ticks, orientation='horizontal')
     cb.ax.tick_params(labelsize=20)
 
-    # Layout and save
+    # Layout and output
     fig.subplots_adjust(bottom=0.15, top=0.9, left=0.15, right=0.90, wspace=0.2, hspace=0.3)
-    session_id = random.randint(10000, 99999)
-    plt.savefig('%s/%s_%s.png' % (path_save, name_save, session_id), dpi=250)
-    plt.close()
+    saved = False
+    if path_save is not None and name_save is not None:
+        session_id = random.randint(10000, 99999)
+        plt.savefig('%s/%s_%s.png' % (path_save, name_save, session_id), dpi=250)
+        saved = True
+
+    if show:
+        plt.show(block=False)
+    else:
+        plt.close()
 
 #########################################################
 
