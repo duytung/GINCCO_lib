@@ -453,26 +453,34 @@ class VectorTab(_BaseMapTab):
         group = self.group("Map-drawing options", row); row += 1
         self.label(group, "Max arrows", 0)
         self.quiver_n = self.entry(group, 0, "20")
+        ttk.Label(group, text="Scale").grid(row=0, column=2, sticky="e", padx=(12, 6), pady=3)
+        self.scale = ttk.Entry(group, width=10)
+        self.scale.insert(0, "3")
+        self.scale.grid(row=0, column=3, sticky="w", padx=(4, 12), pady=3)
         self.vmin, self.vmax, self.value_interval = self.value_range(group, 1)
         self.cmap, self.cmap_min, self.cmap_max = self.cmap_group(group, 2, default="YlOrBr")
         self.cmap_max.delete(0, "end"); self.cmap_max.insert(0, "0.7")
-        self.fig_width, self.fig_height = self.pair_entries(group, 4, "Figure size", "W", "H", "7", "6", width=6)
+        self.fig_width, self.fig_height, self.dpi = self.triplet_entries(
+            group, 4, "Figure size", "W", "H", "DPI", "7", "6", "100", width=6
+        )
         self.label(group, "Basemap Resolution", 5)
         self.resolution = self.combo(group, 5, BASEMAP_RESOLUTIONS, "intermediate", width=14)
-        self.label(group, "DPI", 7)
-        self.dpi = self.entry(group, 7, "100")
-        self.label(group, "Scale", 8)
-        self.scale = self.entry(group, 8, "3")
-        self.label(group, "Missing color", 9)
-        self.bad_color = self.combo(group, 9, ("white", "lightgray", "none", "black"), "white", width=12)
+        self.label(group, "Missing color", 7)
+        self.bad_color = self.combo(group, 7, ("white", "lightgray", "none", "black"), "white", width=12)
         self.show_coastline = tk.BooleanVar(value=True)
         self.show_gridlines = tk.BooleanVar(value=True)
         self.fill_continents = tk.BooleanVar(value=False)
-        ttk.Checkbutton(group, text="Draw coastlines", variable=self.show_coastline).grid(row=10, column=1, sticky="w", padx=(4, 12), pady=3)
-        ttk.Checkbutton(group, text="Draw gridlines", variable=self.show_gridlines).grid(row=10, column=2, sticky="w", padx=(4, 12), pady=3)
-        ttk.Checkbutton(group, text="Fill continents", variable=self.fill_continents).grid(row=10, column=3, sticky="w", padx=(4, 12), pady=3)
-        self.label(group, "Continent color", 11)
-        self.continent_color = self.combo(group, 11, ("0.8", "lightgray", "white", "tan", "darkgray"), "0.8", width=12)
+        ttk.Checkbutton(group, text="Draw coastlines", variable=self.show_coastline).grid(row=8, column=1, sticky="w", padx=(4, 12), pady=3)
+        ttk.Checkbutton(group, text="Draw gridlines", variable=self.show_gridlines).grid(row=8, column=2, sticky="w", padx=(4, 12), pady=3)
+        ttk.Checkbutton(
+            group, text="Fill continents", variable=self.fill_continents, command=self._update_continent_color_state
+        ).grid(row=9, column=1, sticky="w", padx=(4, 12), pady=3)
+        ttk.Label(group, text="Continent color").grid(row=9, column=2, sticky="e", padx=(12, 6), pady=3)
+        self.continent_color = ttk.Combobox(
+            group, values=("0.8", "lightgray", "white", "tan", "darkgray"), state="readonly", width=_combo_width(12)
+        )
+        self.continent_color.set("0.8")
+        self.continent_color.grid(row=9, column=3, sticky="w", padx=(4, 12), pady=3)
         self.label(group, "Lake color", 12)
         self.lake_color = self.combo(group, 12, ("white", "lightblue", "0.9"), "white", width=12)
         self.label(group, "Title", 13)
@@ -481,7 +489,12 @@ class VectorTab(_BaseMapTab):
         self.cbar_label = self.entry(group, 14, "", width=26)
 
         self.draw_button = self.action(row, "Draw Vector Map", self.draw)
+        self._update_continent_color_state()
         self._on_vector_change()
+
+    def _update_continent_color_state(self):
+        state = "readonly" if self.fill_continents.get() else "disabled"
+        self.continent_color.configure(state=state)
 
     def _select_surface_current(self):
         self._select_vector_preset("u", "v", "Surface current")
