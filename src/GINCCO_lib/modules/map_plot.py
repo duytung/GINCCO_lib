@@ -359,11 +359,17 @@ def map_draw_point(lon_min, lon_max, lat_min, lat_max, title, lon_data, lat_data
     cm = plt.pcolormesh(lon_data - dlon_cell, lat_data - dlat_cell, data_draw,
                         norm=norm, cmap='jet')
 
+    if len(lat_point) >= 2 and len(lon_point) >= 2:
+        plt.plot(lon_point, lat_point, color="white", linewidth=2, zorder=11)
+        plt.plot(lon_point, lat_point, color="red", linewidth=1.5, zorder=12)
+
     # plot the point
-    for i in range (0, len(lat_point)):
-        plt.scatter (lon_point[i], lat_point[i], s = 20, zorder = 10, marker = "o", edgecolor = "white", facecolor = 'red')
-        plt.annotate(i+1, (lon_point[i]+0.05, lat_point[i]), 
-            bbox=dict( boxstyle="round,pad=0.3", facecolor="white",edgecolor="None", alpha=0.7,))
+    labels = ["A", "B"]
+    for i in range(0, len(lat_point)):
+        plt.scatter(lon_point[i], lat_point[i], s=20, zorder=13, marker="o", edgecolor="white", facecolor='red')
+        label = labels[i] if i < len(labels) else str(i + 1)
+        plt.annotate(label, (lon_point[i] + 0.05, lat_point[i]),
+            bbox=dict(boxstyle="round,pad=0.3", facecolor="white", edgecolor="None", alpha=0.7,), zorder=14)
 
     # Colorbar with nice ticks
     cbar_ax = fig.add_axes([0.15, 0.06, 0.7, 0.02])
