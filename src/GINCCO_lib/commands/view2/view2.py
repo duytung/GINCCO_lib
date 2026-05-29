@@ -54,7 +54,7 @@ def _configure_style(root):
     style.configure("Panel.TLabelframe.Label", font=("TkDefaultFont", 10, "bold"))
     style.configure("Primary.TButton", padding=(12, 6))
     style.configure("Status.TLabel", padding=(8, 4))
-    style.configure("TCheckbutton", indicatorsize=16, padding=(2, 2))
+    style.configure("TCheckbutton", indicatorsize=13, padding=(1, 1))
 
     bg = style.lookup("TFrame", "background") or root.cget("background")
     disabled_fg = "gray50"
