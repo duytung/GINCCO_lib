@@ -5,7 +5,7 @@ The heavy Tk/Basemap viewer modules are imported only when the command runs,
 so `gincco --help` and unrelated commands do not require a working GUI/map stack.
 """
 
-HELP = "open the experimental NetCDF viewer"
+HELP = "open the NetCDF viewer"
 
 
 def register_subparser(subparser):
@@ -17,7 +17,7 @@ def register_subparser(subparser):
         "--grid",
         dest="gridfile",
         default=None,
-        help="Path to grid file (default: try to find 'grid.nc' near the data file).",
+        help="Path to grid file (default: try to find grid.nc near the data file).",
     )
 
 

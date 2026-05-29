@@ -1,4 +1,4 @@
-"""Redesigned Scalar, Vector, and Combine tabs for view2."""
+"""Scalar, Vector, and Combine tabs for the GINCCO viewer."""
 
 import tkinter as tk
 from tkinter import messagebox

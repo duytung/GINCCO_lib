@@ -1,7 +1,7 @@
-"""Preview Tk fonts for the GINCCO view2 interface.
+"""Preview Tk fonts for the GINCCO view interface.
 
 Run with:
-    python examples/view2_font_preview.py
+    python examples/view_font_preview.py
 """
 
 import subprocess
@@ -10,7 +10,7 @@ from tkinter import font as tkfont
 from tkinter import ttk
 
 
-SAMPLE_TEXT = "GINCCO Viewer 2 - Scalar Vector Combine Section"
+SAMPLE_TEXT = "GINCCO Viewer - Scalar Vector Combine Section"
 UI_TEXT = "Variable  temperature_t    Layer  0    Draw Scalar Map"
 
 
@@ -131,7 +131,7 @@ class FontPreview:
         main = ttk.PanedWindow(self.root, orient="vertical")
         main.grid(row=1, column=0, sticky="nsew")
 
-        sample = ttk.LabelFrame(main, text="view2-style sample", style="Panel.TLabelframe")
+        sample = ttk.LabelFrame(main, text="view-style sample", style="Panel.TLabelframe")
         sample.grid_columnconfigure(0, weight=1)
         main.add(sample, weight=0)
 
