@@ -216,12 +216,42 @@ class SectionTab:
             messagebox.showerror("Error", "At least two valid grid points are required.")
             return
 
-        i1, i2 = random.sample(range(lon_valid.size), 2)
+        domain_length = self._point_distance(
+            float(np.nanmin(lon_valid)),
+            float(np.nanmin(lat_valid)),
+            float(np.nanmax(lon_valid)),
+            float(np.nanmax(lat_valid)),
+        )
+        min_length = domain_length / 5.0
+        i1, i2 = self._random_endpoint_indices(lon_valid, lat_valid, min_length)
         self._set_entry(self.lon_p1, lon_valid[i1])
         self._set_entry(self.lat_p1, lat_valid[i1])
         self._set_entry(self.lon_p2, lon_valid[i2])
         self._set_entry(self.lat_p2, lat_valid[i2])
         self.status_var.set("Random section endpoints selected")
+
+    def _point_distance(self, lon1, lat1, lon2, lat2):
+        return float(np.hypot(lon2 - lon1, lat2 - lat1))
+
+    def _random_endpoint_indices(self, lon_valid, lat_valid, min_length):
+        n_points = lon_valid.size
+        for _ in range(1000):
+            i1, i2 = random.sample(range(n_points), 2)
+            length = self._point_distance(lon_valid[i1], lat_valid[i1], lon_valid[i2], lat_valid[i2])
+            if length >= min_length:
+                return i1, i2
+
+        best_pair = (0, 1)
+        best_length = -1.0
+        sample_size = min(n_points, 500)
+        sample_indices = random.sample(range(n_points), sample_size) if n_points > sample_size else list(range(n_points))
+        for pos, i1 in enumerate(sample_indices):
+            for i2 in sample_indices[pos + 1:]:
+                length = self._point_distance(lon_valid[i1], lat_valid[i1], lon_valid[i2], lat_valid[i2])
+                if length > best_length:
+                    best_length = length
+                    best_pair = (i1, i2)
+        return best_pair
 
     def _endpoint_values(self):
         values = (
