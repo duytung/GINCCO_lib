@@ -9,6 +9,7 @@ import matplotlib.cm as cm
 import numpy as np
 from netCDF4 import Dataset
 
+from GINCCO_lib.modules.map_plot import map_draw_point
 from GINCCO_lib.modules.section_plot import draw_section_figure
 
 
@@ -187,6 +188,8 @@ class SectionTab:
         self.lat_p1, self.lat_p2 = self._pair_entries(group, 1, "Latitude", "P1", "P2")
         random_btn = ttk.Button(group, text="Random", command=self._fill_random_section)
         random_btn.grid(row=2, column=1, sticky="w", padx=(4, 12), pady=(6, 3))
+        self.check_button = ttk.Button(group, text="Check", command=self._check_endpoints)
+        self.check_button.grid(row=2, column=2, sticky="w", padx=(4, 12), pady=(6, 3))
 
     def _set_entry(self, entry, value):
         entry.configure(state="normal")
@@ -219,6 +222,113 @@ class SectionTab:
         self._set_entry(self.lon_p2, lon_valid[i2])
         self._set_entry(self.lat_p2, lat_valid[i2])
         self.status_var.set("Random section endpoints selected")
+
+    def _endpoint_values(self):
+        values = (
+            _safe_float(self.lon_p1.get()),
+            _safe_float(self.lon_p2.get()),
+            _safe_float(self.lat_p1.get()),
+            _safe_float(self.lat_p2.get()),
+        )
+        if any(value is None for value in values):
+            messagebox.showerror("Error", "Please enter valid longitude and latitude endpoints.")
+            return None
+        return values
+
+    def _endpoint_bounds(self, lon_points, lat_points):
+        lon_grid = np.asarray(self.state.get("lon"), dtype=float)
+        lat_grid = np.asarray(self.state.get("lat"), dtype=float)
+        lon_valid = lon_grid[np.isfinite(lon_grid)]
+        lat_valid = lat_grid[np.isfinite(lat_grid)]
+
+        lon_min = min(lon_points)
+        lon_max = max(lon_points)
+        lat_min = min(lat_points)
+        lat_max = max(lat_points)
+        lon_pad = max((lon_max - lon_min) * 0.3, 0.5)
+        lat_pad = max((lat_max - lat_min) * 0.3, 0.5)
+        lon_min -= lon_pad
+        lon_max += lon_pad
+        lat_min -= lat_pad
+        lat_max += lat_pad
+
+        if lon_valid.size:
+            lon_min = max(lon_min, float(np.nanmin(lon_valid)))
+            lon_max = min(lon_max, float(np.nanmax(lon_valid)))
+        if lat_valid.size:
+            lat_min = max(lat_min, float(np.nanmin(lat_valid)))
+            lat_max = min(lat_max, float(np.nanmax(lat_valid)))
+
+        if lon_min == lon_max:
+            lon_min -= 0.5
+            lon_max += 0.5
+        if lat_min == lat_max:
+            lat_min -= 0.5
+            lat_max += 0.5
+        return lon_min, lon_max, lat_min, lat_max
+
+    def _section_check_background(self):
+        depth = self.state.get("depth")
+        if depth is None:
+            return None
+        data_draw = np.asarray(depth, dtype=float)
+        data_draw = np.squeeze(data_draw)
+        if data_draw.ndim == 3:
+            data_draw = data_draw[0, :, :]
+        if data_draw.ndim != 2:
+            return None
+
+        mask = self.state.get("mask")
+        if mask is not None:
+            mask = np.asarray(mask)
+            if mask.shape == data_draw.shape:
+                data_draw = np.array(data_draw, copy=True)
+                data_draw[mask == 0] = np.nan
+        return data_draw
+
+    def _check_endpoints(self):
+        values = self._endpoint_values()
+        if values is None:
+            return
+        lon1, lon2, lat1, lat2 = values
+        lon = self.state.get("lon")
+        lat = self.state.get("lat")
+        data_draw = self._section_check_background()
+        if lon is None or lat is None or data_draw is None:
+            messagebox.showerror("Error", "Grid lon/lat/depth are required to check section endpoints.")
+            return
+
+        root = self.frame.winfo_toplevel()
+        root.config(cursor="watch")
+        self.check_button.configure(state="disabled")
+        self.status_var.set("Checking section endpoints...")
+        root.update_idletasks()
+
+        try:
+            lon_points = [lon1, lon2]
+            lat_points = [lat1, lat2]
+            lon_min, lon_max, lat_min, lat_max = self._endpoint_bounds(lon_points, lat_points)
+            map_draw_point(
+                lon_min=lon_min,
+                lon_max=lon_max,
+                lat_min=lat_min,
+                lat_max=lat_max,
+                title="Section endpoints",
+                lon_data=lon,
+                lat_data=lat,
+                data_draw=data_draw,
+                lat_point=lat_points,
+                lon_point=lon_points,
+                show=True,
+            )
+            self.status_var.set("Endpoint check map shown")
+        except Exception as exc:
+            self.status_var.set("Endpoint check failed")
+            messagebox.showerror("Error", "check endpoints failed:\n{}".format(exc))
+        finally:
+            self.check_button.configure(state="normal")
+            root.config(cursor="")
+            root.update_idletasks()
 
     def _build_processing_group(self, parent, row):
         group = self._group(parent, "Processing", row)
