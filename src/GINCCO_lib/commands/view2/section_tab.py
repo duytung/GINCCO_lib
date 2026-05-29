@@ -275,8 +275,8 @@ class SectionTab:
         lon_max = max(lon_points)
         lat_min = min(lat_points)
         lat_max = max(lat_points)
-        lon_pad = max((lon_max - lon_min) * 0.3, 0.5)
-        lat_pad = max((lat_max - lat_min) * 0.3, 0.5)
+        lon_pad = max((lon_max - lon_min) * 0.5, 1.0)
+        lat_pad = max((lat_max - lat_min) * 0.5, 1.0)
         lon_min -= lon_pad
         lon_max += lon_pad
         lat_min -= lat_pad
