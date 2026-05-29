@@ -76,15 +76,15 @@ def _configure_style(root):
 
 
 def _button_cursor(root):
-    def set_button_cursor(widget):
-        try:
-            widget.configure(cursor="hand2")
-        except tk.TclError:
-            pass
-        for child in widget.winfo_children():
-            set_button_cursor(child)
+    def enter_button(event):
+        event.widget.configure(cursor="hand2")
 
-    root.after_idle(lambda: set_button_cursor(root))
+    def leave_button(event):
+        event.widget.configure(cursor="")
+
+    for button_class in ("Button", "TButton"):
+        root.bind_class(button_class, "<Enter>", enter_button, add="+")
+        root.bind_class(button_class, "<Leave>", leave_button, add="+")
 
 
 def open_file(datafile, gridfile=None):
