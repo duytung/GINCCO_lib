@@ -75,6 +75,18 @@ def _configure_style(root):
     )
 
 
+def _button_cursor(root):
+    def set_button_cursor(widget):
+        try:
+            widget.configure(cursor="hand2")
+        except tk.TclError:
+            pass
+        for child in widget.winfo_children():
+            set_button_cursor(child)
+
+    root.after_idle(lambda: set_button_cursor(root))
+
+
 def open_file(datafile, gridfile=None):
     if not os.path.exists(datafile):
         messagebox.showerror("Error", "Data file not found: {}".format(datafile))
@@ -105,6 +117,8 @@ def open_file(datafile, gridfile=None):
     notebook.add(combine_tab.frame, text="Combine")
     notebook.add(section_tab.frame, text="Section")
     notebook.add(other_tab.frame, text="Other")
+
+    _button_cursor(root)
 
     status = ttk.Label(root, textvariable=status_var, style="Status.TLabel", anchor="w")
     status.grid(row=1, column=0, sticky="ew")
