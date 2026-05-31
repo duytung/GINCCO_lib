@@ -13,6 +13,7 @@ from **GINCCO_lib**.
    example_4
    example_5
    example_6
+   example_7
    example_8
    example_9
    example_10

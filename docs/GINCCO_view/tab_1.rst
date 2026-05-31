@@ -8,6 +8,7 @@ This example demonstrates how to quickly make a plot with GINCCO view
 Now we will open GINCCO view
 
 .. code-block:: bash
+
    # In case grid.nc is in the same folder
    gincco view 20131223_120000.symphonie.nc
 

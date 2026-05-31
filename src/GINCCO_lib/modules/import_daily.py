@@ -43,8 +43,10 @@ def section_extract(lat_array, lon_array, depth_array, lat, lon,
 
     method : {"idw", "bilinear"}, optional
         Interpolation method for the horizontal step:
-          - "idw": inverse-distance weighting using the 4 surrounding corners.
-          - "bilinear": true bilinear interpolation inside the local cell.
+
+        - "idw": inverse-distance weighting using the 4 surrounding corners.
+        - "bilinear": true bilinear interpolation inside the local cell.
+
         Default is "idw".
     power : float, optional
         Power for IDW distances. Ignored for "bilinear". Default 2.
