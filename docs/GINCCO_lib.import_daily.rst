@@ -5,8 +5,6 @@ import_daily
    :members:
    :undoc-members:
    :show-inheritance:
-   :autosummary:
-   :toctree: generated/
 
 .. toctree::
    :maxdepth: 1

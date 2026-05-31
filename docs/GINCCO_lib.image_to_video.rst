@@ -5,8 +5,6 @@ image_to_video
    :members:
    :undoc-members:
    :show-inheritance:
-   :autosummary:
-   :toctree: generated/
 
 
 .. toctree::

@@ -5,8 +5,6 @@ heatmap_plot
    :members:
    :undoc-members:
    :show-inheritance:
-   :autosummary:
-   :toctree: generated/
 
 
 .. toctree::

@@ -5,8 +5,6 @@ spatial_average
    :members:
    :undoc-members:
    :show-inheritance:
-   :autosummary:
-   :toctree: generated/
 
 
 .. toctree::

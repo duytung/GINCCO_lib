@@ -5,8 +5,6 @@ interpolate_to_t
    :members:
    :undoc-members:
    :show-inheritance:
-   :autosummary:
-   :toctree: generated/
 
 
 .. toctree::

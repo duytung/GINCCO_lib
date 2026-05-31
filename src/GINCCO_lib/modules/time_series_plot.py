@@ -47,8 +47,9 @@ def plot_point(
     tend : datetime.datetime
         End date of the time series.
     data_point : np.ndarray
-        Array of time series values.  
+        Array of time series values.
         Shape can be:
+
         * (n_time,) — single time series.
         * (n_point, n_time) — multiple time series.
     path_save : str, optional
@@ -193,10 +194,11 @@ def plot_point_monthly(
         Sequence of labels for the x-axis, typically months or years.
         Length must match the time dimension of ``data_point``.
     data_point : np.ndarray
-        Time series data array.  
+        Time series data array.
         Shape can be:
-          * (n_time,) — single time series.
-          * (n_point, n_time) — multiple time series.
+
+        * (n_time,) — single time series.
+        * (n_point, n_time) — multiple time series.
     n_xticks_desired : int, optional
         Desired number of x-axis ticks. The function adjusts this automatically
         to achieve clean and evenly spaced labels. Default is 6.
