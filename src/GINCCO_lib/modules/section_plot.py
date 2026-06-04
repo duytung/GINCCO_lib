@@ -141,8 +141,21 @@ def _bottom_boundary(data_draw, depth_section, method="none", window=5, sigma=1.
     for m in range(n_points):
         valid_idx = np.flatnonzero(np.isfinite(values[:, m]) & np.isfinite(depth[:, m]))
         if valid_idx.size:
-            deepest_valid_pos = valid_idx[np.nanargmax(np.abs(depth[valid_idx, m]))]
-            boundary_pos = max(0, deepest_valid_pos - n_overlay + 1)
+            deepest_valid_pos = int(valid_idx[np.nanargmax(np.abs(depth[valid_idx, m]))])
+            deepest_abs = abs(depth[deepest_valid_pos, m])
+
+            direction = 0
+            for candidate_direction in (-1, 1):
+                candidate = deepest_valid_pos + candidate_direction
+                if 0 <= candidate < n_depth and np.isfinite(depth[candidate, m]):
+                    if abs(depth[candidate, m]) < deepest_abs:
+                        direction = candidate_direction
+                        break
+            if direction == 0:
+                direction = 1 if deepest_valid_pos == 0 else -1
+
+            boundary_pos = deepest_valid_pos + direction * (n_overlay - 1)
+            boundary_pos = max(0, min(n_depth - 1, boundary_pos))
             bottom_depth[m] = depth[boundary_pos, m]
 
     return bottom_depth
