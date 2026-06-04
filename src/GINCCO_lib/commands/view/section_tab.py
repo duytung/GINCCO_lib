@@ -375,9 +375,8 @@ class SectionTab:
         self.bottom_smoothing = self._combo(group, 3, 1, ("none", "overlay"), "none")
         self.bottom_smoothing.bind("<<ComboboxSelected>>", lambda _event: self._update_smoothing_state())
 
-        self.bottom_window, self.bottom_sigma = self._pair_entries(
-            group, 4, "Overlay params", "Window", "Sigma", "20", "3", width=6
-        )
+        ttk.Label(group, text="Overlay depth points").grid(row=4, column=0, sticky="e", padx=(0, 6), pady=3)
+        self.bottom_window = self._entry(group, 4, 1, "20", width=6)
         self._update_smoothing_state()
 
     def _build_style_group(self, parent, row):
@@ -433,7 +432,6 @@ class SectionTab:
     def _update_smoothing_state(self):
         state = "disabled" if self.bottom_smoothing.get() == "none" else "normal"
         self.bottom_window.configure(state=state)
-        self.bottom_sigma.configure(state=state)
 
     def _options(self):
         return {
@@ -447,7 +445,6 @@ class SectionTab:
             "plot_type": self.plot_type.get(),
             "bottom_smoothing": self.bottom_smoothing.get(),
             "bottom_smoothing_window": _safe_int(self.bottom_window.get(), 6),
-            "bottom_smoothing_sigma": _safe_float(self.bottom_sigma.get()) or 3.0,
             "fig_width": _safe_float(self.fig_width.get()) or 7.0,
             "fig_height": _safe_float(self.fig_height.get()) or 4.0,
             "dpi": _safe_int(self.dpi.get(), 100),
@@ -502,7 +499,6 @@ class SectionTab:
                 plot_type=opts["plot_type"],
                 bottom_smoothing=opts["bottom_smoothing"],
                 bottom_smoothing_window=opts["bottom_smoothing_window"],
-                bottom_smoothing_sigma=opts["bottom_smoothing_sigma"],
                 show=True,
             )
             self.status_var.set("Done")
