@@ -376,7 +376,7 @@ class SectionTab:
         self.bottom_smoothing.bind("<<ComboboxSelected>>", lambda _event: self._update_smoothing_state())
 
         ttk.Label(group, text="Overlay depth points").grid(row=4, column=0, sticky="e", padx=(0, 6), pady=3)
-        self.bottom_window = self._entry(group, 4, 1, "20", width=6)
+        self.bottom_window = self._entry(group, 4, 1, "5", width=6)
         self._update_smoothing_state()
 
     def _build_style_group(self, parent, row):
