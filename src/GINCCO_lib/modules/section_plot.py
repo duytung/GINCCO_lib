@@ -139,11 +139,14 @@ def _bottom_boundary(data_draw, depth_section, method="none", window=5, sigma=1.
     bottom_abs = np.full(n_points, np.nan, dtype=float)
     for m in range(n_points):
         valid = np.isfinite(values[:, m]) & np.isfinite(depth[:, m])
-        if np.any(valid):
-            valid_depth = depth[valid, m]
-            idx = np.nanargmax(np.abs(valid_depth))
-            bottom_depth[m] = valid_depth[idx]
-            bottom_abs[m] = abs(valid_depth[idx])
+        valid_idx = np.flatnonzero(valid)
+        if valid_idx.size:
+            valid_depth = depth[valid_idx, m]
+            deepest_pos = int(np.nanargmax(np.abs(valid_depth)))
+            boundary_pos = max(0, deepest_pos - 1)
+            boundary_depth = valid_depth[boundary_pos]
+            bottom_depth[m] = boundary_depth
+            bottom_abs[m] = abs(boundary_depth)
 
     if method == "none":
         return bottom_depth
