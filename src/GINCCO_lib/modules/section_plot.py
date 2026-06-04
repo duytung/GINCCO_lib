@@ -138,6 +138,7 @@ def _bottom_boundary(data_draw, depth_section, method="none", window=5, sigma=1.
     n_depth, n_points = values.shape
     n_overlay = max(1, int(window or 1))
     bottom_depth = np.full(n_points, np.nan, dtype=float)
+    safe_depth = np.full(n_points, np.nan, dtype=float)
     for m in range(n_points):
         valid_idx = np.flatnonzero(np.isfinite(values[:, m]) & np.isfinite(depth[:, m]))
         if valid_idx.size:
@@ -154,6 +155,9 @@ def _bottom_boundary(data_draw, depth_section, method="none", window=5, sigma=1.
             if direction == 0:
                 direction = 1 if deepest_valid_pos == 0 else -1
 
+            safe_pos = max(0, min(n_depth - 1, deepest_valid_pos + direction))
+            safe_depth[m] = depth[safe_pos, m] if np.isfinite(depth[safe_pos, m]) else depth[deepest_valid_pos, m]
+
             boundary_pos = deepest_valid_pos + direction * (n_overlay - 1)
             boundary_pos = max(0, min(n_depth - 1, boundary_pos))
             bottom_depth[m] = depth[boundary_pos, m]
@@ -161,6 +165,8 @@ def _bottom_boundary(data_draw, depth_section, method="none", window=5, sigma=1.
     if method == "overlay":
         smooth_window = max(3, min(10, n_points, int(round(n_points * 0.04))))
         bottom_depth = _smooth_local_1d(bottom_depth, "moving_average", window=smooth_window)
+        too_deep = np.isfinite(bottom_depth) & np.isfinite(safe_depth) & (np.abs(bottom_depth) > np.abs(safe_depth))
+        bottom_depth[too_deep] = safe_depth[too_deep]
 
     return bottom_depth
 
@@ -331,16 +337,7 @@ def draw_section_figure(
     z_axis = depth_section[:, 0]
     x_mesh, z_mesh = np.meshgrid(x_axis, z_axis)
 
-    title_text = title
-    if n_depth >= 2 and bottom_smoothing == "overlay":
-        valid_bottom = bottom_line[np.isfinite(bottom_line)]
-        if valid_bottom.size:
-            title_text = "{} | overlay={} range={:.3g}..{:.3g}".format(
-                title, bottom_smoothing_window, float(np.nanmin(valid_bottom)), float(np.nanmax(valid_bottom))
-            )
-        else:
-            title_text = "{} | overlay={} no-boundary".format(title, bottom_smoothing_window)
-    ax.set_title(title_text)
+    ax.set_title(title)
     if n_depth < 2:
         mesh = None
         ax.plot(x_axis, data_draw[0, :], marker="o" if n_M < 20 else None)
