@@ -163,7 +163,7 @@ def _draw_bottom_overlay(ax, bottom_line):
         bottom_line,
         deeper_edge,
         where=valid,
-        color="white",
+        color="black",
         linewidth=0,
         zorder=10,
     )
