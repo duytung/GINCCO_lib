@@ -139,13 +139,12 @@ def _bottom_boundary(data_draw, depth_section, method="none", window=5, sigma=1.
     n_overlay = max(1, int(window or 1))
     bottom_depth = np.full(n_points, np.nan, dtype=float)
     for m in range(n_points):
-        valid = np.isfinite(values[:, m]) & np.isfinite(depth[:, m])
-        valid_idx = np.flatnonzero(valid)
+        valid_idx = np.flatnonzero(np.isfinite(values[:, m]) & np.isfinite(depth[:, m]))
         if valid_idx.size:
             valid_depth = depth[valid_idx, m]
-            deepest_pos = int(np.nanargmax(np.abs(valid_depth)))
-            boundary_pos = max(0, deepest_pos - n_overlay + 1)
-            bottom_depth[m] = valid_depth[boundary_pos]
+            deepest_valid_pos = int(np.nanargmax(np.abs(valid_depth)))
+            boundary_valid_pos = max(0, deepest_valid_pos - n_overlay + 1)
+            bottom_depth[m] = valid_depth[boundary_valid_pos]
 
     return bottom_depth
 
@@ -243,6 +242,7 @@ def draw_section_figure(
     are available, and a transect line plot for single-level data.
     """
     plot_type = _normalize_plot_type(plot_type)
+    bottom_smoothing = _normalize_bottom_smoothing(bottom_smoothing)
     if lon is None or lat is None or depth is None:
         raise ValueError("lon/lat/depth are required to build a section.")
 
