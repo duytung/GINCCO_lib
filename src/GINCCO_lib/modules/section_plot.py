@@ -141,10 +141,9 @@ def _bottom_boundary(data_draw, depth_section, method="none", window=5, sigma=1.
     for m in range(n_points):
         valid_idx = np.flatnonzero(np.isfinite(values[:, m]) & np.isfinite(depth[:, m]))
         if valid_idx.size:
-            valid_depth = depth[valid_idx, m]
-            deepest_valid_pos = int(np.nanargmax(np.abs(valid_depth)))
-            boundary_valid_pos = max(0, deepest_valid_pos - n_overlay + 1)
-            bottom_depth[m] = valid_depth[boundary_valid_pos]
+            deepest_valid_pos = valid_idx[np.nanargmax(np.abs(depth[valid_idx, m]))]
+            boundary_pos = max(0, deepest_valid_pos - n_overlay + 1)
+            bottom_depth[m] = depth[boundary_pos, m]
 
     return bottom_depth
 
@@ -167,6 +166,7 @@ def _draw_bottom_overlay(ax, bottom_line):
         linewidth=0,
         zorder=10,
     )
+    ax.plot(x[valid], bottom_line[valid], color="black", linewidth=1.5, zorder=11)
 
 
 def extract_section(lon_data, lat_data, depth_data, lon_min, lon_max, lat_min, lat_max, data, M, depth_interval=1.0, method="bilinear"):
@@ -315,7 +315,16 @@ def draw_section_figure(
     z_axis = depth_section[:, 0]
     x_mesh, z_mesh = np.meshgrid(x_axis, z_axis)
 
-    ax.set_title(title)
+    title_text = title
+    if n_depth >= 2 and bottom_smoothing == "overlay":
+        valid_bottom = bottom_line[np.isfinite(bottom_line)]
+        if valid_bottom.size:
+            title_text = "{} | overlay={} range={:.3g}..{:.3g}".format(
+                title, bottom_smoothing_window, float(np.nanmin(valid_bottom)), float(np.nanmax(valid_bottom))
+            )
+        else:
+            title_text = "{} | overlay={} no-boundary".format(title, bottom_smoothing_window)
+    ax.set_title(title_text)
     if n_depth < 2:
         mesh = None
         ax.plot(x_axis, data_draw[0, :], marker="o" if n_M < 20 else None)
