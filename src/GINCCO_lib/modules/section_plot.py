@@ -158,6 +158,10 @@ def _bottom_boundary(data_draw, depth_section, method="none", window=5, sigma=1.
             boundary_pos = max(0, min(n_depth - 1, boundary_pos))
             bottom_depth[m] = depth[boundary_pos, m]
 
+    if method == "overlay":
+        smooth_window = max(3, min(n_points, int(round(n_points * 0.04))))
+        bottom_depth = _smooth_local_1d(bottom_depth, "moving_average", window=smooth_window)
+
     return bottom_depth
 
 
@@ -179,7 +183,6 @@ def _draw_bottom_overlay(ax, bottom_line):
         linewidth=0,
         zorder=10,
     )
-    ax.plot(x[valid], bottom_line[valid], color="black", linewidth=1.5, zorder=11)
 
 
 def extract_section(lon_data, lat_data, depth_data, lon_min, lon_max, lat_min, lat_max, data, M, depth_interval=1.0, method="bilinear"):
