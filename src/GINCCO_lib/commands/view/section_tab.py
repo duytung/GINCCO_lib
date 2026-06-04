@@ -372,12 +372,13 @@ class SectionTab:
         self.depth_interval = self._entry(group, 2, 1, "0.1")
 
         ttk.Label(group, text="Bottom smoothing").grid(row=3, column=0, sticky="e", padx=(0, 6), pady=3)
-        self.bottom_smoothing = self._combo(group, 3, 1, ("none", "median", "moving_average", "gaussian"), "none")
-        self.bottom_smoothing.bind("<<ComboboxSelected>>", lambda _event: self._update_smoothing_state())
-
-        self.bottom_window, self.bottom_sigma = self._pair_entries(
-            group, 4, "Smoothing params", "Window", "Sigma", "20", "3", width=6
+        self.bottom_smoothing_var = tk.BooleanVar(value=False)
+        self.bottom_smoothing_check = ttk.Checkbutton(
+            group, variable=self.bottom_smoothing_var, command=self._update_smoothing_state
         )
+        self.bottom_smoothing_check.grid(row=3, column=1, sticky="w", padx=(4, 12), pady=3)
+        ttk.Label(group, text="Overlay depth points").grid(row=3, column=2, sticky="e", padx=(0, 6), pady=3)
+        self.bottom_window = self._entry(group, 3, 3, "5", width=6)
         self._update_smoothing_state()
 
     def _build_style_group(self, parent, row):
@@ -431,9 +432,8 @@ class SectionTab:
             self.status_var.set("Selected {}; grid suffix '{}'".format(var_name, suffix))
 
     def _update_smoothing_state(self):
-        state = "disabled" if self.bottom_smoothing.get() == "none" else "normal"
+        state = "normal" if self.bottom_smoothing_var.get() else "disabled"
         self.bottom_window.configure(state=state)
-        self.bottom_sigma.configure(state=state)
 
     def _options(self):
         return {
@@ -445,9 +445,8 @@ class SectionTab:
             "depth_interval": _safe_float(self.depth_interval.get()) or 1.0,
             "method": self.interp_combo.get(),
             "plot_type": self.plot_type.get(),
-            "bottom_smoothing": self.bottom_smoothing.get(),
+            "bottom_smoothing": "overlay" if self.bottom_smoothing_var.get() else "none",
             "bottom_smoothing_window": _safe_int(self.bottom_window.get(), 6),
-            "bottom_smoothing_sigma": _safe_float(self.bottom_sigma.get()) or 3.0,
             "fig_width": _safe_float(self.fig_width.get()) or 7.0,
             "fig_height": _safe_float(self.fig_height.get()) or 4.0,
             "dpi": _safe_int(self.dpi.get(), 100),
@@ -502,7 +501,6 @@ class SectionTab:
                 plot_type=opts["plot_type"],
                 bottom_smoothing=opts["bottom_smoothing"],
                 bottom_smoothing_window=opts["bottom_smoothing_window"],
-                bottom_smoothing_sigma=opts["bottom_smoothing_sigma"],
                 show=True,
             )
             self.status_var.set("Done")

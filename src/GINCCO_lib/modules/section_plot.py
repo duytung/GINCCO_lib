@@ -61,6 +61,7 @@ def _normalize_bottom_smoothing(method):
     method_map = {
         "none": "none",
         "off": "none",
+        "overlay": "overlay",
         "median": "median",
         "moving average": "moving_average",
         "moving_average": "moving_average",
@@ -69,7 +70,7 @@ def _normalize_bottom_smoothing(method):
     }
     normalized = method_map.get(str(method).lower())
     if normalized is None:
-        raise ValueError("bottom_smoothing must be 'none', 'median', 'moving_average', or 'gaussian'.")
+        raise ValueError("bottom_smoothing must be 'none', 'overlay', 'median', 'moving_average', or 'gaussian'.")
     return normalized
 
 
@@ -126,32 +127,68 @@ def _smooth_local_1d(values, method, window=5, sigma=1.0):
     return out
 
 
-def _apply_bottom_smoothing_mask(data_draw, depth_section, method="none", window=5, sigma=1.0):
+def _bottom_boundary(data_draw, depth_section, method="none", window=5, sigma=1.0):
     method = _normalize_bottom_smoothing(method)
-    if method == "none":
-        return data_draw
 
-    data_out = np.asarray(data_draw, dtype=float).copy()
-    depth_abs = np.abs(np.asarray(depth_section, dtype=float))
-    if data_out.shape != depth_abs.shape:
+    values = np.asarray(data_draw, dtype=float)
+    depth = np.asarray(depth_section, dtype=float)
+    if values.shape != depth.shape:
         raise ValueError("data_draw and depth_section must have the same shape.")
 
-    n_depth, n_points = data_out.shape
-    raw_bottom = np.full(n_points, np.nan, dtype=float)
+    n_depth, n_points = values.shape
+    n_overlay = max(1, int(window or 1))
+    bottom_depth = np.full(n_points, np.nan, dtype=float)
+    safe_depth = np.full(n_points, np.nan, dtype=float)
     for m in range(n_points):
-        valid = np.isfinite(data_out[:, m]) & np.isfinite(depth_abs[:, m])
-        if np.any(valid):
-            raw_bottom[m] = np.nanmax(depth_abs[valid, m])
+        valid_idx = np.flatnonzero(np.isfinite(values[:, m]) & np.isfinite(depth[:, m]))
+        if valid_idx.size:
+            deepest_valid_pos = int(valid_idx[np.nanargmax(np.abs(depth[valid_idx, m]))])
+            deepest_abs = abs(depth[deepest_valid_pos, m])
 
-    smooth_bottom = _smooth_local_1d(raw_bottom, method, window=window, sigma=sigma)
+            direction = 0
+            for candidate_direction in (-1, 1):
+                candidate = deepest_valid_pos + candidate_direction
+                if 0 <= candidate < n_depth and np.isfinite(depth[candidate, m]):
+                    if abs(depth[candidate, m]) < deepest_abs:
+                        direction = candidate_direction
+                        break
+            if direction == 0:
+                direction = 1 if deepest_valid_pos == 0 else -1
 
-    for m in range(n_points):
-        if not np.isfinite(raw_bottom[m]) or not np.isfinite(smooth_bottom[m]):
-            continue
-        bottom_limit = min(raw_bottom[m], smooth_bottom[m])
-        data_out[depth_abs[:, m] > bottom_limit, m] = np.nan
+            safe_pos = max(0, min(n_depth - 1, deepest_valid_pos + direction))
+            safe_depth[m] = depth[safe_pos, m] if np.isfinite(depth[safe_pos, m]) else depth[deepest_valid_pos, m]
 
-    return data_out
+            boundary_pos = deepest_valid_pos + direction * (n_overlay - 1)
+            boundary_pos = max(0, min(n_depth - 1, boundary_pos))
+            bottom_depth[m] = depth[boundary_pos, m]
+
+    if method == "overlay":
+        smooth_window = max(3, min(10, n_points, int(round(n_points * 0.04))))
+        bottom_depth = _smooth_local_1d(bottom_depth, "moving_average", window=smooth_window)
+        too_deep = np.isfinite(bottom_depth) & np.isfinite(safe_depth) & (np.abs(bottom_depth) > np.abs(safe_depth))
+        bottom_depth[too_deep] = safe_depth[too_deep]
+
+    return bottom_depth
+
+
+def _draw_bottom_overlay(ax, bottom_line):
+    bottom_line = np.asarray(bottom_line, dtype=float)
+    valid = np.isfinite(bottom_line)
+    if not np.any(valid):
+        return
+
+    x = np.arange(bottom_line.size)
+    ymin, ymax = ax.get_ylim()
+    deeper_edge = ymax if np.nanmedian(bottom_line[valid]) >= 0 else ymin
+    ax.fill_between(
+        x,
+        bottom_line,
+        deeper_edge,
+        where=valid,
+        color="white",
+        linewidth=0,
+        zorder=10,
+    )
 
 
 def extract_section(lon_data, lat_data, depth_data, lon_min, lon_max, lat_min, lat_max, data, M, depth_interval=1.0, method="bilinear"):
@@ -227,6 +264,7 @@ def draw_section_figure(
     are available, and a transect line plot for single-level data.
     """
     plot_type = _normalize_plot_type(plot_type)
+    bottom_smoothing = _normalize_bottom_smoothing(bottom_smoothing)
     if lon is None or lat is None or depth is None:
         raise ValueError("lon/lat/depth are required to build a section.")
 
@@ -258,7 +296,7 @@ def draw_section_figure(
         depth_interval=depth_interval,
         method=method,
     )
-    data_draw = _apply_bottom_smoothing_mask(
+    bottom_line = _bottom_boundary(
         data_draw,
         depth_section,
         method=bottom_smoothing,
@@ -313,6 +351,9 @@ def draw_section_figure(
         mesh = ax.contourf(x_mesh, z_mesh, data_draw, levels=levels, cmap=cmap, norm=norm, extend="both")
         ax.set_xlabel("Position along section")
         ax.set_ylabel("Depth (m)")
+
+    if n_depth >= 2 and bottom_smoothing == "overlay":
+        _draw_bottom_overlay(ax, bottom_line)
 
     n_ticks = max(1, min(int(n_ticks), n_M))
     lat_list = np.linspace(lat_min, lat_max, n_M)
