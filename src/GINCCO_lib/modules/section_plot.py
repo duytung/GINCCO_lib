@@ -126,32 +126,52 @@ def _smooth_local_1d(values, method, window=5, sigma=1.0):
     return out
 
 
-def _apply_bottom_smoothing_mask(data_draw, depth_section, method="none", window=5, sigma=1.0):
+def _bottom_boundary(data_draw, depth_section, method="none", window=5, sigma=1.0):
     method = _normalize_bottom_smoothing(method)
-    if method == "none":
-        return data_draw
 
-    data_out = np.asarray(data_draw, dtype=float).copy()
-    depth_abs = np.abs(np.asarray(depth_section, dtype=float))
-    if data_out.shape != depth_abs.shape:
+    values = np.asarray(data_draw, dtype=float)
+    depth = np.asarray(depth_section, dtype=float)
+    if values.shape != depth.shape:
         raise ValueError("data_draw and depth_section must have the same shape.")
 
-    n_depth, n_points = data_out.shape
-    raw_bottom = np.full(n_points, np.nan, dtype=float)
+    n_depth, n_points = values.shape
+    bottom_depth = np.full(n_points, np.nan, dtype=float)
+    bottom_abs = np.full(n_points, np.nan, dtype=float)
     for m in range(n_points):
-        valid = np.isfinite(data_out[:, m]) & np.isfinite(depth_abs[:, m])
+        valid = np.isfinite(values[:, m]) & np.isfinite(depth[:, m])
         if np.any(valid):
-            raw_bottom[m] = np.nanmax(depth_abs[valid, m])
+            valid_depth = depth[valid, m]
+            idx = np.nanargmax(np.abs(valid_depth))
+            bottom_depth[m] = valid_depth[idx]
+            bottom_abs[m] = abs(valid_depth[idx])
 
-    smooth_bottom = _smooth_local_1d(raw_bottom, method, window=window, sigma=sigma)
+    if method == "none":
+        return bottom_depth
 
-    for m in range(n_points):
-        if not np.isfinite(raw_bottom[m]) or not np.isfinite(smooth_bottom[m]):
-            continue
-        bottom_limit = min(raw_bottom[m], smooth_bottom[m])
-        data_out[depth_abs[:, m] > bottom_limit, m] = np.nan
+    smooth_abs = _smooth_local_1d(bottom_abs, method, window=window, sigma=sigma)
+    sign = np.sign(bottom_depth)
+    sign[sign == 0] = 1.0
+    return sign * smooth_abs
 
-    return data_out
+
+def _draw_bottom_overlay(ax, bottom_line):
+    bottom_line = np.asarray(bottom_line, dtype=float)
+    valid = np.isfinite(bottom_line)
+    if not np.any(valid):
+        return
+
+    x = np.arange(bottom_line.size)
+    ymin, ymax = ax.get_ylim()
+    deeper_edge = ymax if np.nanmedian(bottom_line[valid]) >= 0 else ymin
+    ax.fill_between(
+        x,
+        bottom_line,
+        deeper_edge,
+        where=valid,
+        color="white",
+        linewidth=0,
+        zorder=10,
+    )
 
 
 def extract_section(lon_data, lat_data, depth_data, lon_min, lon_max, lat_min, lat_max, data, M, depth_interval=1.0, method="bilinear"):
@@ -258,7 +278,7 @@ def draw_section_figure(
         depth_interval=depth_interval,
         method=method,
     )
-    data_draw = _apply_bottom_smoothing_mask(
+    bottom_line = _bottom_boundary(
         data_draw,
         depth_section,
         method=bottom_smoothing,
@@ -313,6 +333,9 @@ def draw_section_figure(
         mesh = ax.contourf(x_mesh, z_mesh, data_draw, levels=levels, cmap=cmap, norm=norm, extend="both")
         ax.set_xlabel("Position along section")
         ax.set_ylabel("Depth (m)")
+
+    if n_depth >= 2 and bottom_smoothing != "none":
+        _draw_bottom_overlay(ax, bottom_line)
 
     n_ticks = max(1, min(int(n_ticks), n_M))
     lat_list = np.linspace(lat_min, lat_max, n_M)
