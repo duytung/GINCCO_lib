@@ -61,6 +61,7 @@ def _normalize_bottom_smoothing(method):
     method_map = {
         "none": "none",
         "off": "none",
+        "overlay": "overlay",
         "median": "median",
         "moving average": "moving_average",
         "moving_average": "moving_average",
@@ -69,7 +70,7 @@ def _normalize_bottom_smoothing(method):
     }
     normalized = method_map.get(str(method).lower())
     if normalized is None:
-        raise ValueError("bottom_smoothing must be 'none', 'median', 'moving_average', or 'gaussian'.")
+        raise ValueError("bottom_smoothing must be 'none', 'overlay', 'median', 'moving_average', or 'gaussian'.")
     return normalized
 
 
@@ -151,7 +152,8 @@ def _bottom_boundary(data_draw, depth_section, method="none", window=5, sigma=1.
     if method == "none":
         return bottom_depth
 
-    smooth_abs = _smooth_local_1d(bottom_abs, method, window=window, sigma=sigma)
+    smooth_method = "moving_average" if method == "overlay" else method
+    smooth_abs = _smooth_local_1d(bottom_abs, smooth_method, window=window, sigma=sigma)
     sign = np.sign(bottom_depth)
     sign[sign == 0] = 1.0
     return sign * smooth_abs
@@ -337,7 +339,7 @@ def draw_section_figure(
         ax.set_xlabel("Position along section")
         ax.set_ylabel("Depth (m)")
 
-    if n_depth >= 2 and bottom_smoothing != "none":
+    if n_depth >= 2 and bottom_smoothing == "overlay":
         _draw_bottom_overlay(ax, bottom_line)
 
     n_ticks = max(1, min(int(n_ticks), n_M))
